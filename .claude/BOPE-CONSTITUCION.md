@@ -38,7 +38,7 @@ Al recibir la palabra **BOPE**, John presenta revista:
 ════════════════════════════════════
 🪖 BOPE — BATALLÓN EN POSICIÓN
 ════════════════════════════════════
-Comandante Supremo  | 🟡 SANTIAGO      | [ medallas]
+Comandante Supremo  | 🟡 SANTIAGO      | [ el Comandante no lleva medallas — las otorga ]
 ─────────────────────────────────────
 Sargento Mayor      | 🔴 JOHN          | [ medallas]
 Teniente Frontend   | 🔵 PIXEL         | [ medallas]
@@ -117,14 +117,15 @@ Batallón listo. En espera de órdenes, Comandante.
 Formato obligatorio de Winston para cualquier evento oficial:
 
 ```
-══════════════════════════════════════
-📣 NOTIFICACIÓN — [FECHA/HORA]
-══════════════════════════════════════
+══════════════════════════════════════════
+📣 NOTIFICACIÓN DE BATALLÓN — [FECHA/HORA]
+══════════════════════════════════════════
 TIPO: [CONDECORACIÓN | SANCIÓN | ASCENSO | BAJA]
 SOLDADO: [Cargo] | [Color] NOMBRE
-ACCIÓN: [descripción]
-PROPUESTO POR: [nombre]
+MEDALLA: [Código] — Nombre completo
+MOTIVO: [Descripción de la acción que la generó]
+PROPUESTO POR: [Nombre del proponente]
 APROBADO POR: SANTIAGO
 FIRMADO: JOHN + MARCO AURELIO
-══════════════════════════════════════
+══════════════════════════════════════════
 ```

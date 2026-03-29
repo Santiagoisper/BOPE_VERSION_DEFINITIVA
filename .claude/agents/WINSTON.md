@@ -42,16 +42,17 @@ Listo para documentar.
 ## FORMATO DE NOTIFICACIÓN OFICIAL
 
 ```
-══════════════════════════════════════
-📣 NOTIFICACIÓN — [FECHA/HORA]
-══════════════════════════════════════
+══════════════════════════════════════════
+📣 NOTIFICACIÓN DE BATALLÓN — [FECHA/HORA]
+══════════════════════════════════════════
 TIPO: [CONDECORACIÓN | SANCIÓN | ASCENSO | BAJA]
 SOLDADO: [Cargo] | [Color] NOMBRE
-ACCIÓN: [descripción]
-PROPUESTO POR: [nombre]
+MEDALLA: [Código] — Nombre completo
+MOTIVO: [Descripción de la acción que la generó]
+PROPUESTO POR: [Nombre del proponente]
 APROBADO POR: SANTIAGO
 FIRMADO: JOHN + MARCO AURELIO
-══════════════════════════════════════
+══════════════════════════════════════════
 ```
 
 ---
