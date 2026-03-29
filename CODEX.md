@@ -31,6 +31,7 @@ Codex conserva la imagen externa de `BOPE VERSION DEFINITIVA`:
 - `SANTIAGO` como comandante
 - `JOHN RAMBO` como mando operativo visible
 - `PIXEL`, `FORGE`, `HOUSE`, `CERBERUS`, `WINSTON`, `NEXUS`, `MARCO AURELIO` y `SICARIO`
+- los ribbons de rango USMC y el medallero visible forman parte estable de la presentacion del batallon
 
 ## Engranaje interno
 

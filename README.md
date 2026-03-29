@@ -66,6 +66,35 @@ Mi orden inicial va dirigida a JOHN RAMBO.
 | `MARCO AURELIO` | consejero | doctrina, medallas y evaluacion |
 | `SICARIO | Locura` | operativo especial | maxima autonomia, sin friccion |
 
+## Ribbons de rango
+
+| Integrante | Ribbon | Equivalencia |
+|---|---|---|
+| `SANTIAGO` | `[★★★★★]` | General (5 estrellas) |
+| `JOHN RAMBO` | `[=== ♦ ===]` | Sergeant Major of the Marine Corps |
+| `PIXEL` | `[= =]` | First Lieutenant |
+| `FORGE` | `[= =]` | First Lieutenant |
+| `HOUSE` | `[===]` | Staff Sergeant |
+| `CERBERUS` | `[====]` | Master Sergeant |
+| `WINSTON` | `[== ▲ ==]` | Warrant Officer |
+| `NEXUS` | `[= ♦♦ =]` | Gunnery Sergeant |
+| `MARCO AURELIO` | `[✝ = ✝]` | Chaplain |
+| `SICARIO | Locura` | `[!!!]` | Special Operations - Tier 1 |
+
+## Medallas disponibles
+
+No hay medallas otorgadas por ahora, pero el medallero oficial visible queda definido asi:
+
+| Medalla | Codigo | Ribbon visible |
+|---|---|---|
+| `Navy Cross` | `[NC]` | `[## ##]` |
+| `Bronze Star` | `[BS]` | `[# == #]` |
+| `Commendation Medal` | `[CM]` | `[==#==]` |
+| `Combat Action Ribbon` | `[CA]` | `[///]` |
+| `Meritorious Service` | `[MS]` | `[=###=]` |
+| `Good Conduct Medal` | `[GC]` | `[|===|]` |
+| `Purple Heart` | `[PH]` | `[<3]` |
+
 ## Capas del sistema
 
 ### Claude

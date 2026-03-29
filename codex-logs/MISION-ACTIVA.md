@@ -8,16 +8,16 @@ Fuente canonica de estado para operaciones BOPE bajo Codex.
 
 ## Ultima mision cerrada
 
-- BOPE-CODEX-2026-002
+- BOPE-CODEX-2026-003
 
 ## Resultado
 
-- bootstrap de Codex local al repo establecido y `SICARIO | Locura` incorporado como operativo especial visible
+- medallero oficial visible y ribbons de rango USMC incorporados a la capa Codex sin adjudicaciones activas
 
 ## Aprendizaje clave
 
-- no conviene depender del repo madre para el arranque diario de Codex cuando la capa local ya define bootstrap, estado y persistencia
+- la imagen del batallon necesita distinguir entre medallas disponibles y medallas otorgadas; ambas deben verse como capas separadas
 
 ## Proximo paso sugerido
 
-- esperar nueva orden del COMMANDER usando `CODEX.md` como arranque canonico local
+- esperar nueva orden del COMMANDER manteniendo visibles rangos, ribbons y medallero en toda presentacion del batallon
