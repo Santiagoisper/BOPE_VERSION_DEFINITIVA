@@ -71,6 +71,10 @@ Cuando el `COMMANDER` escriba `Cuadro de Honor`, la respuesta debe salir en form
 4. mostrar cantidad total de operaciones en las que participo el condecorado
 5. si una medalla tiene mas de un condecorado, listar primero al de mayor cantidad de operaciones
 6. si no hay adjudicaciones, mantener la medalla visible con estado vacio
+7. actualizar el `Cuadro de Honor` al cierre de toda mision cerrada
+8. incluir siempre una seccion `SANCIONADOS`
+9. incluir siempre una seccion `KIA`
+10. `KIA` significa soldados ejecutados por el tribunal y dados de baja definitiva
 
 Orden oficial de jerarquia:
 
@@ -95,6 +99,16 @@ CUADRO DE HONOR BOPE
 2. [RIBBON] MEDALLA
    Ganador: NOMBRE o Sin adjudicar
    Operaciones: N
+
+----------------------------------------
+SANCIONADOS
+----------------------------------------
+- NOMBRE | sancion | operaciones: N
+
+----------------------------------------
+KIA
+----------------------------------------
+- NOMBRE | causa: Tribunal BOPE | operaciones finales: N
 ========================================
 ```
 

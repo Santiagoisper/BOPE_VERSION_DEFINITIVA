@@ -29,3 +29,8 @@
 [JOHN RAMBO] ACCION: `codex-logs/CUADRO-DE-HONOR.md` creado | orden de medallas fijado de mayor a menor | estado inicial sin adjudicaciones
 [WINSTON] REPORTE: `CODEX.md`, `README.md` y `BOPE-CODEX-ADAPTACION.md` actualizados | protocolo de respuesta institucional documentado
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-004 completada | Cuadro de Honor operativo | listo para git y GitHub
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-005 | expansion del Cuadro de Honor por orden del COMMANDER | objetivo: actualizarlo por mision y agregar secciones SANCIONADOS y KIA
+[JOHN RAMBO] INTEL: mision administrativa doctrinal | sin riesgo tecnico | mando directo suficiente | no activar mas soldados
+[JOHN RAMBO] ACCION: protocolo actualizado | toda mision cerrada debe refrescar `codex-logs/CUADRO-DE-HONOR.md` | `SANCIONADOS` y `KIA` pasan a ser secciones obligatorias
+[WINSTON] REPORTE: conteo base de operaciones acumuladas incorporado | estado actual sin sancionados y sin bajas por tribunal
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-005 completada | Cuadro de Honor ampliado | listo para git y GitHub

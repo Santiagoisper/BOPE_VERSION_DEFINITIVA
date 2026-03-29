@@ -102,6 +102,8 @@ Cuando se pida `Cuadro de Honor`, Codex debe responder con un dibujo ASCII orden
 - ribbon de la medalla
 - nombre de quien la gano hasta el momento o `Sin adjudicar`
 - cantidad de operaciones en las que participo
+- seccion `SANCIONADOS`
+- seccion `KIA` para ejecutados por el tribunal
 
 Fuente operativa: `codex-logs/CUADRO-DE-HONOR.md`
 

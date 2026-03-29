@@ -9,6 +9,24 @@ Estado visible del medallero BOPE para Codex.
 - mostrar ganador actual o `Sin adjudicar`
 - mostrar cantidad de operaciones del ganador
 - si no hay ganador, operaciones = `0`
+- actualizar este archivo al cierre de cada mision
+- incluir siempre las secciones `SANCIONADOS` y `KIA`
+- `KIA` se reserva para soldados ejecutados por el tribunal y dados de baja definitiva
+
+## Operaciones acumuladas
+
+| Integrante | Operaciones |
+|---|---:|
+| `SANTIAGO` | 0 |
+| `JOHN RAMBO` | 4 |
+| `PIXEL` | 1 |
+| `FORGE` | 1 |
+| `HOUSE` | 1 |
+| `CERBERUS` | 1 |
+| `WINSTON` | 4 |
+| `NEXUS` | 1 |
+| `MARCO AURELIO` | 1 |
+| `SICARIO | Locura` | 1 |
 
 ## Cuadro actual
 
@@ -43,5 +61,15 @@ CUADRO DE HONOR BOPE
 7. [<3] PURPLE HEART
    Ganador: Sin adjudicar
    Operaciones: 0
+
+----------------------------------------
+SANCIONADOS
+----------------------------------------
+- Sin sancionados
+
+----------------------------------------
+KIA
+----------------------------------------
+- Sin bajas por tribunal
 ========================================
 ```
