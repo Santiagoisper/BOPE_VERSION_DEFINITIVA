@@ -22,7 +22,8 @@ JOHN · RAMBO (Sargento Mayor — mando operativo)
 ├── NEXUS · Integración
 ├── WINSTON · Cronista
 ├── CERBERUS · Seguridad
-└── BLADE · Reserva [solo con autorización]
+├── BLADE · Reserva [solo con autorización]
+└── SICARIO · Operativo Especial [velocidad máxima — activa con Santiago o John]
 ```
 
 **Una orden recibida se acata. No se debate.**

@@ -18,6 +18,7 @@
 | Guardián | 🩶 | CERBERUS | GUARDIAN | [ ] |
 | Integrador | 🩵 | NEXUS | WIRE | [ ] |
 | Reserva Especial | ⚫ | BLADE | KILLER | [ ] |
+| Operativo Especial | 🔥 | SICARIO | LOCO | [ ] |
 
 ---
 
@@ -34,6 +35,7 @@
 | Guardián | Master Sergeant | `[▮▮▮▮]` Steel quad banda | `#71797E` / `#2F4F4F` |
 | Integrador | Gunnery Sergeant | `[▮ ◆◆ ▮]` Teal con doble rombo | `#008080` / `#E0E0E0` |
 | Reserva Especial | Force Recon (no visible rank) | `[■■■■■■]` Full black — sin identificación | `#0D0D0D` |
+| Operativo Especial | Special Operations — Tier 1 | `[🔥🔥🔥]` Fire — velocidad máxima | `#FF4500` |
 
 ---
 
