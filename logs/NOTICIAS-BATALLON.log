@@ -1,0 +1,35 @@
+══════════════════════════════════════════════
+NOTICIAS-BATALLON.log — Canal Oficial de Anuncios
+BOPE v2
+══════════════════════════════════════════════
+Todos los soldados leen este log al arrancar cada sesión.
+Solo se publican eventos aprobados por SANTIAGO.
+──────────────────────────────────────────────
+
+══════════════════════════════════
+📣 NOTIFICACIÓN — 2026-03-29 00:00
+══════════════════════════════════
+TIPO: FORMACIÓN
+SOLDADO: TODOS
+DETALLE: Escuadrón BOPE v2 formado oficialmente.
+         9 agentes activos. Sistema operativo.
+         Misión: construir lo que Santiago ordene.
+PROPUESTO POR: JOHN
+APROBADO POR: SANTIAGO
+FIRMADO: JOHN + MARCO AURELIO
+══════════════════════════════════
+
+──────────────────────────────────────────────
+FORMATO PARA NUEVAS ENTRADAS:
+
+══════════════════════════════════
+📣 NOTIFICACIÓN — [FECHA/HORA]
+══════════════════════════════════
+TIPO: [CONDECORACIÓN | SANCIÓN | ASCENSO | BAJA]
+SOLDADO: [Cargo] | [Color] NOMBRE
+DETALLE: [descripción]
+PROPUESTO POR: [Nombre]
+APROBADO POR: SANTIAGO
+FIRMADO: JOHN + MARCO AURELIO
+══════════════════════════════════
+──────────────────────────────────────────────

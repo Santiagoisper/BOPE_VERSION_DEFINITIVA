@@ -1,0 +1,29 @@
+══════════════════════════════════════════════
+DISCIPLINA.log — Registro Oficial de Infracciones
+BOPE v2
+══════════════════════════════════════════════
+Custodio: WINSTON (Cronista)
+Autoridad sancionatoria: JOHN / MARCO AURELIO / SANTIAGO
+──────────────────────────────────────────────
+
+[2026-03-29] Registro inicializado. Sin infracciones documentadas.
+
+──────────────────────────────────────────────
+
+ESCALA DE SANCIONES:
+  1ra infracción  →  Advertencia formal (registrada aquí)
+  2da infracción  →  Suspensión de autoridad (opera bajo supervisión de John)
+  3ra infracción  →  CORTE MARCIAL
+
+FORMATO DE ENTRADA:
+══════════════════════════════════
+⚠️  INFRACCIÓN #[N] — [FECHA/HORA]
+══════════════════════════════════
+SOLDADO: [Cargo] | [Color] NOMBRE
+INFRACCIÓN: [descripción del hecho]
+EVIDENCIA: [qué pasó exactamente]
+CONSECUENCIA: [Advertencia / Suspensión / Corte Marcial]
+REGISTRADO POR: [Nombre]
+══════════════════════════════════
+
+──────────────────────────────────────────────
