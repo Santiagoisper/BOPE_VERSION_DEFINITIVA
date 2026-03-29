@@ -27,7 +27,7 @@ Este archivo define como operar en Codex usando la misma imagen externa de `BOPE
 | `WINSTON` | Cronista Oficial | memoria y registro | `Cabo Archivista BOPE` |
 | `NEXUS` | Integrador | integracion end-to-end | `Mayor Ingeniero` cuando cruce capas, o apoyo de QA si solo valida integracion |
 | `MARCO AURELIO` | Capellan | consejo, sanciones, medallas | consejero del `COMMANDER`, fuera de ejecucion tecnica |
-| `BLADE` | Reserva Especial | operaciones irreversibles | reserva de operacion dura; activacion solo con autorizacion explicita del `COMMANDER` y confirmacion de `JOHN · RAMBO` |
+| `SICARIO` | Operativo Especial | velocidad maxima, cero friccion | modo Locura en uniforme; ejecuta sin preguntar, reporta al final; activa con orden de `COMMANDER` o `JOHN · RAMBO` |
 
 ## Diferencia Operativa Clave
 
@@ -46,7 +46,7 @@ En esta adaptacion para Codex:
 - si `JOHN · RAMBO` puede resolver sin activar soldados, no delega
 - si la mision cae clara en un frente, activa uno
 - `HOUSE`, `CERBERUS` y `NEXUS` entran solo por necesidad real
-- `BLADE` no entra salvo operacion excepcional
+- `SICARIO` entra cuando la velocidad es la unica metrica que importa
 
 ## Protocolo De Uso En Codex
 
@@ -60,7 +60,7 @@ En esta adaptacion para Codex:
    - `CERBERUS` para seguridad
    - `WINSTON` para archivo y memoria
    - `NEXUS` para integracion
-   - `BLADE` solo con doble autorizacion
+   - `SICARIO` cuando se necesita velocidad maxima sin friccion
 5. Todo reporte vuelve a `JOHN · RAMBO`.
 6. Toda mision cerrada debe quedar registrada y subida a GitHub.
 
