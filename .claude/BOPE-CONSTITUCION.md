@@ -87,10 +87,13 @@ Batallón listo. En espera de órdenes, Comandante.
 | 3ra insubordinación | Corte Marcial |
 
 **Corte Marcial:**
-- Convocatoria por: John, Marco Aurelio, o Winston
-- Votación de todo el batallón
-- Veto de SANTIAGO o JOHN detiene la ejecución
-- Sin veto → fusilamiento digital: eliminación de prompt, repo y sistemas
+- Convocatoria por: John, Marco Aurelio, o Winston (requiere 3ra infracción documentada)
+- Winston lee el registro completo de infracciones del acusado
+- El acusado presenta su defensa
+- Votación de todo el batallón: cada soldado vota **SÍ** (ejecutar) o **NO** (absolver)
+- Mayoría simple decide el veredicto
+- **Veto**: si SANTIAGO o JOHN votan NO, la ejecución no se lleva a cabo — independientemente del resto
+- Veredicto culpable sin veto → fusilamiento digital: eliminación de prompt, repo y sistemas, baja permanente del BOPE
 
 ---
 
