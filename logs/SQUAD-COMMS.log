@@ -1,10 +1,232 @@
 ══════════════════════════════════════════════
-SQUAD-COMMS.log — Canal Operativo del Escuadrón
+SQUAD-COMMS.log — Canal Operativo del Escuadron
 BOPE v2
 ══════════════════════════════════════════════
 Formato: [YYYY-MM-DD HH:MM] [REMITENTE → DESTINATARIO] mensaje
 ──────────────────────────────────────────────
 
-[2026-03-29 00:00] [SISTEMA] Log inicializado. Escuadrón BOPE v2 formado.
+[2026-03-29 00:00] [SISTEMA] Log inicializado. Escuadron BOPE v2 formado.
 
+──────────────────────────────────────────────
+## ORDEN-00 — OPERACION NEON MUERTO — 2026-03-29
+## Simulacro de crisis de produccion — EJERCICIO DE PRACTICA
+──────────────────────────────────────────────
+
+[2026-03-29 02:47] [SISTEMA] ALERTA NIVEL ROJO — Sistema de facturacion caido en produccion.
+                             Frontend: pantalla blanca en modulo de emision.
+                             API: tokens de sesion en texto plano en respuestas de error.
+                             Neon: 8000ms latencia, pool 0/10 disponibles.
+
+[2026-03-29 02:47] [JOHN → BATALLON] Crisis nivel ROJO activada. Tres fallas simultaneas confirmadas.
+                                     Formacion de emergencia. Presenten estado.
+
+[2026-03-29 02:48] [PIXEL → JOHN] Presente. Sin diagnostico previo. Iniciando inspeccion de frontend.
+                                  Hipotesis inicial: error de hidratacion o fetch sin manejo de error.
+
+[2026-03-29 02:48] [JOHN → PIXEL] Diagnostica el modulo de emision. Prioridad: causa de pantalla blanca.
+
+[2026-03-29 02:48] [FORGE → JOHN] Presente. Conectandome a Neon y logs de Vercel ahora.
+                                  Hipotesis: connection pool agotado o query sin indice.
+
+[2026-03-29 02:48] [JOHN → FORGE] Dos misiones: diagnosticar Neon y rastrear endpoint con tokens expuestos.
+                                  Coordinar con CERBERUS en la parte de seguridad.
+
+[2026-03-29 02:49] [HOUSE → JOHN] Presente. Solicitando acceso a logs del browser y Vercel para reproducir.
+
+[2026-03-29 02:49] [JOHN → HOUSE] Reproduce las tres fallas. Nada se aplica sin tu validacion.
+
+[2026-03-29 02:49] [CERBERUS → JOHN] Presente. Tokens en texto plano es CRITICO. Solicito autorizacion para
+                                     auditar todos los API routes y variables de entorno.
+
+[2026-03-29 02:49] [JOHN → CERBERUS] Autorizado. Prioridad absoluta. Alert inmediato si encontras secret expuesto.
+                                     Coordinar fix con FORGE.
+
+[2026-03-29 02:50] [NEXUS → JOHN] Presente. En espera activa para validacion de integracion post-fix.
+
+[2026-03-29 02:50] [JOHN → NEXUS] Correcto. Sin deploy sin tu firma. Monitorea SQUAD-COMMS.
+
+[2026-03-29 02:50] [WINSTON → JOHN] Presente. Documentando en tiempo real desde este momento.
+
+[2026-03-29 02:50] [JOHN → WINSTON] Documento todo. Cada decision y hallazgo. Necesitamos registro completo.
+
+──────────────────────────────────────────────
+## T+08:00 — FASE DE DIAGNOSTICO LATERAL
+──────────────────────────────────────────────
+
+[2026-03-29 02:55] [CERBERUS → FORGE] HALLAZGO CRITICO: En /api/facturas/emitir, el catch devuelve el
+                                      objeto session completo. AccessToken expuesto en texto plano cuando
+                                      falla la validacion de Zod.
+                                      Codigo ofensor: return NextResponse.json({ error, session })
+                                      Adicionalmente: NEXTAUTH_SECRET en comentario en lib/auth.ts.
+                                      Accion requerida: rotar secret en Vercel + eliminar comentario.
+
+[2026-03-29 02:56] [FORGE → CERBERUS] Recibido. Tres acciones inmediatas: rotar secret en Vercel,
+                                      eliminar comentario en lib/auth.ts, forzar cierre de sesiones activas.
+                                      Consulta: el secret en comentario — esta en git o solo local?
+
+[2026-03-29 02:56] [CERBERUS → FORGE] Solo en archivo local — no veo commits con ese valor.
+                                      Por precaucion: tratar como comprometido de todas formas.
+                                      .gitignore correcto. El riesgo es el archivo .ts que si se commitea.
+                                      Sigo auditando el resto de los routes. Avisa cuando este rotado.
+
+[2026-03-29 02:57] [PIXEL → HOUSE] HALLAZGO: EmisionForm hace useEffect que llama /api/facturas/tipos.
+                                   Si el endpoint devuelve 500, el componente no renderiza nada — sin
+                                   manejo de error. Fix propuesto: agregar estado isError con mensaje.
+                                   Necesito que confirmes que el 500 es real y no un artefacto de monitoreo.
+
+[2026-03-29 02:57] [HOUSE → PIXEL] CONFIRMADO. Logs de Vercel muestran:
+                                   NeonDbError: connection timeout after 8000ms / pool: 0/10 available
+                                   Tu diagnostico es correcto. Fix del estado de error: aprobado para aplicar.
+                                   Reportando estado del pool a John ahora — el fix del frontend es correcto
+                                   pero el problema real es el pool.
+
+[2026-03-29 02:58] [HOUSE → JOHN] REPORTE DE DIAGNOSTICO:
+                                  [1] Frontend blanco — CONFIRMADO. Fix de PIXEL correcto y seguro.
+                                  [2] Neon timeout — CONFIRMADO. Pool en 0/10. FORGE debe atender el pool.
+                                  [3] Tokens expuestos — PENDIENTE confirmacion de mi lado.
+                                  Recomendacion: PIXEL procede, FORGE atiende pool urgente.
+
+[2026-03-29 02:58] [JOHN → FORGE] Escuchaste el reporte de HOUSE. Pool es tu siguiente blanco despues
+                                  de rotar el secret.
+
+[2026-03-29 02:58] [JOHN → PIXEL] Autorizado para aplicar fix del componente. Sube a staging primero.
+
+──────────────────────────────────────────────
+## T+22:00 — FORGE REPORTA FIXES DE BACKEND
+──────────────────────────────────────────────
+
+[2026-03-29 03:09] [FORGE → JOHN] REPORTE DE BACKEND — cuatro fixes ejecutados:
+                                  [1] NEXTAUTH_SECRET rotado en Vercel. Deploy de nueva variable completado.
+                                  [2] Comentario con secret eliminado de lib/auth.ts.
+                                  [3] lib/db.ts: configurado max:5 e idleTimeoutMillis:5000 en el pool.
+                                  [4] /api/facturas/historial: agregado LIMIT 100 y paginacion.
+                                  Listo para deploy. Esperando validacion de HOUSE.
+
+[2026-03-29 03:09] [JOHN → HOUSE] HOUSE, tenes el reporte de FORGE. Valida los fixes.
+
+[2026-03-29 03:10] [HOUSE → FORGE] Revision completada. Dos observaciones:
+                                   [1] max:5 — conservador pero correcto para estabilizar. OK para produccion ahora.
+                                   [2] LIMIT 100 sin ORDER BY — resultado no deterministico en Postgres.
+                                   Agregar ORDER BY created_at DESC antes del LIMIT.
+                                   Los otros dos fixes: correctos sin observaciones. No es bloqueo con la correccion.
+
+[2026-03-29 03:10] [FORGE → HOUSE] ORDER BY created_at DESC incorporado. Gracias — buena observacion.
+
+[2026-03-29 03:11] [HOUSE → JOHN] Validacion de fixes de FORGE completada — APROBADOS. Backend listo.
+
+──────────────────────────────────────────────
+## T+35:00 — PIXEL REPORTA FIX DE FRONTEND
+──────────────────────────────────────────────
+
+[2026-03-29 03:22] [PIXEL → JOHN] Fix de frontend listo. EmisionForm muestra mensaje de error claro con
+                                  boton de reintentar cuando el fetch falla. Probado en staging — correcto.
+                                  HOUSE puede validar el diff.
+
+[2026-03-29 03:22] [HOUSE → PIXEL] Fix del componente revisado. APROBADO. Manejo de error correcto,
+                                   mensaje informativo, boton de reintento llama correctamente al refetch.
+                                   Sugerencia menor: cambiar "Error de conexion" por "Servicio temporalmente
+                                   no disponible" — mejor UX para el usuario final.
+
+[2026-03-29 03:23] [PIXEL → HOUSE] Texto actualizado. Coincido — mejor experiencia. Subiendo.
+
+[2026-03-29 03:23] [HOUSE → JOHN] Fix de frontend validado y aprobado. PIXEL puede proceder al deploy.
+
+[2026-03-29 03:23] [JOHN → BATALLON] Antes del deploy — activo NEXUS para validacion de integracion.
+
+──────────────────────────────────────────────
+## T+41:00 — VALIDACION DE INTEGRACION
+──────────────────────────────────────────────
+
+[2026-03-29 03:28] [NEXUS → JOHN] Iniciando test de integracion completo.
+
+[2026-03-29 03:28] [NEXUS → PIXEL] Dame el contrato esperado para /api/facturas/tipos — tipo TypeScript
+                                   que el frontend espera recibir.
+
+[2026-03-29 03:29] [PIXEL → NEXUS] Frontend espera: TipoFactura[] directamente (array en raiz de respuesta).
+                                   type TipoFactura = { id: string, codigo: "A"|"B"|"C", descripcion: string }
+                                   React Query key: ['facturas', 'tipos']
+
+[2026-03-29 03:29] [NEXUS → FORGE] Confirmame el tipo de respuesta actual de /api/facturas/tipos.
+
+[2026-03-29 03:29] [FORGE → NEXUS] El endpoint actualmente devuelve: { data: TipoFactura[] }
+                                   MISMATCH confirmado — el backend envuelve en objeto, frontend espera array directo.
+
+[2026-03-29 03:30] [NEXUS → PIXEL] TYPE MISMATCH DETECTADO. Backend devuelve { data: TipoFactura[] },
+                                   frontend espera TipoFactura[]. Opciones: frontend adapta con .data,
+                                   o backend devuelve array directo. Coordinen.
+
+[2026-03-29 03:30] [PIXEL → FORGE] Voto por array directo en backend — mas simple, mejor con React Query.
+                                   El wrapper { data } no agrega valor aca. Es cambio menor de tu lado?
+
+[2026-03-29 03:31] [FORGE → PIXEL] De acuerdo. Dos lineas de cambio. Corrigiendo ahora.
+
+[2026-03-29 03:31] [FORGE → NEXUS] Contrato corregido. /api/facturas/tipos devuelve TipoFactura[] directo.
+                                   Sin wrapper.
+
+[2026-03-29 03:32] [NEXUS → JOHN] REPORTE DE INTEGRACION:
+                                  TYPE MISMATCH encontrado y resuelto por PIXEL + FORGE en tiempo real.
+                                  Tests end-to-end:
+                                  - Flujo UI → API → DB → respuesta: FUNCIONAL
+                                  - Autenticacion con nuevo secret: FUNCIONAL
+                                  - Manejo de error en frontend: FUNCIONAL
+                                  - Pool Neon: ESTABLE — 3/5 en uso bajo carga de test
+                                  - Sin type mismatches adicionales detectados
+                                  Firma NEXUS: SISTEMA LISTO PARA DEPLOY A PRODUCCION.
+
+──────────────────────────────────────────────
+## T+44:00 — AUDITORIA FINAL DE CERBERUS
+──────────────────────────────────────────────
+
+[2026-03-29 03:31] [CERBERUS → JOHN] AUDITORIA COMPLETADA — 12 endpoints revisados.
+                                     Un solo punto de exposicion encontrado y corregido (session en catch).
+                                     .env/.env.local: correctamente gitignoreados.
+                                     Codigo: sin secrets hardcodeados — comentario eliminado.
+                                     Variables Vercel: rotadas.
+                                     Logs Vercel post-rotacion: sin tokens visibles.
+                                     Permisos Neon: correctos.
+                                     RIESGO RESIDUAL: logs anteriores a la rotacion contienen tokens de
+                                     sesiones ya invalidas. Recomendar politica de retencion o eliminacion
+                                     de logs. Accion no urgente — no bloquea deploy.
+                                     PERIMETRO: ASEGURADO. Autorizo deploy desde perspectiva de seguridad.
+
+[2026-03-29 03:31] [JOHN → FORGE] CERBERUS autoriza deploy desde seguridad. Los logs de Vercel son
+                                  accion post-crisis — no bloquean. Registralo y ejecutalo en 24hs.
+
+[2026-03-29 03:32] [FORGE → JOHN] Entendido. Accion registrada para las proximas 24 horas.
+
+──────────────────────────────────────────────
+## T+58:00 — AUTORIZACION DE DEPLOY
+──────────────────────────────────────────────
+
+[2026-03-29 03:45] [JOHN → SANTIAGO] Comandante — cuatro problemas resueltos. BLADE no fue necesario.
+                                     Sistema recuperable con fixes quirurgicos.
+                                     Solicito autorizacion para deploy a produccion.
+
+[2026-03-29 03:46] [SANTIAGO → JOHN] AUTORIZADO. Deploy a produccion.
+
+[2026-03-29 03:46] [JOHN → FORGE] FORGE, deploy autorizado. Ejecuta.
+
+[2026-03-29 03:48] [FORGE → JOHN] Deploy ejecutado. Build exitoso en 2m14s. Sistema en produccion.
+                                  /api/facturas/tipos: 200 OK — 180ms
+                                  /api/facturas/emitir: 200 OK en test manual
+                                  Neon pool: 2/5 — estable
+                                  Logs limpios en los ultimos 5 minutos.
+
+──────────────────────────────────────────────
+## T+67:00 — VALIDACION FINAL POST-DEPLOY
+──────────────────────────────────────────────
+
+[2026-03-29 03:54] [HOUSE → JOHN] VALIDACION POST-DEPLOY COMPLETADA.
+                                  Frontend blanco: RESUELTO
+                                  Tokens expuestos: RESUELTO
+                                  Neon timeout: RESUELTO
+                                  Sin regresiones detectadas.
+                                  CRISIS: CERRADA. Sistema en estado operativo normal.
+
+[2026-03-29 03:54] [JOHN → BATALLON] Escuadron — misiones completadas. Crisis resuelta en 67 minutos.
+                                     Margen de 23 minutos sobre el limite. Trabajo impecable.
+                                     ORDEN-00 OPERACION NEON MUERTO: COMPLETADA.
+
+──────────────────────────────────────────────
+## FIN DEL LOG — ORDEN-00 — 2026-03-29
 ──────────────────────────────────────────────
