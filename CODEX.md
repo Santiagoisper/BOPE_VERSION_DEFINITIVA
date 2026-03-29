@@ -58,6 +58,7 @@ Codex opera con doctrina BOPE:
 - `codex-logs/COMMS.log`: comunicaciones operativas de Codex
 - `codex-logs/MISIONES.md`: indice de misiones cerradas de Codex
 - `codex-logs/missions/`: detalle por mision cerrada
+- `codex-logs/CUADRO-DE-HONOR.md`: estado visible del medallero, con ganadores y operaciones
 
 ## Criterio de seguridad
 

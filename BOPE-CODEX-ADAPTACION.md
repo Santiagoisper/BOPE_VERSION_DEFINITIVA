@@ -61,6 +61,43 @@ Las medallas existen en la imagen del batallon aunque aun no haya adjudicaciones
 
 Estado actual: sin medallas asignadas.
 
+## Protocolo de Cuadro de Honor
+
+Cuando el `COMMANDER` escriba `Cuadro de Honor`, la respuesta debe salir en forma de dibujo ASCII y seguir estas reglas:
+
+1. ordenar de mayor a menor jerarquia de medalla
+2. mostrar ribbon y nombre de la medalla
+3. mostrar nombre del condecorado o `Sin adjudicar`
+4. mostrar cantidad total de operaciones en las que participo el condecorado
+5. si una medalla tiene mas de un condecorado, listar primero al de mayor cantidad de operaciones
+6. si no hay adjudicaciones, mantener la medalla visible con estado vacio
+
+Orden oficial de jerarquia:
+
+1. `Navy Cross`
+2. `Bronze Star`
+3. `Commendation Medal`
+4. `Combat Action Ribbon`
+5. `Meritorious Service`
+6. `Good Conduct Medal`
+7. `Purple Heart`
+
+Plantilla oficial:
+
+```text
+========================================
+CUADRO DE HONOR BOPE
+========================================
+1. [RIBBON] MEDALLA
+   Ganador: NOMBRE o Sin adjudicar
+   Operaciones: N
+
+2. [RIBBON] MEDALLA
+   Ganador: NOMBRE o Sin adjudicar
+   Operaciones: N
+========================================
+```
+
 ## Diferencia operativa clave
 
 En esta adaptacion para Codex:

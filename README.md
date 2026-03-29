@@ -95,6 +95,16 @@ No hay medallas otorgadas por ahora, pero el medallero oficial visible queda def
 | `Good Conduct Medal` | `[GC]` | `[|===|]` |
 | `Purple Heart` | `[PH]` | `[<3]` |
 
+## Cuadro de Honor
+
+Cuando se pida `Cuadro de Honor`, Codex debe responder con un dibujo ASCII ordenado de mayor a menor medalla, mostrando:
+
+- ribbon de la medalla
+- nombre de quien la gano hasta el momento o `Sin adjudicar`
+- cantidad de operaciones en las que participo
+
+Fuente operativa: `codex-logs/CUADRO-DE-HONOR.md`
+
 ## Capas del sistema
 
 ### Claude
