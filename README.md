@@ -1,10 +1,8 @@
-# 🪖 BOPE — Batallón de Operaciones de Precisión y Excelencia
+# BOPE - Batallon de Operaciones de Precision y Excelencia
 
-Sistema multiagente para Claude Code. Un batallón de agentes especializados bajo cadena de mando militar para ejecutar misiones de desarrollo de software.
+Sistema multiagente para Claude Code y Codex. Un batallon de agentes especializados bajo cadena de mando militar para ejecutar misiones de desarrollo de software.
 
----
-
-## Arranque rápido
+## Arranque rapido
 
 ### 1. Clonar el repo
 
@@ -19,139 +17,71 @@ cd BOPE_VERSION_DEFINITIVA
 claude
 ```
 
-Claude Code carga `.claude/CLAUDE.md` automáticamente. El sistema ya está activo.
+Claude Code carga `.claude/CLAUDE.md` automaticamente. El sistema de Claude queda activo.
 
-### 3. Activar el batallón
+### 3. Activar el batallon en Claude
 
 Escribir en el chat:
 
-```
+```text
 BOPE
 ```
 
-John (RAMBO) toma el mando, pasa revista y lee los logs. La sesión queda activa.
+John RAMBO toma el mando, pasa revista y lee los logs.
 
-### 4. Dar la primera orden
+### 4. Dar la primera orden en Claude
 
-```
-John, necesito [descripción de la tarea]
-```
-
-John decide cómo ejecutarla — solo o delegando a los especialistas.
-
----
-
-## ¿Hay que crear los agentes?
-
-**No.** Los archivos en `.claude/agents/` ya son los agentes.
-
-Claude Code detecta automáticamente cualquier `.md` con frontmatter YAML en esa carpeta:
-
-```yaml
----
-name: PIXEL
-description: Teniente Frontend del BOPE...
-tools: [Read, Write, Edit, Bash]
----
+```text
+John, necesito [descripcion de la tarea]
 ```
 
-Cuando John necesita a Pixel o Forge, los invoca internamente. No requiere configuración adicional.
+### 5. Usar Codex en este repo
 
----
+Codex no necesita cargar doctrina desde otro repositorio para arrancar.
 
-## El batallón
+Orden de activacion para Codex:
 
-| Soldado | Rol | Cuándo actúa |
-|---------|-----|--------------|
-| 🔴 **JOHN** · RAMBO | Sargento Mayor — orquesta todo | Siempre — primer punto de contacto |
-| 🔵 **PIXEL** · FRONT | Frontend — Next.js, React, UI | Tareas de interfaz y componentes |
-| 🟤 **FORGE** · BACK | Backend — APIs, Neon, Vercel | Tareas de servidor, DB, deploy |
-| 🟢 **HOUSE** · DOCTOR | QA — diagnóstico y testing | Post-build, pre-deploy, bugs |
-| 🟠 **MARCO AURELIO** · HERALD | Capellán — reporta a Santiago | Evaluaciones del equipo, medallas |
-| 🟣 **WINSTON** · SCRIBE | Cronista — dueño de los logs | Documentar misiones y eventos |
-| 🩶 **CERBERUS** · GUARDIAN | Seguridad — secrets y accesos | Auditoría pre-deploy |
-| 🩵 **NEXUS** · WIRE | Integrador — valida end-to-end | Post-implementación de features |
-| ⚫ **BLADE** · KILLER | Reserva — operaciones irreversibles | Solo con doble autorización |
-
----
-
-## Cadena de mando
-
-```
-SANTIAGO (Comandante Supremo)
-    │
-    ├── MARCO AURELIO (canal directo — consejo y evaluación)
-    │
-    └── JOHN (mando operativo)
-            ├── PIXEL
-            ├── FORGE  ◄──► PIXEL (canal lateral)
-            ├── HOUSE
-            ├── NEXUS
-            ├── WINSTON
-            ├── CERBERUS
-            └── BLADE (requiere autorización doble)
+```text
+BOPE ONLINE. JOHN RAMBO EN MANDO.
+Activa BOPE VERSION DEFINITIVA en modo Codex.
+Antes de actuar, toma como base CODEX.md, BOPE-CODEX-ADAPTACION.md, codex-logs/MISION-ACTIVA.md y codex-logs/COMMS.log.
+Opera con economia operativa: no actives mas soldados de los necesarios.
+Toda mision cerrada debe quedar registrada en codex-logs, versionada en git y subida a GitHub.
+Mi orden inicial va dirigida a JOHN RAMBO.
 ```
 
----
+`SICARIO | Locura` es el operativo especial para ejecucion total sin friccion dentro de la capa Codex.
 
-## Archivos del sistema
+## El batallon visible
 
-```
-.claude/
-├── CLAUDE.md              ← bootstrap — se carga automático
-├── BOPE-CONSTITUCION.md   ← la ley madre, 8 artículos
-├── ORDEN-DE-BATALLA.md    ← roster, rangos y condecoraciones
-└── agents/
-    ├── JOHN.md
-    ├── PIXEL.md
-    ├── FORGE.md
-    ├── HOUSE.md
-    ├── MARCO-AURELIO.md
-    ├── WINSTON.md
-    ├── CERBERUS.md
-    ├── NEXUS.md
-    └── BLADE.md
+| Soldado | Rol | Cuando actua |
+|---|---|---|
+| `JOHN RAMBO` | mando operativo | siempre |
+| `PIXEL` | frontend | tareas de interfaz y UX |
+| `FORGE` | backend | APIs, DB y backend |
+| `HOUSE` | QA | validacion y auditoria |
+| `CERBERUS` | seguridad | riesgo, accesos y secretos |
+| `WINSTON` | cronista | registro y memoria |
+| `NEXUS` | integracion | cruces entre capas |
+| `MARCO AURELIO` | consejero | doctrina, medallas y evaluacion |
+| `SICARIO | Locura` | operativo especial | maxima autonomia, sin friccion |
 
-logs/
-├── MISION-ACTIVA.md       ← solo Santiago escribe
-├── SQUAD-COMMS.log        ← comunicación táctica
-├── DISCIPLINA.log         ← infracciones
-└── NOTICIAS-BATALLON.log  ← todos leen al iniciar sesión
-```
+## Capas del sistema
 
----
+### Claude
 
-## Logs — quién escribe qué
+- bootstrap: `.claude/CLAUDE.md`
+- estado: `logs/`
+- agentes: `.claude/agents/`
 
-| Log | Escribe | Lee |
-|-----|---------|-----|
-| `MISION-ACTIVA.md` | Solo Santiago | Todos |
-| `SQUAD-COMMS.log` | Pixel, Forge, House, Nexus, Blade | John (monitorea) |
-| `DISCIPLINA.log` | Winston | John, Marco Aurelio, Santiago |
-| `NOTICIAS-BATALLON.log` | Winston | Todos — obligatorio al iniciar |
+### Codex
 
----
+- bootstrap: `CODEX.md`
+- adaptacion doctrinal: `BOPE-CODEX-ADAPTACION.md`
+- estado: `codex-logs/`
 
-## Sistema de condecoraciones
+## Regla operativa
 
-| Medalla | Código | Se gana por |
-|---------|--------|-------------|
-| 🥇 Navy Cross | `[NC]` | Ejecución excepcional bajo presión extrema |
-| 🥈 Bronze Star | `[BS]` | Entrega sin errores en misión crítica |
-| ⭐ Commendation Medal | `[CM]` | Trabajo sobresaliente en campaña |
-| 🎯 Combat Action Ribbon | `[CA]` | Resolver crisis en producción en vivo |
-| 🔧 Meritorious Service | `[MS]` | Contribución técnica de alto impacto |
-| 🛡️ Good Conduct Medal | `[GC]` | 10 misiones sin infracciones |
-| 💜 Purple Heart | `[PH]` | Caída, sanción cumplida, retorno honorable |
-
----
-
-## Código de honor
-
-> Las órdenes se acatan. No se debaten.
-> Se puede sugerir antes de ejecutar. Nunca en lugar de ejecutar.
-> Transparencia total — ningún error se oculta.
-
----
-
-*BOPE v2 — Bajo mando de SANTIAGO*
+- Claude y Codex comparten imagen visible del batallon.
+- Codex no usa por defecto el repo madre `BOPE` como bootstrap.
+- Toda mision cerrada en Codex debe quedar registrada, commiteada y subida a GitHub.

@@ -13,3 +13,9 @@
 [BLADE] REPORTE: reserva presente sin despliegue destructivo | no se justifica intervencion irreversible | doble autorizacion no requerida
 [JOHN RAMBO] EVALUACION: simulacion completa recibida | batallon responde en sus funciones | sistema calibrado para operar con economia fuera del modo demo
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-001 completada | evidencia registrada en codex-logs | sin interferencia con Claude | listo para versionado y GitHub
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-002 | normalizacion del arranque Codex por orden del COMMANDER | objetivo: dejar bootstrap local y explicito para este repo
+[JOHN RAMBO] INTEL: mision administrativa | sin riesgo productivo | mando directo suficiente | no activar mas soldados
+[JOHN RAMBO] ACCION: orden de arranque remota descartada como bootstrap por defecto | `CODEX.md` actualizado como entrada canonica local | consulta al repo madre solo por resincronizacion doctrinal
+[JOHN RAMBO] ACCION: `BOPE-CODEX-ADAPTACION.md` actualizado | `SICARIO | Locura` incorporado como operativo especial de maxima autonomia en capa Codex
+[WINSTON] REPORTE: documentacion de arranque y persistencia ajustadas | `README.md` alineado | cierre listo para versionado
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-002 completada | bootstrap local activo | `SICARIO | Locura` visible | listo para git y GitHub
