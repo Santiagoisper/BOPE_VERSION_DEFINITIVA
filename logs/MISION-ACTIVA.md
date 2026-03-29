@@ -1,45 +1,17 @@
-# MISIÓN ACTIVA
+# MISIÓN ACTIVA — Estado Canónico
+**Solo SANTIAGO puede modificar este archivo.**
+**Última actualización:** 2026-03-29
 
-> **Solo SANTIAGO escribe en este archivo.**
-> Este es el estado canónico de la misión en curso.
+## Estado: STANDBY
 
----
+## Objetivo:
+[descripción de la misión]
 
-## ESTADO ACTUAL
+## Scope aprobado:
+- [ ]
 
-```
-MISIÓN: Sin misión activa
-ESTADO: STANDBY
-FECHA INICIO: —
-DEADLINE: —
-```
+## Restricciones:
+-
 
----
-
-## DESCRIPCIÓN
-
-*Sin misión activa. Escuadrón en espera de orden.*
-
----
-
-## OBJETIVOS
-
-- [ ] —
-
----
-
-## ASIGNACIONES
-
-| Agente | Tarea | Estado |
-|--------|-------|--------|
-| — | — | — |
-
----
-
-## BLOQUEOS / OBSERVACIONES
-
-*Ninguno.*
-
----
-
-*Última actualización: 2026-03-29 | SANTIAGO*
+## Próximo paso:
+[acción siguiente]
