@@ -30,8 +30,8 @@ Este repo conserva la imagen visible del batallon `BOPE VERSION DEFINITIVA`, per
 
 - Claude usa `.claude/` y `logs/`
 - Codex usa `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/`
-- el repo madre `C:\Users\Santiago\source\repos\Santiagoisper\BOPE` no es bootstrap por defecto en esta carpeta
-- ese repo solo se consulta por orden explicita de resincronizacion doctrinal
+- no existe dependencia de bootstrap externa para esta carpeta
+- cualquier referencia doctrinal externa queda fuera del arranque normal y solo entra por orden explicita del comandante
 
 ## Activacion en Claude
 

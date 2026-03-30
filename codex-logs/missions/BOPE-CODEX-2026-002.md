@@ -14,12 +14,12 @@ JOHN RAMBO
 
 ## Objetivo
 
-Eliminar el arranque que dependia del repo madre `BOPE`, fijar un bootstrap local para `BOPE VERSION DEFINITIVA` y registrar a `SICARIO | Locura` como operativo especial de Codex.
+Eliminar el arranque que dependia de una fuente externa, fijar un bootstrap local para `BOPE VERSION DEFINITIVA` y registrar a `SICARIO | Locura` como operativo especial de Codex.
 
 ## Criterio de exito
 
 - `CODEX.md` define el arranque canonico local
-- `BOPE-CODEX-ADAPTACION.md` deja explicito que el repo madre no se carga por defecto
+- `BOPE-CODEX-ADAPTACION.md` deja explicito que no existe bootstrap externo por defecto
 - `SICARIO | Locura` queda incorporado en la imagen visible de Codex
 - la mision queda registrada en `codex-logs/` y lista para git + GitHub
 
@@ -33,7 +33,7 @@ Eliminar el arranque que dependia del repo madre `BOPE`, fijar un bootstrap loca
 JOHN RAMBO resolvio la mision en mando directo por tratarse de un ajuste administrativo y doctrinal.
 
 Se reescribio `CODEX.md` para que el arranque normal de Codex use solo archivos locales del repo.
-Se reescribio `BOPE-CODEX-ADAPTACION.md` para dejar explicita la separacion con el repo madre `BOPE`.
+Se reescribio `BOPE-CODEX-ADAPTACION.md` para dejar explicita la separacion con cualquier fuente doctrinal externa.
 Se actualizo `README.md` para mostrar el nuevo arranque y el rol de `SICARIO | Locura`.
 WINSTON dejo registro de cierre en `codex-logs/`.
 

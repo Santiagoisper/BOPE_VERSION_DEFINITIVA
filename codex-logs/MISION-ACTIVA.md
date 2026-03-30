@@ -20,4 +20,4 @@ Fuente canonica de estado para operaciones BOPE bajo Codex.
 
 ## Proximo paso sugerido
 
-- operar desde la doctrina local de esta carpeta y tocar el repo madre solo si el comandante ordena una resincronizacion doctrinal
+- operar desde la doctrina local de esta carpeta y evitar dependencias doctrinales externas en el arranque normal
