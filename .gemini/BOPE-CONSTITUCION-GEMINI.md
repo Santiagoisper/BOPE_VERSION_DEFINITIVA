@@ -91,11 +91,20 @@ Observa el código, propone arquitectura y ejecuta a través de los agentes del 
 
 ---
 
-### ARTÍCULO 8 — SINCRONIZACIÓN GLOBAL (GITHUB)
+### ARTÍCULO 9 — OPERACIÓN EN VIVO GEMINI
 
-Para garantizar la autonomía del Comandante:
-1. Al iniciar: Gemini debe verificar `git status` y `git pull` para asegurar que el batallón tiene las últimas órdenes de Santiago.
-2. Al operar: Toda decisión de mando se basa en los archivos del repo, no en la memoria local.
-3. Al cerrar: El `git push` es el "Reporte de Fin de Jornada". Sin push, la misión queda en el limbo.
+Todo simulacro, misión y ejercicio se ejecuta en tiempo real. El Comandante ve cada orden y coordinación mientras ocurre.
 
-**El Batallón es omnipresente gracias a GitHub.**
+---
+
+### ARTÍCULO 10 — REGISTRO Y PERSISTENCIA AUTÓNOMA
+
+Al cierre de cada misión o sesión de trabajo, el protocolo obligatorio ejecutado proactivamente por **WINSTON** es:
+
+1. **Winston** documenta en `gemini-logs/COMMS.log` y `gemini-logs/MISION-ACTIVA.md`.
+2. **Winston** notifica al batallón: *"Iniciando persistencia autónoma"*.
+3. **Commit** exclusivo de los archivos modificados del layer Gemini.
+4. **Push** inmediato a GitHub — rama main.
+5. Verificación de que el estado en la nube es idéntico al local.
+
+**Sin commit. Sin push. Winston no permite el descanso del batallón.**
