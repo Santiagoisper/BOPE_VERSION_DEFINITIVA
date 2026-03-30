@@ -18,12 +18,12 @@ Estado visible del medallero BOPE para Codex.
 | Integrante | Operaciones |
 |---|---:|
 | `SANTIAGO` | 0 |
-| `JOHN RAMBO` | 4 |
+| `JOHN RAMBO` | 5 |
 | `PIXEL` | 1 |
 | `FORGE` | 1 |
 | `HOUSE` | 1 |
 | `CERBERUS` | 1 |
-| `WINSTON` | 4 |
+| `WINSTON` | 5 |
 | `NEXUS` | 1 |
 | `MARCO AURELIO` | 1 |
 | `SICARIO | Locura` | 1 |

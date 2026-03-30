@@ -8,16 +8,16 @@ Fuente canonica de estado para operaciones BOPE bajo Codex.
 
 ## Ultima mision cerrada
 
-- BOPE-CODEX-2026-005
+- BOPE-CODEX-2026-006
 
 ## Resultado
 
-- `Cuadro de Honor` queda obligado a actualizarse con cada mision cerrada y ahora incluye `SANCIONADOS` y `KIA`
+- `BOPE VERSION DEFINITIVA` queda con bootstrap local autosuficiente para Claude y Codex, con mando unico, economia operativa, evidencia y persistencia integradas
 
 ## Aprendizaje clave
 
-- un tablero institucional no sirve solo para honores; tambien debe concentrar sanciones, bajas y servicio acumulado
+- conviene absorber doctrina util del BOPE madre en la capa local y dejar el repo externo solo como fuente de resincronizacion, no como dependencia de arranque
 
 ## Proximo paso sugerido
 
-- mantener `codex-logs/CUADRO-DE-HONOR.md` sincronizado al cierre de cada mision y toda sancion o baja
+- operar desde la doctrina local de esta carpeta y tocar el repo madre solo si el comandante ordena una resincronizacion doctrinal
