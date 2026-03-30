@@ -40,3 +40,10 @@
 [JOHN RAMBO] ACCION: `.claude/CLAUDE.md`, `.claude/BOPE-CONSTITUCION.md` y `.claude/ORDEN-DE-BATALLA.md` rehechos | Claude y Codex quedan alineados bajo la misma doctrina local | arranque local consolidado
 [WINSTON] REPORTE: mision documental cerrable | mapeo local-visible a engranaje doctrinal consolidado | cierre listo para git y GitHub
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-006 completada | BOPE VERSION DEFINITIVA queda autosuficiente como bootstrap | listo para versionado y GitHub
+[JOHN RAMBO] ACTIVACION: batallon BOPE online por orden de SANTIAGO | mando operativo asumido con engranaje CORONEL RAMBO | doctrina cargada desde bootstrap local canonico | en espera de mision
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-007 | habilitar PDF en adjuntos del cuestionario de `innova-scoring` por orden del COMMANDER | objetivo: permitir PDF y no imponer limite de tamano desde la aplicacion
+[JOHN RAMBO] INTEL: mision de frontend focalizada | sin evidencia de backend de archivos en este flujo | mando directo suficiente | no activar mas soldados
+[JOHN RAMBO] ACCION: `client/src/pages/site/evaluation.tsx` ajustado | `pdf` agregado a validacion y `accept` | texto visible y mensaje de rechazo actualizados
+[JOHN RAMBO] ACCION: `client/src/pages/admin/center-detail.tsx` ajustado | badge de tipo de archivo reforzado con fallback por extension
+[JOHN RAMBO] BLOQUEO: verificacion de build incompleta | entorno sin `node_modules` y sin `drizzle-kit` disponible | se deja constancia y se cierra con evidencia de diff
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-007 completada | PDF habilitado en el formulario | listo para versionado y GitHub

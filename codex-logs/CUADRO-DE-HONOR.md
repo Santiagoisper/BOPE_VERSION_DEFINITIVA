@@ -18,7 +18,7 @@ Estado visible del medallero BOPE para Codex.
 | Integrante | Operaciones |
 |---|---:|
 | `SANTIAGO` | 0 |
-| `JOHN RAMBO` | 5 |
+| `JOHN RAMBO` | 6 |
 | `PIXEL` | 1 |
 | `FORGE` | 1 |
 | `HOUSE` | 1 |

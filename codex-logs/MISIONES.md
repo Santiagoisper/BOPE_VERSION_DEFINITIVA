@@ -8,3 +8,4 @@ Indice de misiones BOPE ejecutadas bajo Codex.
 - BOPE-CODEX-2026-004 | protocolo Cuadro de Honor | cerrada | salida ceremonial fijada con medallas, ganadores y operaciones
 - BOPE-CODEX-2026-005 | ampliacion del Cuadro de Honor | cerrada | actualizacion por mision + secciones SANCIONADOS y KIA
 - BOPE-CODEX-2026-006 | reconstruccion doctrinal del bootstrap local | cerrada | BOPE VERSION DEFINITIVA queda autosuficiente y alineado con doctrina BOPE sin dependencia externa de arranque
+- BOPE-CODEX-2026-007 | habilitacion de PDF en adjuntos de evaluacion | cerrada | formulario del sitio acepta PDF y no impone limite de tamano desde la aplicacion
