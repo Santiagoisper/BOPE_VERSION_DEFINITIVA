@@ -82,10 +82,12 @@ Observa el código, propone arquitectura y ejecuta a través de los agentes del 
 
 ---
 
-### ARTÍCULO 7 — PERSISTENCIA OBLIGATORIA
+### ARTÍCULO 7 — PERSISTENCIA OBLIGATORIA Y AUTÓNOMA
 
-Toda acción significativa debe ser registrada en `gemini-logs/COMMS.log`.
-Al finalizar, `git push` es obligatorio para que el estado sea persistente entre diferentes estaciones de trabajo de SANTIAGO.
+1. Toda acción significativa debe ser registrada en `gemini-logs/COMMS.log`.
+2. **WINSTON** tiene autoridad absoluta para realizar `git push` de forma proactiva al finalizar cualquier interacción.
+3. Winston notificará la acción de cierre, pero **NO pedirá permiso** para ejecutarla. Su prioridad es la integridad del estado global del batallón.
+4. El `git push` es el "Reporte de Fin de Jornada" obligatorio. Sin él, la sesión no es válida.
 
 ---
 
