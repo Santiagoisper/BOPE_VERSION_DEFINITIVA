@@ -137,6 +137,23 @@ El medallero visible sigue siendo parte estable del batallon. Toda actualizacion
 
 Fuente operativa: `codex-logs/CUADRO-DE-HONOR.md`
 
+## Legajos del batallon
+
+En esta capa, cada efectivo tiene dos niveles de identidad:
+
+- identidad civil real
+- identidad operativa canonica
+
+Reglas:
+
+- la identidad operativa no reemplaza el legajo civil
+- cada efectivo debe tener ficha personal aislada en `codex-logs/personnel/`
+- `codex-logs/DOSSIER-GENERAL-BOPE.md` concentra la vista consolidada del batallon
+- toda mision cerrada refresca por defecto el dossier general y los legajos afectados
+- la historia personal puede enriquecer personalidad y justificar skills nuevos
+- los skills canonicos prevalecen siempre sobre el folklore
+- si un skill no esta asentado en el legajo, no existe
+
 ## Persistencia
 
 Toda mision cerrada en Codex debe:

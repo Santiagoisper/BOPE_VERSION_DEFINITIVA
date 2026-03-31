@@ -15,3 +15,4 @@ Indice de misiones BOPE ejecutadas bajo Codex.
 - BOPE-CODEX-2026-011 | orden sagrada de simulacros y entrenamiento | cerrada | `SIMULACRO` y `ENTRENAMIENTO` quedan fijadas como ordenes obligatorias, persistentes y reutilizables antes de entregas al cliente
 - BOPE-CODEX-2026-012 | catalogo de 30 escenarios de guerra defensiva | cerrada | biblioteca reusable de simulacros de alta dificultad fijada para seleccion aleatoria y memoria de combate futura
 - BOPE-CODEX-2026-013 | memoria tactica obligatoria de live-fire | cerrada | todo ataque de entrenamiento sobre programa real debe quedar asentado en logs; campana `innova-scoring` registrada como referencia permanente
+- BOPE-CODEX-2026-014 | legajos personales aislados del batallon | cerrada | dossier general y fichas individuales fijadas con identidad civil, AKA operativo y actualizacion por defecto al cierre de mision

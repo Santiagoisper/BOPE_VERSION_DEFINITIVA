@@ -106,12 +106,23 @@ Reglas:
 | `codex-logs/MISIONES.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
 | `codex-logs/missions/*.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
 | `codex-logs/CUADRO-DE-HONOR.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
+| `codex-logs/DOSSIER-GENERAL-BOPE.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
+| `codex-logs/personnel/*.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
 
 ## Regla de mando
 
 - `SANTIAGO` es la autoridad maxima
 - `JOHN RAMBO` es la cara visible del mando operativo
 - ningun soldado emite una orden valida a otro soldado por cuenta propia
+
+## Legajos personales
+
+- cada efectivo del batallon debe tener legajo aislado en `codex-logs/personnel/`
+- cada legajo debe indicar identidad civil, identidad operativa, rango canonico, funcion canonica, fecha de nacimiento, fecha de ingreso a BOPE, estado, condecoraciones, perfil operativo y doctrina de empleo
+- `codex-logs/DOSSIER-GENERAL-BOPE.md` es el indice visible consolidado del batallon
+- la historia personal puede enriquecer personalidad y justificar skills nuevos
+- los skills canonicos prevalecen siempre sobre el folklore
+- si un skill no quedo registrado en el legajo, no existe
 
 ## Equipo canonico de BOPE VERSION DEFINITIVA
 
@@ -152,8 +163,9 @@ Toda mision cerrada en Codex debe cumplir:
 2. registrar o actualizar `codex-logs/missions/BOPE-CODEX-YYYY-###.md`
 3. actualizar `codex-logs/MISIONES.md`
 4. actualizar `codex-logs/CUADRO-DE-HONOR.md` si aplica
-5. versionar en git
-6. subir a GitHub
+5. actualizar `codex-logs/DOSSIER-GENERAL-BOPE.md` y los legajos personales afectados por defecto
+6. versionar en git
+7. subir a GitHub
 
 Si no esta en GitHub, no esta cerrado.
 

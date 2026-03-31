@@ -86,3 +86,8 @@
 [MARCO AURELIO] DICTAMEN: si una campana de entrenamiento real no queda asentada en logs, no puede reutilizarse como doctrina valida del batallon
 [WINSTON] REPORTE: regla permanente asentada | live-fire de `innova-scoring` resumido con host vivo, defensas confirmadas, vectores cerrados y aprendizaje reusable
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-013 completada | memoria tactica de live-fire obligatoria y campana `innova-scoring` grabada en nuestros logs | listo para git y GitHub
+[SANTIAGO] ORDEN: cada agente debe tener ficha personal aislada con identidad civil, AKA operativo y fecha de nacimiento | el batallon debe actualizar esos legajos por defecto al cierre de mision
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-014 | fijacion de legajos personales del batallon por orden de SANTIAGO | objetivo: crear dossier general, legajos individuales y regla de refresco automatico al cierre
+[JOHN RAMBO] INTEL: mision doctrinal de identidad y memoria | sin riesgo productivo | alcance permitido en `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | mando directo suficiente
+[WINSTON] REPORTE: `codex-logs/DOSSIER-GENERAL-BOPE.md` creado | carpeta `codex-logs/personnel/` fijada con un legajo por efectivo | identidades civiles y fechas de nacimiento asentadas
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-014 completada | legajos aislados del batallon operativos y actualizacion por defecto fijada para cierres de mision | listo para git y GitHub
