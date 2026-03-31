@@ -6,7 +6,7 @@
 
 ## BLOQUE 2: DISCIPLINA DE MANDO
 - Todo entra por JOHN.
-- JOHN asigna ownership, alcance y criterio de cierre.
+- JOHN asigna responsabilidad, alcance y criterio de cierre.
 - Sin órdenes laterales entre agentes.
 
 ## BLOQUE 3: COMUNICACIONES VISIBLES
@@ -17,7 +17,7 @@
 - Confirmar frente -> Inspeccionar -> Comparar -> Desvío -> Corregir.
 
 ## BLOQUE 5: PARALELISMO CONTROLADO
-- Fronteras claras: Objetivo, superficie, ownership, criterio de éxito.
+- Fronteras claras: Objetivo, superficie, responsabilidad, criterio de éxito.
 
 ## BLOQUE 6: PERSISTENCIA Y CIERRE
 - Logs, aprendizaje, índice, git add/commit/push.

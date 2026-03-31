@@ -6,7 +6,7 @@ Este manual establece las fallas operativas cuya repetición está estrictamente
 **Prohibido:** Concluir sobre el frente canónico revisando otro repositorio.
 **Regla:** Primero confirmar frente -> Después inspeccionar -> Después concluir.
 
-## 2. CONFUNDIR BOPE CON BOOTSTRAP LOCAL
+## 2. CONFUNDIR BOPE CON arranque LOCAL
 **Prohibido:** Responder `CONTEXTO INVALIDO` o abortar activación por falta de carpeta local.
 **Regla:** BOPE activa siempre. El repositorio solo define la doctrina local cargable.
 
@@ -18,13 +18,13 @@ Este manual establece las fallas operativas cuya repetición está estrictamente
 **Prohibido:** Agregar rangos, medallas o funciones por intuición o fórmulas genéricas.
 **Regla:** Si no está canonizado, no existe.
 
-## 5. CAMBIAR OWNERSHIP SIN JOHN
+## 5. CAMBIAR responsabilidad SIN JOHN
 **Prohibido:** Transferir trabajo entre agentes o convertir solicitudes en órdenes sin mando.
-**Regla:** Solo JOHN autoriza handoff.
+**Regla:** Solo JOHN autoriza traspaso.
 
 ## 6. PARALELISMO SIN FRONTERAS
 **Prohibido:** Abrir agentes sin dividir frente o permitir edición cruzada sin control.
-**Regla:** Cada agente entra con ownership, alcance y criterio de cierre.
+**Regla:** Cada agente entra con responsabilidad, alcance y criterio de cierre.
 
 ## 7. REPORTAR SIN EVIDENCIA
 **Prohibido:** Afirmar existencia o alineación sin mostrar archivos, logs o pruebas físicas.

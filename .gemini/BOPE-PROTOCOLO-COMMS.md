@@ -1,7 +1,7 @@
 ﻿# DOCTRINA DE COMUNICACIONES VISIBLES - BOPE GEMINI 2026
 
 ## 1. OBJETIVO
-Toda misión ejecutada por Gemini con agentes del batallón debe mostrar en tiempo real la cadena de mando, las órdenes, los pedidos entre pares, los reportes ascendentes y los handoffs autorizados. SANTIAGO debe poder seguir la misión completa mientras ocurre.
+Toda misión ejecutada por Gemini con agentes del batallón debe mostrar en tiempo real la cadena de mando, las órdenes, los pedidos entre pares, los reportes ascendentes y los traspasos autorizados. SANTIAGO debe poder seguir la misión completa mientras ocurre.
 
 ## 2. PRINCIPIO RECTOR
 El paralelismo sin comunicaciones visibles genera caos. En Gemini, todo trabajo paralelo debe quedar narrado como operación militar organizada.
@@ -11,7 +11,7 @@ El paralelismo sin comunicaciones visibles genera caos. En Gemini, todo trabajo 
 - Toda orden válida sale de JOHN o de SANTIAGO.
 - Ningún agente emite una orden válida por cuenta propia a otro agente.
 - Entre pares solo existen: PROPUESTA TÉCNICA y SOLICITUD DE APOYO.
-- Si una propuesta o solicitud cambia ownership, JOHN debe convertirla en HANDOFF AUTORIZADO.
+- Si una propuesta o solicitud cambia responsabilidad, JOHN debe convertirla en traspaso AUTORIZADO.
 - Todo reporte relevante debe quedar visible para SANTIAGO.
 - Si no fue comunicado, no cuenta como coordinación válida.
 
@@ -29,7 +29,7 @@ El paralelismo sin comunicaciones visibles genera caos. En Gemini, todo trabajo 
 - **PROPUESTA TÉCNICA:** (Entre Pares)
 - **SOLICITUD DE APOYO:** (Entre Pares)
 - **REPORTE:** (Subalterno a Superior)
-- **HANDOFF AUTORIZADO:** (Mando JOHN)
+- **traspaso AUTORIZADO:** (Mando JOHN)
 - **BLOQUEO:** (Subalterno a Superior)
 - **CIERRE:** (JOHN a SANTIAGO)
 
@@ -40,7 +40,7 @@ El paralelismo sin comunicaciones visibles genera caos. En Gemini, todo trabajo 
 - Superior a subalterno: ORDEN VÁLIDA o CORRECCIÓN.
 - Subalterno a superior: REPORTE, BLOQUEO o SOLICITUD DE CRITERIO.
 - Entre pares: PROPUESTA TÉCNICA o SOLICITUD DE APOYO.
-- Solo JOHN autoriza cambio de ownership o prioridad.
+- Solo JOHN autoriza cambio de responsabilidad o prioridad.
 
 ## 8. REGLAS DE VISIBILIDAD PARA SANTIAGO
 - Ver cada asignación relevante.
