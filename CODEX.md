@@ -51,6 +51,11 @@ Codex opera SOLO en: `CODEX.md`, `BOPE-CODEX-ADAPTACION.md`, `codex-logs/`
 
 Sin esta secuencia, la accion es invalida.
 
+Excepcion valida:
+
+- si `SANTIAGO` escribe `MEMORIA`, Codex debe priorizar `codex-logs/MEMORIA/INDEX.md` y `codex-logs/MEMORIA/ULTIMO-RESUMEN.md` antes de cualquier otra expansion contextual
+- `MEMORIA` no reemplaza la doctrina de arranque; reduce friccion para recuperar aprendizaje del batallon
+
 ## Orden de activacion vigente
 
 ```text
@@ -225,3 +230,19 @@ Finalidad:
 - acelerar respuesta futura
 - acumular memoria de combate
 - evitar improvisacion en la realidad
+
+## Comando MEMORIA
+
+La orden `MEMORIA` emitida por `SANTIAGO` activa consulta rapida del aprendizaje acumulado del batallon.
+
+Reglas:
+
+- `MEMORIA` remite primero a `codex-logs/MEMORIA/INDEX.md`
+- luego a `codex-logs/MEMORIA/ULTIMO-RESUMEN.md`
+- despues a:
+  - `codex-logs/LIVE-FIRE.md`
+  - `codex-logs/CATALOGO-SIMULACROS.md`
+  - `codex-logs/DOSSIER-GENERAL-BOPE.md`
+  - misiones relevantes en `codex-logs/missions/`
+- la respuesta debe traer solo aprendizaje reutilizable, patrones, riesgos recurrentes, campanas de referencia y legajos utiles
+- `MEMORIA` existe para acelerar reaccion y evitar tener que reconstruir contexto desde cero cada vez

@@ -191,3 +191,21 @@ Regla:
 Biblioteca operativa:
 
 - `codex-logs/CATALOGO-SIMULACROS.md` concentra escenarios reutilizables de alta dificultad para seleccion aleatoria antes de entrenamientos
+
+## Comando `MEMORIA`
+
+En esta capa, la orden `MEMORIA` significa:
+
+- ir primero a `codex-logs/MEMORIA/INDEX.md`
+- traer despues `codex-logs/MEMORIA/ULTIMO-RESUMEN.md`
+- usar como fuentes de apoyo:
+  - `codex-logs/LIVE-FIRE.md`
+  - `codex-logs/CATALOGO-SIMULACROS.md`
+  - `codex-logs/DOSSIER-GENERAL-BOPE.md`
+  - misiones relevantes ya cerradas
+
+Objetivo:
+
+- recuperar rapido lo aprendido
+- recordar patrones, errores, respuestas y doctrinas reutilizables
+- permitir que todo el batallon reaccione con memoria acumulada y no desde cero

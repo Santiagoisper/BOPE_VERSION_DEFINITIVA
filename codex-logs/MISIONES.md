@@ -16,3 +16,4 @@ Indice de misiones BOPE ejecutadas bajo Codex.
 - BOPE-CODEX-2026-012 | catalogo de 30 escenarios de guerra defensiva | cerrada | biblioteca reusable de simulacros de alta dificultad fijada para seleccion aleatoria y memoria de combate futura
 - BOPE-CODEX-2026-013 | memoria tactica obligatoria de live-fire | cerrada | todo ataque de entrenamiento sobre programa real debe quedar asentado en logs; campana `innova-scoring` registrada como referencia permanente
 - BOPE-CODEX-2026-014 | legajos personales aislados del batallon | cerrada | dossier general y fichas individuales fijadas con identidad civil, AKA operativo y actualizacion por defecto al cierre de mision
+- BOPE-CODEX-2026-015 | consolidacion del comando MEMORIA | cerrada | indice rapido, resumen operativo y carpeta prioritaria fijados para recuperar aprendizaje del batallon sin friccion

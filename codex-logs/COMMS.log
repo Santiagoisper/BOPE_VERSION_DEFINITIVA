@@ -91,3 +91,8 @@
 [JOHN RAMBO] INTEL: mision doctrinal de identidad y memoria | sin riesgo productivo | alcance permitido en `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | mando directo suficiente
 [WINSTON] REPORTE: `codex-logs/DOSSIER-GENERAL-BOPE.md` creado | carpeta `codex-logs/personnel/` fijada con un legajo por efectivo | identidades civiles y fechas de nacimiento asentadas
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-014 completada | legajos aislados del batallon operativos y actualizacion por defecto fijada para cierres de mision | listo para git y GitHub
+[SANTIAGO] ORDEN: consolidar `MEMORIA` | cuando se pida debe llevar directo al aprendizaje reutilizable del batallon y evitar reconstruccion tediosa de contexto
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-015 | consolidacion del comando MEMORIA por orden de SANTIAGO | objetivo: crear carpeta prioritaria, indice rapido y resumen de acceso directo al aprendizaje acumulado
+[JOHN RAMBO] INTEL: mision doctrinal de acceso rapido a memoria | sin riesgo productivo | alcance permitido en `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | mando directo suficiente
+[WINSTON] REPORTE: carpeta `codex-logs/MEMORIA/` creada | `INDEX.md` y `ULTIMO-RESUMEN.md` fijados como punto de entrada | `MEMORIA` ya no depende de reconstruir todo el historial a mano
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-015 completada | comando MEMORIA consolidado y operativo para futuras misiones | listo para git y GitHub
