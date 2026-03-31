@@ -1,13 +1,13 @@
 ﻿# MISION: BOPE-GEMINI-2026-COMMS-VISIBLES
-## ESTADO: EJECUTADA
+## ESTADO: EJECUTADA (DOCTRINA FIJADA)
 
 ### Objetivo
-Establecer un sistema de comunicaciones visibles y cadena de mando estricta para operaciones paralelas en Gemini.
+Incorporar el protocolo de comunicaciones visibles y cadena de mando narrada a la capa Gemini.
 
 ### Resultado
-- Creado `BOPE-PROTOCOLO-COMMS.md`.
-- Actualizado `GEMINI.md` con referencia doctrinal.
-- Protocolo activo en el núcleo de Gemini.
+- `BOPE-PROTOCOLO-COMMS.md` actualizado con la directiva exacta de JOHN RAMBO.
+- Sistema de visibilidad en tiempo real para SANTIAGO activado.
+- Jerarquía de mensajes (Orden, Reporte, Handoff) establecida.
 
 ### Firma de Mando
 **JOHN RAMBO — Sargento Mayor**
