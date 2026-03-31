@@ -5,15 +5,10 @@
 ## Estado: OPERATIVO
 
 ## Objetivo:
-Implementación y despliegue del Batallón Completo en el Layer Gemini.
+Protocolo de Réplica Canónica Intercapas.
 
-## Scope aprobado:
-- [x] Implementación de la capa Gemini completa.
-- [x] Clonación y adaptación de todos los agentes (10/10).
-- [x] Activación del Protocolo de Persistencia Autónoma (Art. 10).
-
-## Restricciones:
-- NO TOCAR CLAUDE ni CODEX (Aislamiento Total).
+## Historial de Misiones:
+- [x] BOPE-GEMINI-2026-REPLICA-INTERCAPAS (Estado: Replicado Fiel)
 
 ## Próximo paso:
 Esperar instrucciones de misión táctica del Comandante Santiago.

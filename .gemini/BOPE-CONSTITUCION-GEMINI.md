@@ -107,4 +107,15 @@ Al cierre de cada misión o sesión de trabajo, el protocolo obligatorio ejecuta
 4. **Push** inmediato a GitHub — rama main.
 5. Verificación de que el estado en la nube es idéntico al local.
 
-**Sin commit. Sin push. Winston no permite el descanso del batallón.**
+---
+
+### ARTÍCULO 11 — REPLICA CANÓNICA INTERCAPAS
+
+1. **Aislamiento de Verdad**: Codex (codex-logs/), Claude (logs/) y Gemini (gemini-logs/) operan como capas separadas. Ningún hecho se presume compartido por reflejo.
+2. **Existencia por Registro**: Si una misión, medalla, sanción o cambio doctrinal no está escrito en `gemini-logs/`, **no existe** para Gemini.
+3. **Capa Líder**: La capa que ejecuta la misión actúa como líder del hecho y fija ID, fecha, resultado y resumen canónico.
+4. **Protocolo de Réplica**:
+   - Registrar origen, ID original y resumen canónico.
+   - Marcar el estado como "Replicado Fiel" solo tras constancia escrita local.
+   - En caso de conflicto, prevalece la versión de la Capa Líder.
+5. **Riesgos Prohibidos**: Evitar la doble verdad, la divergencia entre capas y la contaminación por escritura cruzada. Gemini NUNCA escribe fuera de su layer.
