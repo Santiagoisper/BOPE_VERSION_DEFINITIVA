@@ -55,3 +55,6 @@ El paralelismo sin comunicaciones visibles genera caos. En Gemini, todo trabajo 
 - No inventar comunicaciones solo para decorar.
 - Mostrar solo las que mueven la misión.
 - Si una misión la resuelve un solo agente, no inflar tráfico artificial.
+
+## 10. Cierre de Mision Obligatorio
+Toda mision cerrada debe concluir con la frase: MISION DADA, MISION CUMPLIDA.
