@@ -150,3 +150,22 @@ Toda mision cerrada en Codex debe:
 7. hacer `git push`
 
 Si no esta en GitHub, no esta cerrado.
+
+## Simulacros y entrenamiento
+
+En esta capa, `SIMULACRO` y `ENTRENAMIENTO` son ordenes sagradas de preparacion del batallon.
+
+Obligaciones:
+
+- ejecutar simulacros antes de entrega final al cliente salvo orden contraria de `SANTIAGO`
+- registrar comunicaciones, hallazgos, bloqueos, handoffs y cierre
+- evaluar el desempeno del batallon
+- registrar memoria tactica reutilizable
+- registrar lecciones aprendidas y errores a no repetir
+- dejar el material preparado para lectura antes de futuras misiones
+
+Regla:
+
+- si un entrenamiento no queda grabado, no cuenta como entrenamiento valido
+- lo aprendido en simulacros debe acelerar reaccion, coordinacion y decision futura
+- toda simulacion debe poder reutilizarse como plantilla para otros programas

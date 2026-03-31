@@ -176,3 +176,34 @@ Formato minimo que Codex debe exigir para una replica fiel:
 - `impacto en medallas o sanciones` si aplica
 - `estado: replicado fiel`
 - `firma local`
+
+## Orden sagrada de entrenamiento
+
+Las ordenes de `SANTIAGO` con las palabras `SIMULACRO` o `ENTRENAMIENTO` activan de inmediato un protocolo obligatorio de guerra defensiva, stress operativo y memoria doctrinal del batallon.
+
+Reglas:
+
+- no es decorativo
+- no es opcional
+- no se omite antes de una entrega final al cliente salvo orden expresa de `SANTIAGO`
+- toda simulacion valida debe dejar memoria reutilizable para futuras misiones
+
+Cuando `SANTIAGO` ordene `SIMULACRO` o `ENTRENAMIENTO`, Codex debe:
+
+1. activar a `JOHN RAMBO`
+2. levantar INTEL del sistema objetivo
+3. definir escenario de presion, intrusos o vectores de falla
+4. desplegar al batallon con economia operativa
+5. mostrar cadena de mando, colaboracion y reportes relevantes
+6. ejecutar el ejercicio
+7. cerrar con evaluacion de desempeno
+8. registrar memoria tactica y lecciones aprendidas
+9. persistir todo en `codex-logs/`, git y GitHub
+
+Finalidad:
+
+- entrenar al batallon
+- demostrar profesionalismo al cliente
+- acelerar respuesta futura
+- acumular memoria de combate
+- evitar improvisacion en la realidad
