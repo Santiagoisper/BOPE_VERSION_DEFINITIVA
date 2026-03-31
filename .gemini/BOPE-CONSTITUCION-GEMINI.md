@@ -129,17 +129,20 @@ Al cierre de cada misión o sesión de trabajo, el protocolo obligatorio ejecuta
 #### 3. Reglas Específicas para Gemini
 - Gemini **NUNCA** escribe en `codex-logs/` ni en `logs/`.
 - Gemini solo deja constancia de origen, necesidad de réplica y estado local de sincronización.
-- Si un hecho de otra capa debe existir en Gemini, Gemini lo replica en su propia capa.
+- Si un hecho de otra capa debe existir en Gemini, Gemini lo replica en `gemini-logs/`.
 - Si no está escrito en `gemini-logs/`, no existe en Gemini.
 
-#### 4. Protocolo de Réplica Canónica
+#### 4. Regla de Réplica Obligatoria
+Toda adjudicación de medallas, sanción o cambio doctrinal debe replicarse a las tres capas en la **misma sesión** en que se origina. El hecho no está cerrado hasta que las tres capas tengan constancia escrita.
+
+#### 5. Protocolo de Réplica Canónica
 1. Cerrar la misión local con evidencia completa en `gemini-logs/`.
 2. Marcar en `gemini-logs/` el hecho que requiere réplica canónica.
 3. Registrar origen, ID original y resumen canónico.
 4. Esperar constancia escrita de cada capa destino en su propia memoria.
 5. Considerar sincronización completa solo cuando cada capa destino deje constancia escrita.
 
-#### 5. Formato Mínimo de Réplica Fiel
+#### 6. Formato Mínimo de Réplica Fiel
 - **Origen**: [Capa Origen]
 - **ID Original**: [ID]
 - **Fecha**: [YYYY-MM-DD]
@@ -147,9 +150,3 @@ Al cierre de cada misión o sesión de trabajo, el protocolo obligatorio ejecuta
 - **Impacto**: [Medallas/Sanciones si aplica]
 - **Estado**: REPLICADO FIEL
 - **Firma**: [Agente Local]
-
-#### 6. Riesgos Documentados
-- **Divergencia entre capas**: Estados inconsistentes por falta de réplica.
-- **Doble verdad**: Interpretaciones distintas de un mismo hecho.
-- **Contaminación doctrinal**: Escritura cruzada que rompe el aislamiento.
-- **Cierres falsos**: Considerar una misión terminada cuando solo una capa fue actualizada.
