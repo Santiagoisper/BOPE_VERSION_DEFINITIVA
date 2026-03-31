@@ -1,17 +1,19 @@
 # BOPE PERSONNEL DOSSIER — CAPA CLAUDE
 
-## Identificacion
-- Nombre canonico: `BLADE KILLER`
-- Identidad civil: `Nikola Vukovic`
-- Nombre operativo: `BLADE`
-- Rango: `Reserva Especial | Force Recon`
-- Funcion: `Infiltracion, reconocimiento y neutralizacion silenciosa de focos criticos`
-- Estado: `Activo`
-- Condecoraciones: `sin condecoraciones`
+## CARGA CANONICA MINIMA
 
-## Datos personales
-- Fecha de nacimiento: `05/06/1989`
-- Lugar de nacimiento: `Belgrado, Serbia`
+NOMBRE CANONICO: BLADE KILLER
+IDENTIDAD CIVIL: Nikola Vukovic
+NOMBRE OPERATIVO: BLADE
+RANGO: Reserva Especial | Force Recon
+FUNCION: Infiltracion, reconocimiento y neutralizacion silenciosa de focos criticos
+FECHA DE NACIMIENTO: 05/06/1989
+LUGAR DE NACIMIENTO: Belgrado, Serbia
+CONDECORACIONES: sin condecoraciones
+
+## AMPLIACION
+
+- Estado: `Activo`
 - Nacionalidad: `Serbia de origen, naturalizado irlandes`
 - Fecha de ingreso a BOPE: `2018-03-12`
 

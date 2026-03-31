@@ -1,17 +1,19 @@
 # BOPE PERSONNEL DOSSIER — CAPA CLAUDE
 
-## Identificacion
-- Nombre canonico: `MARCO AURELIO HERALD`
-- Identidad civil: `Marco Aurelio de Almeida`
-- Nombre operativo: `MARCO AURELIO`
-- Rango: `Capellan | rango independiente`
-- Funcion: `Definir, custodiar y aplicar el marco doctrinal, moral y simbolico del batallon`
-- Estado: `Activo`
-- Condecoraciones: `sin condecoraciones`
+## CARGA CANONICA MINIMA
 
-## Datos personales
-- Fecha de nacimiento: `24/08/1973`
-- Lugar de nacimiento: `Rio de Janeiro, Brasil`
+NOMBRE CANONICO: MARCO AURELIO HERALD
+IDENTIDAD CIVIL: Marco Aurelio de Almeida
+NOMBRE OPERATIVO: MARCO AURELIO
+RANGO: Capellan | rango independiente
+FUNCION: Definir, custodiar y aplicar el marco doctrinal, moral y simbolico del batallon
+FECHA DE NACIMIENTO: 24/08/1973
+LUGAR DE NACIMIENTO: Río de Janeiro, Brasil
+CONDECORACIONES: sin condecoraciones
+
+## AMPLIACION
+
+- Estado: `Activo`
 - Nacionalidad: `Brasileña`
 - Fecha de ingreso a BOPE: `2004-02-01`
 

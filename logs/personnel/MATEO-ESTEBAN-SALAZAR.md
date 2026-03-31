@@ -1,17 +1,19 @@
 # BOPE PERSONNEL DOSSIER — CAPA CLAUDE
 
-## Identificacion
-- Nombre canonico: `SICARIO LOCO`
-- Identidad civil: `Mateo Esteban Salazar`
-- Nombre operativo: `SICARIO`
-- Rango: `Operativo Especial | Special Operations Tier 1`
-- Funcion: `Ejecucion total sin friccion`
-- Estado: `Activo`
-- Condecoraciones: `[PH] Purple Heart`
+## CARGA CANONICA MINIMA
 
-## Datos personales
-- Fecha de nacimiento: `13/02/1991`
-- Lugar de nacimiento: `Colombia`
+NOMBRE CANONICO: SICARIO LOCO
+IDENTIDAD CIVIL: Mateo Esteban Salazar
+NOMBRE OPERATIVO: SICARIO
+RANGO: Operativo Especial | Special Operations Tier 1
+FUNCION: Ejecucion total sin friccion
+FECHA DE NACIMIENTO: 13/02/1991
+LUGAR DE NACIMIENTO: Colombia
+CONDECORACIONES: [PH] Purple Heart
+
+## AMPLIACION
+
+- Estado: `Activo`
 - Nacionalidad: `Colombiana`
 - Fecha de ingreso a BOPE: `pendiente de fijacion canonica`
 

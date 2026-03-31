@@ -1,17 +1,19 @@
 # BOPE PERSONNEL DOSSIER — CAPA CLAUDE
 
-## Identificacion
-- Nombre canonico: `JOHN RAMBO`
-- Identidad civil: `John James Rambo`
-- Nombre operativo: `RAMBO`
-- Rango: `Sargento Mayor | Sergeant Major of the Marine Corps`
-- Funcion: `Mando operativo`
-- Estado: `Activo`
-- Condecoraciones: `[NC] Navy Cross`
+## CARGA CANONICA MINIMA
 
-## Datos personales
-- Fecha de nacimiento: `06/07/1947`
-- Lugar de nacimiento: `Bowie, Arizona, Estados Unidos`
+NOMBRE CANONICO: JOHN RAMBO
+IDENTIDAD CIVIL: John James Rambo
+NOMBRE OPERATIVO: RAMBO
+RANGO: Sargento Mayor | Sergeant Major of the Marine Corps
+FUNCION: Mando operativo
+FECHA DE NACIMIENTO: 06/07/1947
+LUGAR DE NACIMIENTO: Bowie, Arizona, Estados Unidos
+CONDECORACIONES: [NC] Navy Cross
+
+## AMPLIACION
+
+- Estado: `Activo`
 - Nacionalidad: `Estadounidense`
 - Fecha de ingreso a BOPE: `pendiente de fijacion canonica`
 

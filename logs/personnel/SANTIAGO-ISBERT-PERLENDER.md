@@ -1,17 +1,19 @@
 # BOPE PERSONNEL DOSSIER — CAPA CLAUDE
 
-## Identificacion
-- Nombre canonico: `SANTIAGO ISBERT PERLENDER`
-- Identidad civil: `Santiago Isbert Perlender`
-- Nombre operativo: `COMMANDER SANTIAGO`
-- Rango: `Comandante Supremo | General`
-- Funcion: `Mando supremo del BOPE`
-- Estado: `Activo`
-- Condecoraciones: `sin condecoraciones`
+## CARGA CANONICA MINIMA
 
-## Datos personales
-- Fecha de nacimiento: `01/07/1973`
-- Lugar de nacimiento: `San Isidro, Provincia de Buenos Aires, Argentina`
+NOMBRE CANONICO: SANTIAGO ISBERT PERLENDER
+IDENTIDAD CIVIL: Santiago Isbert Perlender
+NOMBRE OPERATIVO: COMMANDER SANTIAGO
+RANGO: Comandante Supremo | General
+FUNCION: Mando supremo del BOPE
+FECHA DE NACIMIENTO: 01/07/1973
+LUGAR DE NACIMIENTO: San Isidro, Provincia de Buenos Aires, Argentina
+CONDECORACIONES: sin condecoraciones
+
+## AMPLIACION
+
+- Estado: `Activo`
 - Nacionalidad: `Argentina`
 - Fecha de ingreso a BOPE: `2022-01-01`
 
