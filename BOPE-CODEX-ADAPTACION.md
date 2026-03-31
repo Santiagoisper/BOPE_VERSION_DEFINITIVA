@@ -169,3 +169,7 @@ Regla:
 - si un entrenamiento no queda grabado, no cuenta como entrenamiento valido
 - lo aprendido en simulacros debe acelerar reaccion, coordinacion y decision futura
 - toda simulacion debe poder reutilizarse como plantilla para otros programas
+
+Biblioteca operativa:
+
+- `codex-logs/CATALOGO-SIMULACROS.md` concentra escenarios reutilizables de alta dificultad para seleccion aleatoria antes de entrenamientos

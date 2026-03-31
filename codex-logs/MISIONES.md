@@ -13,3 +13,4 @@ Indice de misiones BOPE ejecutadas bajo Codex.
 - BOPE-CODEX-2026-009 | adjudicacion oficial de condecoraciones por operacion `innova-scoring` | cerrada | medallas aprobadas por Santiago asentadas en COMMS, Cuadro de Honor y mision formal
 - BOPE-CODEX-2026-010 | protocolo de sincronizacion intercapas | cerrada | separacion entre Codex, Claude y Gemini fijada con replica canonica explicita y riesgo de divergencia documentado
 - BOPE-CODEX-2026-011 | orden sagrada de simulacros y entrenamiento | cerrada | `SIMULACRO` y `ENTRENAMIENTO` quedan fijadas como ordenes obligatorias, persistentes y reutilizables antes de entregas al cliente
+- BOPE-CODEX-2026-012 | catalogo de 30 escenarios de guerra defensiva | cerrada | biblioteca reusable de simulacros de alta dificultad fijada para seleccion aleatoria y memoria de combate futura
