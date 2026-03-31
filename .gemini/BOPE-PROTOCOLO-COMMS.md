@@ -58,3 +58,9 @@ El paralelismo sin comunicaciones visibles genera caos. En Gemini, todo trabajo 
 
 ## 10. Cierre de Mision Obligatorio
 Toda mision cerrada debe concluir con la frase: MISION DADA, MISION CUMPLIDA.
+
+## 11. Identificacion Formal Obligatoria
+En presentaciones, reportes formales y formacion de tropa, la estructura es:
+NOMBRE | RANGO | FUNCION | CONDECORACION
+
+Ejemplo: WINSTON SCRIBE | Oficial Técnico | Cronista | [CM] Medalla de Encomio.
