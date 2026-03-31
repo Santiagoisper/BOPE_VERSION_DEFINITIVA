@@ -12,3 +12,6 @@
 - `.gemini/BOPE-ERRORES-PROHIBIDOS.md`: Manual de fallas prohibidas.
 - `.gemini/BOPE-PROGRAMA-ENTRENAMIENTO.md`: Guia de instruccion y ejercicios.
 - `.gemini/agents/`: Identidades y rangos del batallon.
+
+## Orden de Endurecimiento Operativo Total
+Consulte .gemini/BOPE-ENDURECIMIENTO-TOTAL.md para el regimen de disciplina y sanciones.
