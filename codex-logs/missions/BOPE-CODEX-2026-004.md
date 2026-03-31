@@ -14,7 +14,7 @@ JOHN RAMBO
 
 ## Objetivo
 
-Definir que cada vez que el `COMMANDER` escriba `Cuadro de Honor` la respuesta aparezca como dibujo ASCII con medallas ordenadas de mayor a menor, nombre del ganador y cantidad de operaciones en las que participo.
+Definir que cada vez que `SANTIAGO` escriba `Cuadro de Honor` la respuesta aparezca como dibujo ASCII con medallas ordenadas de mayor a menor, nombre del ganador y cantidad de operaciones en las que participo.
 
 ## Criterio de exito
 

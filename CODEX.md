@@ -89,8 +89,28 @@ Mi orden inicial va dirigida a JOHN RAMBO.
 
 - `SANTIAGO` es la autoridad maxima
 - `JOHN RAMBO` es la cara visible del mando operativo
-- internamente `JOHN RAMBO` opera con el engranaje de `CORONEL RAMBO`
 - ningun soldado emite una orden valida a otro soldado por cuenta propia
+
+## Equipo canonico de BOPE VERSION DEFINITIVA
+
+Este es el equipo oficial de arranque. No se mezcla con ningun roster anterior.
+
+- `SANTIAGO` | autoridad maxima
+- `JOHN RAMBO` | mando operativo
+- `PIXEL` | interfaz y UX
+- `FORGE` | APIs, base de datos y backend
+- `HOUSE` | QA y validacion
+- `CERBERUS` | seguridad y secrets
+- `WINSTON` | memoria y registro
+- `NEXUS` | integracion end-to-end
+- `MARCO AURELIO` | consejo, sanciones y medallas
+- `SICARIO | Locura` | ejecucion total sin friccion
+
+Regla:
+
+- este roster es BOPE desde el arranque en esta carpeta
+- no se usan nombres, rangos ni equivalencias del BOPE anterior
+- cualquier referencia historica previa no define mando actual
 
 ## Protocolo de bloqueo
 

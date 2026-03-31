@@ -9,16 +9,16 @@
 | CARGO | COLOR | NOMBRE | ALIAS | MEDALLAS |
 |-------|-------|--------|-------|----------|
 | Comandante Supremo | 🟡 | SANTIAGO | — | *el Comandante no lleva medallas — las otorga* |
-| Sargento Mayor | 🔴 | JOHN | RAMBO | [ ] |
+| Sargento Mayor | 🔴 | JOHN | RAMBO | [NC] |
 | Teniente Frontend | 🔵 | PIXEL | FRONT | [ ] |
-| Teniente Backend | 🟤 | FORGE | BACK | [ ] |
-| Especialista QA | 🟢 | HOUSE | DOCTOR | [ ] |
+| Teniente Backend | 🟤 | FORGE | BACK | [BS] |
+| Especialista QA | 🟢 | HOUSE | DOCTOR | [GC] |
 | Capellán | 🟠 | MARCO AURELIO | HERALD | [ ] |
-| Cronista | 🟣 | WINSTON | SCRIBE | [ ] |
-| Guardián | 🩶 | CERBERUS | GUARDIAN | [ ] |
-| Integrador | 🩵 | NEXUS | WIRE | [ ] |
+| Cronista | 🟣 | WINSTON | SCRIBE | [CM] |
+| Guardián | 🩶 | CERBERUS | GUARDIAN | [CA] |
+| Integrador | 🩵 | NEXUS | WIRE | [MS] |
 | Reserva Especial | ⚫ | BLADE | KILLER | [ ] |
-| Operativo Especial | 🔥 | SICARIO | LOCO | [ ] |
+| Operativo Especial | 🔥 | SICARIO | LOCO | [PH] |
 
 ---
 
@@ -58,7 +58,15 @@
 
 ## HISTORIAL DE MEDALLAS
 
-*Sin condecoraciones registradas — escuadrón recién formado*
+| Soldado | Medalla | Código | Operación |
+|---------|---------|--------|-----------|
+| JOHN | Navy Cross | `[NC]` | innova-scoring — conducción total del cierre operativo |
+| FORGE | Bronze Star | `[BS]` | innova-scoring — resolución técnica principal sobre backend, parser y transacciones |
+| WINSTON | Commendation Medal | `[CM]` | innova-scoring — registro, versionado y cierre remoto |
+| CERBERUS | Combat Action Ribbon | `[CA]` | innova-scoring — blindaje del frente público y endurecimiento de seguridad |
+| NEXUS | Meritorious Service | `[MS]` | innova-scoring — integración de estados, flujo y coherencia entre capas |
+| HOUSE | Good Conduct Medal | `[GC]` | innova-scoring — verificación final, detección de fallas y validación limpia |
+| SICARIO | Purple Heart | `[PH]` | innova-scoring — entrada de fuerza total en fase crítica por orden de mando |
 
 ---
 
@@ -74,4 +82,4 @@
 
 ---
 
-*Última actualización: 2026-03-29 | Firmado: WINSTON + JOHN*
+*Última actualización: 2026-03-30 | Firmado: WINSTON + JOHN*

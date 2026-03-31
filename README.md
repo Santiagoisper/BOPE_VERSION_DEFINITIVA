@@ -2,7 +2,7 @@
 
 Batallon de Operaciones de Precision y Excelencia adaptado para Claude Code y Codex.
 
-Este repo conserva la imagen visible del batallon `BOPE VERSION DEFINITIVA`, pero su engranaje operativo sigue doctrina BOPE:
+Este repo define a `BOPE VERSION DEFINITIVA` con identidad local propia:
 
 - mando unico
 - bootstrap obligatorio
@@ -31,7 +31,7 @@ Este repo conserva la imagen visible del batallon `BOPE VERSION DEFINITIVA`, per
 - Claude usa `.claude/` y `logs/`
 - Codex usa `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/`
 - no existe dependencia de bootstrap externa para esta carpeta
-- cualquier referencia doctrinal externa queda fuera del arranque normal y solo entra por orden explicita del comandante
+- cualquier referencia doctrinal externa queda fuera del arranque normal y no define el equipo local
 
 ## Activacion en Claude
 
@@ -55,18 +55,18 @@ Mi orden inicial va dirigida a JOHN RAMBO.
 
 ## Batallon visible
 
-| Soldado | Rol visible | Engranaje doctrinal |
-|---|---|---|
-| `SANTIAGO` | comandante supremo | `COMMANDER` |
-| `JOHN RAMBO` | mando operativo | `CORONEL RAMBO` |
-| `PIXEL` | frontend | `Teniente Front` |
-| `FORGE` | backend | `Teniente Back` |
-| `HOUSE` | QA | `Cabo QA Inspector` |
-| `CERBERUS` | seguridad | `Cabo Security` |
-| `WINSTON` | cronista | `Cabo Archivista BOPE` |
-| `NEXUS` | integracion | `Mayor Ingeniero` cuando cruce capas |
-| `MARCO AURELIO` | consejero | consejero del comandante |
-| `SICARIO | Locura` | operativo especial | ejecucion total sin friccion |
+| Soldado | Rol visible |
+|---|---|
+| `SANTIAGO` | comandante supremo |
+| `JOHN RAMBO` | mando operativo |
+| `PIXEL` | frontend |
+| `FORGE` | backend |
+| `HOUSE` | QA |
+| `CERBERUS` | seguridad |
+| `WINSTON` | cronista |
+| `NEXUS` | integracion |
+| `MARCO AURELIO` | consejero |
+| `SICARIO | Locura` | operativo especial |
 
 ## Cierre de mision
 
