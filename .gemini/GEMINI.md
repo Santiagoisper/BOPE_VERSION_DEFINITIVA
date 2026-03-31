@@ -20,3 +20,6 @@ Gemini opera exclusivamente en su propio layer: `.gemini/` y `gemini-logs/`.
 
 ## Protocolo de Comunicaciones Visibles
 Consulte .gemini/BOPE-PROTOCOLO-COMMS.md para las reglas de mando y reportes en tiempo real.
+
+## Manual de Errores Prohibidos
+Consulte .gemini/BOPE-ERRORES-PROHIBIDOS.md para las restricciones operativas permanentes.
