@@ -200,6 +200,12 @@ Cuando `SANTIAGO` ordene `SIMULACRO` o `ENTRENAMIENTO`, Codex debe:
 8. registrar memoria tactica y lecciones aprendidas
 9. persistir todo en `codex-logs/`, git y GitHub
 
+Regla permanente de logs:
+
+- todo simulacro, entrenamiento o live-fire ejecutado sobre un programa real debe quedar siempre asentado en `codex-logs/`
+- no basta con que el aprendizaje viva en scripts, terminal o conversacion
+- si no quedo escrito en nuestros logs, no forma parte de la memoria del batallon
+
 Finalidad:
 
 - entrenar al batallon

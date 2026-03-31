@@ -169,6 +169,7 @@ Regla:
 - si un entrenamiento no queda grabado, no cuenta como entrenamiento valido
 - lo aprendido en simulacros debe acelerar reaccion, coordinacion y decision futura
 - toda simulacion debe poder reutilizarse como plantilla para otros programas
+- todo live-fire sobre un programa real debe cerrar con memoria tactica formal en nuestros logs
 
 Biblioteca operativa:
 
