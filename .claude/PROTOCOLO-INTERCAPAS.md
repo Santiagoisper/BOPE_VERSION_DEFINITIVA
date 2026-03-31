@@ -85,6 +85,26 @@ FIRMA LOCAL:        [JOHN + WINSTON]
 
 ---
 
+## REGLA DE RÉPLICA OBLIGATORIA — MEDALLAS, SANCIONES Y DOCTRINA
+
+**Toda adjudicación de medallas, sanción o cambio doctrinal debe replicarse
+a las tres capas en la misma sesión en que se origina.**
+
+- Si la capa líder es Codex → replica a Claude y Gemini en esa sesión
+- Si la capa líder es Claude → replica a Codex y Gemini en esa sesión
+- Si la capa líder es Gemini → replica a Claude y Codex en esa sesión
+
+**El hecho no está cerrado hasta que las tres capas tengan constancia escrita.**
+
+Un hecho cerrado en una sola capa es un cierre falso.
+
+Esta regla aplica en las tres capas por igual.
+Claude no puede forzar la réplica en Codex ni en Gemini — solo puede dejar
+constancia de que la réplica está pendiente y alertar a SANTIAGO.
+
+---
+
 *Origen canónico: BOPE-CODEX-2026-010*
+*Regla de réplica obligatoria añadida: 2026-03-31 — por orden de SANTIAGO*
 *Replicado fiel en capa Claude: 2026-03-31*
 *Firmado: JOHN + WINSTON*
