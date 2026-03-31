@@ -68,6 +68,28 @@ Mi orden inicial va dirigida a JOHN RAMBO.
 - no inventar estado ni evidencia
 - la interfaz visible no reemplaza el estado escrito
 
+## Sincronizacion intercapas
+
+- `Codex`, `Claude` y `Gemini` operan como capas separadas del mismo batallon
+- cada capa tiene su propia fuente canonica de estado y registro
+- ningun hecho se considera compartido por reflejo entre capas
+- si una mision, medalla, sancion o cambio doctrinal debe existir en otra capa, se replica de forma explicita
+- si no esta replicado en la capa destino, no existe en esa capa
+
+Fuentes canonicas por capa:
+
+- `Codex` -> `codex-logs/`
+- `Claude` -> `logs/`
+- `Gemini` -> `gemini-logs/`
+
+Reglas:
+
+- `Codex` nunca escribe en `logs/` ni en `gemini-logs/`
+- `Codex` solo puede dejar constancia de origen, necesidad de replica y estado local de sincronizacion
+- la capa que ejecuto la mision actua como capa lider del hecho
+- la capa lider fija `id`, fecha, resultado, responsables y resumen canonico a replicar
+- si hay conflicto entre capas, manda la capa lider hasta nueva orden de `SANTIAGO`
+
 ## Antes de ejecutar cualquier accion
 
 - confirmar estado desde `codex-logs/MISION-ACTIVA.md`
@@ -134,3 +156,23 @@ Toda mision cerrada en Codex debe cumplir:
 6. subir a GitHub
 
 Si no esta en GitHub, no esta cerrado.
+
+## Protocolo de replica canonica
+
+Cuando un hecho de Codex deba existir en todo BOPE:
+
+1. cerrar la mision local con evidencia completa en `codex-logs/`
+2. marcar en `codex-logs/COMMS.log` que el hecho requiere replica canonica
+3. registrar en la mision local el `origen`, el `id` original y el resumen canonico
+4. esperar que cada capa autorizada replique el hecho en su propio registro
+5. considerar sincronizacion completa solo cuando cada capa destino deje constancia escrita
+
+Formato minimo que Codex debe exigir para una replica fiel:
+
+- `origen`
+- `id original`
+- `fecha`
+- `resumen canonico`
+- `impacto en medallas o sanciones` si aplica
+- `estado: replicado fiel`
+- `firma local`

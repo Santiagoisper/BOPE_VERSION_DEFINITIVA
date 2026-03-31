@@ -62,3 +62,9 @@
 [WINSTON] REPORTE: corregida la adjudicacion | las medallas no canonicas fueron reemplazadas por medallas oficiales del `Cuadro de Honor`
 [JOHN RAMBO] DIFUSION AL BATALLON: condecoraciones oficiales asentadas | JOHN RAMBO = Navy Cross | FORGE = Bronze Star | WINSTON = Commendation Medal | CERBERUS = Combat Action Ribbon | NEXUS = Meritorious Service | HOUSE = Good Conduct Medal | SICARIO | Locura = Purple Heart
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-009 completada | adjudicacion corregida bajo canon oficial y difundida al batallon | listo para git y GitHub
+[SANTIAGO] ORDEN: definir como funcionan mision, medallas y comparticion entre Codex, Claude y Gemini | dejar protocolo permanente en la capa Codex
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-010 | protocolo de sincronizacion intercapas por orden de SANTIAGO | objetivo: fijar separacion, replica canonica y riesgos de divergencia entre Codex, Claude y Gemini
+[JOHN RAMBO] INTEL: mision doctrinal de persistencia | sin riesgo productivo | alcance permitido en `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | mando directo suficiente
+[MARCO AURELIO] DICTAMEN: si un hecho no esta registrado en una capa, no existe en esa capa | la replica debe ser explicita y fiel al hecho canonico de origen
+[WINSTON] REPORTE: `CODEX.md` y `BOPE-CODEX-ADAPTACION.md` actualizados | separacion por capa, fuente lider, formato minimo de replica y riesgos operativos asentados
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-010 completada | protocolo intercapas permanente en la capa Codex | listo para git y GitHub

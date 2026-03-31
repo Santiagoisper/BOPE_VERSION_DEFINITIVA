@@ -104,6 +104,28 @@ SIGUIENTE PASO RECOMENDADO:
 - `codex-logs/COMMS.log` registra decisiones, avances, bloqueos y handoffs
 - si no esta escrito, no existe
 
+## Replica entre Codex, Claude y Gemini
+
+- `Codex`, `Claude` y `Gemini` no comparten memoria operativa automatica
+- el mismo batallon puede tener tres registros distintos si no se sincroniza
+- una mision cerrada en Codex vive en `codex-logs/` hasta que otra capa la replique por su cuenta
+- una medalla asentada en Codex no existe en `Claude` ni en `Gemini` hasta que quede escrita en sus registros
+
+Reglas:
+
+- `JOHN RAMBO` define si un hecho es solo local o de alcance total BOPE
+- `WINSTON` deja trazabilidad de origen, necesidad de replica y estado local
+- `MARCO AURELIO` valida medallas y sanciones antes de pedir replica ceremonial
+- no se resume de memoria: se replica desde el hecho canonico ya cerrado
+- no se toca la capa de otro agente para "sincronizar rapido"
+
+Riesgos operativos a vigilar:
+
+- divergencia de medallas, sanciones o estado de mision entre capas
+- doble verdad sobre un mismo hecho
+- contaminacion doctrinal por escritura cruzada
+- cierres falsos cuando solo una capa quedo actualizada
+
 ## Cuadro de Honor
 
 El medallero visible sigue siendo parte estable del batallon. Toda actualizacion debe reflejar:
