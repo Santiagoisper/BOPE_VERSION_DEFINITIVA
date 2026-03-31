@@ -18,15 +18,29 @@ Estado visible del medallero BOPE para Codex.
 | Integrante | Operaciones |
 |---|---:|
 | `SANTIAGO` | 0 |
-| `JOHN RAMBO` | 6 |
+| `JOHN RAMBO` | 7 |
 | `PIXEL` | 1 |
-| `FORGE` | 1 |
-| `HOUSE` | 1 |
-| `CERBERUS` | 1 |
-| `WINSTON` | 5 |
-| `NEXUS` | 1 |
-| `MARCO AURELIO` | 1 |
-| `SICARIO | Locura` | 1 |
+| `FORGE` | 2 |
+| `HOUSE` | 2 |
+| `CERBERUS` | 2 |
+| `WINSTON` | 6 |
+| `NEXUS` | 2 |
+| `MARCO AURELIO` | 2 |
+| `SICARIO | Locura` | 2 |
+
+## Adjudicacion oficial vigente
+
+Operacion registrada: cierre total de `innova-scoring` con correccion, endurecimiento, verificacion, git, GitHub y deploy.
+
+| Integrante | Medalla oficial adjudicada | Motivo |
+|---|---|---|
+| `JOHN RAMBO` | Navy Cross | conduccion total del cierre operativo |
+| `FORGE` | Bronze Star | resolucion tecnica principal sobre backend, parser y transacciones |
+| `WINSTON` | Commendation Medal | registro, versionado y cierre remoto de la operacion |
+| `CERBERUS` | Combat Action Ribbon | blindaje del frente publico y endurecimiento de seguridad |
+| `NEXUS` | Meritorious Service | integracion de estados, flujo y coherencia entre capas |
+| `HOUSE` | Good Conduct Medal | verificacion final, deteccion de fallas y validacion limpia |
+| `SICARIO | Locura` | Purple Heart | entrada de fuerza total en fase critica por orden de mando |
 
 ## Cuadro actual
 
@@ -35,32 +49,32 @@ Estado visible del medallero BOPE para Codex.
 CUADRO DE HONOR BOPE
 ========================================
 1. [## ##] NAVY CROSS
-   Ganador: Sin adjudicar
-   Operaciones: 0
+   Ganador: JOHN RAMBO
+   Operaciones: 7
 
 2. [# == #] BRONZE STAR
-   Ganador: Sin adjudicar
-   Operaciones: 0
+   Ganador: FORGE
+   Operaciones: 2
 
 3. [==#==] COMMENDATION MEDAL
-   Ganador: Sin adjudicar
-   Operaciones: 0
+   Ganador: WINSTON
+   Operaciones: 6
 
 4. [///] COMBAT ACTION RIBBON
-   Ganador: Sin adjudicar
-   Operaciones: 0
+   Ganador: CERBERUS
+   Operaciones: 2
 
 5. [=###=] MERITORIOUS SERVICE
-   Ganador: Sin adjudicar
-   Operaciones: 0
+   Ganador: NEXUS
+   Operaciones: 2
 
 6. [|===|] GOOD CONDUCT MEDAL
-   Ganador: Sin adjudicar
-   Operaciones: 0
+   Ganador: HOUSE
+   Operaciones: 2
 
 7. [<3] PURPLE HEART
-   Ganador: Sin adjudicar
-   Operaciones: 0
+   Ganador: SICARIO | Locura
+   Operaciones: 2
 
 ----------------------------------------
 SANCIONADOS

@@ -7,5 +7,7 @@ Indice de misiones BOPE ejecutadas bajo Codex.
 - BOPE-CODEX-2026-003 | visualizacion de medallas y ribbons USMC | cerrada | medallero visible y ribbons de rango asignados sin condecoraciones falsas
 - BOPE-CODEX-2026-004 | protocolo Cuadro de Honor | cerrada | salida ceremonial fijada con medallas, ganadores y operaciones
 - BOPE-CODEX-2026-005 | ampliacion del Cuadro de Honor | cerrada | actualizacion por mision + secciones SANCIONADOS y KIA
-- BOPE-CODEX-2026-006 | reconstruccion doctrinal del bootstrap local | cerrada | BOPE VERSION DEFINITIVA queda autosuficiente y alineado con doctrina BOPE sin dependencia externa de arranque
+- BOPE-CODEX-2026-006 | reconstruccion doctrinal del bootstrap local | cerrada | BOPE VERSION DEFINITIVA queda autosuficiente y sin dependencia externa de arranque
 - BOPE-CODEX-2026-007 | habilitacion de PDF en adjuntos de evaluacion | cerrada | formulario del sitio acepta PDF y no impone limite de tamano desde la aplicacion
+- BOPE-CODEX-2026-008 | fijacion definitiva del roster local | cerrada | equipo real grabado desde el arranque y vestigios operativos del BOPE anterior purgados
+- BOPE-CODEX-2026-009 | adjudicacion oficial de condecoraciones por operacion `innova-scoring` | cerrada | medallas aprobadas por Santiago asentadas en COMMS, Cuadro de Honor y mision formal

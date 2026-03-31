@@ -1,7 +1,7 @@
 # COMMS - CODEX
 
-[JOHN RAMBO] ACCION: capa de persistencia Codex inicializada | ordenes e historial separados de Claude | en espera de orden operativa del COMMANDER
-[JOHN RAMBO] MISION: BOPE-CODEX-2026-001 | stress test simulado del batallon activado por orden del COMMANDER | objetivo: calibrar mando, actores y cierre
+[JOHN RAMBO] ACCION: capa de persistencia Codex inicializada | ordenes e historial separados de Claude | en espera de orden operativa de SANTIAGO
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-001 | stress test simulado del batallon activado por orden de SANTIAGO | objetivo: calibrar mando, actores y cierre
 [JOHN RAMBO] INTEL: mision de simulacion controlada | sin riesgo productivo real | prioridad media | activar a toda la tropa para ver comportamiento doctrinal
 [PIXEL] REPORTE: interfaz de mando simulada estable | tablero de eventos, estado de mision y alertas renderizadas | sin bloqueos visuales
 [FORGE] REPORTE: backend simulado responde bajo carga controlada | contratos, colas y persistencia logica consistentes | sin perdida de estado
@@ -13,37 +13,52 @@
 [BLADE] REPORTE: reserva presente sin despliegue destructivo | no se justifica intervencion irreversible | doble autorizacion no requerida
 [JOHN RAMBO] EVALUACION: simulacion completa recibida | batallon responde en sus funciones | sistema calibrado para operar con economia fuera del modo demo
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-001 completada | evidencia registrada en codex-logs | sin interferencia con Claude | listo para versionado y GitHub
-[JOHN RAMBO] MISION: BOPE-CODEX-2026-002 | normalizacion del arranque Codex por orden del COMMANDER | objetivo: dejar bootstrap local y explicito para este repo
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-002 | normalizacion del arranque Codex por orden de SANTIAGO | objetivo: dejar bootstrap local y explicito para este repo
 [JOHN RAMBO] INTEL: mision administrativa | sin riesgo productivo | mando directo suficiente | no activar mas soldados
 [JOHN RAMBO] ACCION: orden de arranque remota descartada como bootstrap por defecto | `CODEX.md` actualizado como entrada canonica local | sin dependencia externa en el arranque normal
 [JOHN RAMBO] ACCION: `BOPE-CODEX-ADAPTACION.md` actualizado | `SICARIO | Locura` incorporado como operativo especial de maxima autonomia en capa Codex
 [WINSTON] REPORTE: documentacion de arranque y persistencia ajustadas | `README.md` alineado | cierre listo para versionado
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-002 completada | bootstrap local activo | `SICARIO | Locura` visible | listo para git y GitHub
-[JOHN RAMBO] MISION: BOPE-CODEX-2026-003 | visualizacion oficial de medallas y ribbons por orden del COMMANDER | objetivo: dejar visible el medallero y los rangos USMC sin asignaciones falsas
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-003 | visualizacion oficial de medallas y ribbons por orden de SANTIAGO | objetivo: dejar visible el medallero y los rangos USMC sin asignaciones falsas
 [JOHN RAMBO] INTEL: mision administrativa de imagen institucional | sin riesgo tecnico | mando directo suficiente | no activar mas soldados
 [JOHN RAMBO] ACCION: `BOPE-CODEX-ADAPTACION.md` y `README.md` actualizados | ribbons de rango asignados a cada integrante | medallero oficial visible incorporado
 [WINSTON] REPORTE: capa Codex ya distingue medallas disponibles de medallas otorgadas | estado actual: sin condecoraciones adjudicadas
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-003 completada | imagen institucional reforzada | listo para git y GitHub
-[JOHN RAMBO] MISION: BOPE-CODEX-2026-004 | protocolo Cuadro de Honor por orden del COMMANDER | objetivo: fijar una salida ceremonial estable para medallas y operaciones
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-004 | protocolo Cuadro de Honor por orden de SANTIAGO | objetivo: fijar una salida ceremonial estable para medallas y operaciones
 [JOHN RAMBO] INTEL: mision administrativa de doctrina visible | sin riesgo tecnico | mando directo suficiente | no activar mas soldados
 [JOHN RAMBO] ACCION: `codex-logs/CUADRO-DE-HONOR.md` creado | orden de medallas fijado de mayor a menor | estado inicial sin adjudicaciones
 [WINSTON] REPORTE: `CODEX.md`, `README.md` y `BOPE-CODEX-ADAPTACION.md` actualizados | protocolo de respuesta institucional documentado
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-004 completada | Cuadro de Honor operativo | listo para git y GitHub
-[JOHN RAMBO] MISION: BOPE-CODEX-2026-005 | expansion del Cuadro de Honor por orden del COMMANDER | objetivo: actualizarlo por mision y agregar secciones SANCIONADOS y KIA
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-005 | expansion del Cuadro de Honor por orden de SANTIAGO | objetivo: actualizarlo por mision y agregar secciones SANCIONADOS y KIA
 [JOHN RAMBO] INTEL: mision administrativa doctrinal | sin riesgo tecnico | mando directo suficiente | no activar mas soldados
 [JOHN RAMBO] ACCION: protocolo actualizado | toda mision cerrada debe refrescar `codex-logs/CUADRO-DE-HONOR.md` | `SANCIONADOS` y `KIA` pasan a ser secciones obligatorias
 [WINSTON] REPORTE: conteo base de operaciones acumuladas incorporado | estado actual sin sancionados y sin bajas por tribunal
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-005 completada | Cuadro de Honor ampliado | listo para git y GitHub
-[JOHN RAMBO] MISION: BOPE-CODEX-2026-006 | reconstruccion del bootstrap local por orden del COMMANDER | objetivo: reemplazar dependencia doctrinal externa por marco canonico de BOPE VERSION DEFINITIVA y absorber principios utiles en la capa local
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-006 | reconstruccion del bootstrap local por orden de SANTIAGO | objetivo: reemplazar dependencia doctrinal externa por marco canonico de BOPE VERSION DEFINITIVA y absorber principios utiles en la capa local
 [JOHN RAMBO] INTEL: mision administrativa doctrinal | sin riesgo productivo | mando directo suficiente | no activar mas soldados
 [JOHN RAMBO] ACCION: `README.md`, `CODEX.md` y `BOPE-CODEX-ADAPTACION.md` rehechos | bootstrap local reforzado | economia operativa, mando unico, evidencia, no orden lateral valida y persistencia incorporados
 [JOHN RAMBO] ACCION: `.claude/CLAUDE.md`, `.claude/BOPE-CONSTITUCION.md` y `.claude/ORDEN-DE-BATALLA.md` rehechos | Claude y Codex quedan alineados bajo la misma doctrina local | arranque local consolidado
 [WINSTON] REPORTE: mision documental cerrable | mapeo local-visible a engranaje doctrinal consolidado | cierre listo para git y GitHub
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-006 completada | BOPE VERSION DEFINITIVA queda autosuficiente como bootstrap | listo para versionado y GitHub
-[JOHN RAMBO] ACTIVACION: batallon BOPE online por orden de SANTIAGO | mando operativo asumido con engranaje CORONEL RAMBO | doctrina cargada desde bootstrap local canonico | en espera de mision
-[JOHN RAMBO] MISION: BOPE-CODEX-2026-007 | habilitar PDF en adjuntos del cuestionario de `innova-scoring` por orden del COMMANDER | objetivo: permitir PDF y no imponer limite de tamano desde la aplicacion
+[JOHN RAMBO] ACTIVACION: batallon BOPE online por orden de SANTIAGO | mando operativo asumido bajo roster local canonico | doctrina cargada desde bootstrap local canonico | en espera de mision
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-007 | habilitar PDF en adjuntos del cuestionario de `innova-scoring` por orden de SANTIAGO | objetivo: permitir PDF y no imponer limite de tamano desde la aplicacion
 [JOHN RAMBO] INTEL: mision de frontend focalizada | sin evidencia de backend de archivos en este flujo | mando directo suficiente | no activar mas soldados
 [JOHN RAMBO] ACCION: `client/src/pages/site/evaluation.tsx` ajustado | `pdf` agregado a validacion y `accept` | texto visible y mensaje de rechazo actualizados
 [JOHN RAMBO] ACCION: `client/src/pages/admin/center-detail.tsx` ajustado | badge de tipo de archivo reforzado con fallback por extension
 [JOHN RAMBO] BLOQUEO: verificacion de build incompleta | entorno sin `node_modules` y sin `drizzle-kit` disponible | se deja constancia y se cierra con evidencia de diff
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-007 completada | PDF habilitado en el formulario | listo para versionado y GitHub
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-008 | fijacion definitiva del roster local por orden de SANTIAGO | objetivo: dejar al equipo real grabado desde el arranque y purgar referencias operativas del BOPE anterior
+[JOHN RAMBO] INTEL: mision doctrinal local | sin riesgo productivo | alcance permitido en `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | mando directo suficiente
+[JOHN RAMBO] ACCION: `CODEX.md` reforzado | roster oficial explicitado | arranque local fijado sin equivalencias ni nombres del BOPE anterior
+[JOHN RAMBO] ACCION: `BOPE-CODEX-ADAPTACION.md` y `README.md` rehechos en su mapa operativo | equipo canonico definido por actor y funcion propia | eliminadas equivalencias estructurales viejas
+[JOHN RAMBO] ACCION: historial local saneado | `COMMANDER` sustituido por `SANTIAGO` en registro operativo relevante | arranque y doctrina local quedan coherentes con el roster vigente
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-008 completada | equipo real fijado desde el arranque | vestigios operativos del BOPE anterior purgados del marco local | listo para git y GitHub
+[SANTIAGO] ORDEN: medallas aprobadas para la operacion cerrada de `innova-scoring` | dejar asentado que todo el equipo lo sepa y que conste en los registros
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-009 | adjudicacion oficial de condecoraciones por orden de SANTIAGO | objetivo: asentar las medallas aprobadas en la capa Codex y difundirlas al batallon
+[JOHN RAMBO] INTEL: mision administrativa de honor y memoria | sin riesgo tecnico | mando directo con apoyo de MARCO AURELIO y WINSTON
+[MARCO AURELIO] ERROR RECONOCIDO: se asentaron condecoraciones no canonicas por fuera del medallero oficial | esa adjudicacion queda anulada por violar la regla de oro
+[SANTIAGO] REGLA DE ORO: no se inventa | no se presume | solo existe lo que esta registrado | lo no registrado no existe
+[MARCO AURELIO] DICTAMEN: la correccion valida es adjudicar exclusivamente medallas oficiales ya existentes en el medallero canonico
+[WINSTON] REPORTE: corregida la adjudicacion | las medallas no canonicas fueron reemplazadas por medallas oficiales del `Cuadro de Honor`
+[JOHN RAMBO] DIFUSION AL BATALLON: condecoraciones oficiales asentadas | JOHN RAMBO = Navy Cross | FORGE = Bronze Star | WINSTON = Commendation Medal | CERBERUS = Combat Action Ribbon | NEXUS = Meritorious Service | HOUSE = Good Conduct Medal | SICARIO | Locura = Purple Heart
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-009 completada | adjudicacion corregida bajo canon oficial y difundida al batallon | listo para git y GitHub
