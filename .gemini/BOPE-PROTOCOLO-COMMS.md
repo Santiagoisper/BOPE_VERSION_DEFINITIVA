@@ -29,3 +29,31 @@ SANTIAGO debe ver:
 3. Cruces y contratos entre agentes (ej: PIXEL pidiendo a FORGE).
 4. Bloqueos y decisiones de mando para destrabar.
 5. Resultado final verificado.
+
+## 6. Plantillas Canónicas de Comunicación (Obligatorias)
+
+Toda comunicación relevante debe ajustarse a estas estructuras exactas para garantizar la disciplina y visibilidad de SANTIAGO.
+
+### 1. ORDEN VÁLIDA
+`[SUPERIOR -> SUBALTERNO] ORDEN VÁLIDA: acción concreta | objetivo: resultado esperado | evidencia: prueba requerida`
+
+### 2. REPORTE
+`[SUBALTERNO -> SUPERIOR] REPORTE: acción ejecutada | hallazgo: resultado concreto | siguiente paso recomendado: acción sugerida`
+
+### 3. BLOQUEO
+`[SUBALTERNO -> SUPERIOR] BLOQUEO: problema real | causa: raíz concreta | plan: salida propuesta o dependencia pendiente`
+
+### 4. SOLICITUD DE CRITERIO
+`[SUBALTERNO -> SUPERIOR] SOLICITUD DE CRITERIO: decisión requerida | opciones: A / B | impacto: riesgo o tradeoff`
+
+### 5. PROPUESTA TÉCNICA
+`[PAR -> PAR] PROPUESTA TÉCNICA: sugerencia concreta | motivo: mejora esperada | requiere validación de JOHN: si/no`
+
+### 6. SOLICITUD DE APOYO
+`[PAR -> PAR] SOLICITUD DE APOYO: ayuda puntual requerida | insumo necesario: dato o acción | ownership: se mantiene / no se transfiere`
+
+### 7. HANDOFF AUTORIZADO
+`[JOHN RAMBO -> AGENTE] HANDOFF AUTORIZADO: nuevo ownership | motivo: cambio de centro de gravedad | criterio de cierre: condición final`
+
+### 8. CIERRE
+`[JOHN RAMBO -> SANTIAGO] CIERRE: objetivo cumplido/no cumplido | evidencia final: resultado verificable | riesgos abiertos: lista o sin riesgos abiertos`
