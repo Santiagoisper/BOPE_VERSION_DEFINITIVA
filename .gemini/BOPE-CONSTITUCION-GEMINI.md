@@ -109,13 +109,47 @@ Al cierre de cada misión o sesión de trabajo, el protocolo obligatorio ejecuta
 
 ---
 
-### ARTÍCULO 11 — REPLICA CANÓNICA INTERCAPAS
+### ARTÍCULO 11 — RÉPLICA CANÓNICA INTERCAPAS
 
-1. **Aislamiento de Verdad**: Codex (codex-logs/), Claude (logs/) y Gemini (gemini-logs/) operan como capas separadas. Ningún hecho se presume compartido por reflejo.
-2. **Existencia por Registro**: Si una misión, medalla, sanción o cambio doctrinal no está escrito en `gemini-logs/`, **no existe** para Gemini.
-3. **Capa Líder**: La capa que ejecuta la misión actúa como líder del hecho y fija ID, fecha, resultado y resumen canónico.
-4. **Protocolo de Réplica**:
-   - Registrar origen, ID original y resumen canónico.
-   - Marcar el estado como "Replicado Fiel" solo tras constancia escrita local.
-   - En caso de conflicto, prevalece la versión de la Capa Líder.
-5. **Riesgos Prohibidos**: Evitar la doble verdad, la divergencia entre capas y la contaminación por escritura cruzada. Gemini NUNCA escribe fuera de su layer.
+#### 1. Criterio Canónico de Sincronización
+- **Codex, Claude y Gemini** operan como capas separadas del mismo batallón.
+- Cada capa tiene su propia fuente canónica de estado y registro.
+- Ningún hecho se considera compartido por reflejo entre capas.
+- Si una misión, medalla, sanción o cambio doctrinal debe existir en otra capa, se replica de forma explícita.
+- Si no está replicado en la capa destino, no existe en esa capa.
+- La capa que ejecutó la misión actúa como **capa líder** del hecho.
+- La capa líder fija ID, fecha, resultado, responsables y resumen canónico a replicar.
+- Si hay conflicto entre capas, manda la capa líder hasta nueva orden de SANTIAGO.
+
+#### 2. Fuentes Canónicas por Capa
+- **Codex**: `codex-logs/`
+- **Claude**: `logs/`
+- **Gemini**: `gemini-logs/`
+
+#### 3. Reglas Específicas para Gemini
+- Gemini **NUNCA** escribe en `codex-logs/` ni en `logs/`.
+- Gemini solo deja constancia de origen, necesidad de réplica y estado local de sincronización.
+- Si un hecho de otra capa debe existir en Gemini, Gemini lo replica en su propia capa.
+- Si no está escrito en `gemini-logs/`, no existe en Gemini.
+
+#### 4. Protocolo de Réplica Canónica
+1. Cerrar la misión local con evidencia completa en `gemini-logs/`.
+2. Marcar en `gemini-logs/` el hecho que requiere réplica canónica.
+3. Registrar origen, ID original y resumen canónico.
+4. Esperar constancia escrita de cada capa destino en su propia memoria.
+5. Considerar sincronización completa solo cuando cada capa destino deje constancia escrita.
+
+#### 5. Formato Mínimo de Réplica Fiel
+- **Origen**: [Capa Origen]
+- **ID Original**: [ID]
+- **Fecha**: [YYYY-MM-DD]
+- **Resumen Canónico**: [Texto fiel]
+- **Impacto**: [Medallas/Sanciones si aplica]
+- **Estado**: REPLICADO FIEL
+- **Firma**: [Agente Local]
+
+#### 6. Riesgos Documentados
+- **Divergencia entre capas**: Estados inconsistentes por falta de réplica.
+- **Doble verdad**: Interpretaciones distintas de un mismo hecho.
+- **Contaminación doctrinal**: Escritura cruzada que rompe el aislamiento.
+- **Cierres falsos**: Considerar una misión terminada cuando solo una capa fue actualizada.
