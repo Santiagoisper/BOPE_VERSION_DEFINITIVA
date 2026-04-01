@@ -129,6 +129,13 @@ Reglas:
 - los skills canonicos prevalecen siempre sobre el folklore
 - si un skill no quedo registrado en el legajo, no existe
 
+## Arsenal oficial
+
+- `codex-logs/ARSENAL-BOPE.md` es el banco canonico de herramientas CLI, API y servicio autorizadas en esta capa
+- el arsenal se organiza por costo, prioridad y efectivos autorizados
+- la doctrina de gasto es simple: primero herramientas ya disponibles o baratas; lo caro entra solo si reemplaza trabajo humano real o desbloquea una mision critica
+- no se activan herramientas redundantes por moda o comodidad
+
 ## Equipo canonico de BOPE VERSION DEFINITIVA
 
 Este es el equipo oficial de arranque. No se mezcla con ningun roster anterior.

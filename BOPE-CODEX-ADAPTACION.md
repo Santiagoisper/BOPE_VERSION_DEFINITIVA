@@ -154,6 +154,17 @@ Reglas:
 - los skills canonicos prevalecen siempre sobre el folklore
 - si un skill no esta asentado en el legajo, no existe
 
+## Arsenal BOPE
+
+En esta capa, las herramientas de combate tecnico viven en `codex-logs/ARSENAL-BOPE.md`.
+
+Reglas:
+
+- `JOHN RAMBO` decide que herramienta entra en cada frente
+- primero se usa arsenal base barato o ya disponible
+- las herramientas pagas o redundantes quedan en reserva hasta necesidad real
+- no se despliegan dos armas caras para resolver el mismo problema si una sola cubre el objetivo
+
 ## Persistencia
 
 Toda mision cerrada en Codex debe:

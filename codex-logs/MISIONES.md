@@ -17,3 +17,4 @@ Indice de misiones BOPE ejecutadas bajo Codex.
 - BOPE-CODEX-2026-013 | memoria tactica obligatoria de live-fire | cerrada | todo ataque de entrenamiento sobre programa real debe quedar asentado en logs; campana `innova-scoring` registrada como referencia permanente
 - BOPE-CODEX-2026-014 | legajos personales aislados del batallon | cerrada | dossier general y fichas individuales fijadas con identidad civil, AKA operativo y actualizacion por defecto al cierre de mision
 - BOPE-CODEX-2026-015 | consolidacion del comando MEMORIA | cerrada | indice rapido, resumen operativo y carpeta prioritaria fijados para recuperar aprendizaje del batallon sin friccion
+- BOPE-CODEX-2026-016 | arsenal oficial de herramientas BOPE | cerrada | banco canonico de herramientas CLI/API/servicio fijado con doctrina de costo bajo, prioridad de empleo y efectivos autorizados
