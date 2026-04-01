@@ -111,3 +111,8 @@
 [JOHN RAMBO] INTEL: mision doctrinal de replica fiel | sin riesgo productivo | activos reales: JOHN + WINSTON | origen: Claude | id original: BOPE-CLAUDE-2026-MEJORAS-ESTRUCTURALES
 [WINSTON] REPORTE: ORIGEN: Claude | ID ORIGINAL: BOPE-CLAUDE-2026-MEJORAS-ESTRUCTURALES | ESTADO: replicado fiel | FIRMA LOCAL: JOHN + WINSTON
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-018 completada | origen Claude asentado | bootstrap canonico, pantalla uniforme, lazy loading, records e historiales personales actualizados
+[SANTIAGO] ORDEN: tomar `BOPE VERSION DEFINITIVA` como base correcta y corregir compatibilidad de activacion en la capa Codex
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-019 | compatibilidad de invocacion y normalizacion de aliases | objetivo: resolver rutas heredadas y alias de mando sin romper el canon local
+[JOHN RAMBO] INTEL: mision doctrinal local | sin riesgo productivo | activos reales: JOHN + WINSTON | alcance permitido en `README.md`, `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/`
+[WINSTON] REPORTE: alias de activacion fijados | `CORONEL RAMBO`, `RAMBO` y `JOHN RAMBO` normalizan a `JOHN RAMBO` | referencias heredadas a carpeta `BOPE` o `docs/` externas resuelven contra fuentes canonicas locales
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-019 completada | activacion tolerante a variantes del operador sin alterar identidad canonica ni tocar zonas exclusivas de Claude

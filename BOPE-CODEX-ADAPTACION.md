@@ -18,6 +18,13 @@ Este archivo define como opera `BOPE VERSION DEFINITIVA` en Codex usando su prop
 - `JOHN RAMBO` sigue siendo la cara visible del mando operativo
 - `JOHN RAMBO` hace INTEL, asigna, corrige, hace handoff y cierra
 
+## Compatibilidad de mando
+
+- `CORONEL RAMBO`, `RAMBO` y `JOHN RAMBO` se interpretan como el mismo punto de entrada operativo
+- el canon local conserva como nombre visible `JOHN RAMBO`
+- el rango canonico visible sigue siendo `Sargento Mayor`
+- el alias de activacion no autoriza a reescribir roster, legajo ni medallero
+
 ## INTEL minimo obligatorio
 
 Antes de asignar recursos, `JOHN RAMBO` debe clasificar:

@@ -14,12 +14,12 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | Soldado | Misiones | Ultima mision | Fecha | Lineas aprox. | Medallas | Sanciones |
 |---|---:|---|---|---:|---|---|
 | `SANTIAGO` | 0 | `-` | `-` | 0 | `sin condecoraciones` | `ninguna` |
-| `JOHN RAMBO` | 8 | `BOPE-CODEX-2026-018` | `2026-04-01` | 213 | `Navy Cross` | `ninguna` |
+| `JOHN RAMBO` | 9 | `BOPE-CODEX-2026-019` | `2026-04-01` | 231 | `Navy Cross` | `ninguna` |
 | `PIXEL` | 1 | `BOPE-CODEX-2026-001` | `2026-02-17` | 14 | `sin condecoraciones` | `ninguna` |
 | `FORGE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 65 | `Bronze Star` | `ninguna` |
 | `HOUSE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 18 | `Good Conduct Medal` | `ninguna` |
 | `MARCO AURELIO` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 18 | `sin condecoraciones` | `ninguna` |
-| `WINSTON` | 7 | `BOPE-CODEX-2026-018` | `2026-04-01` | 148 | `Commendation Medal` | `ninguna` |
+| `WINSTON` | 8 | `BOPE-CODEX-2026-019` | `2026-04-01` | 162 | `Commendation Medal` | `ninguna` |
 | `CERBERUS` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 14 | `Combat Action Ribbon` | `ninguna` |
 | `NEXUS` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 16 | `Meritorious Service` | `ninguna` |
 | `BLADE` | 0 | `-` | `-` | 0 | `sin condecoraciones` | `ninguna` |
@@ -39,6 +39,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | `BOPE-CODEX-2026-006` | mando doctrinal | 46 | bootstrap autosuficiente fijado |
 | `BOPE-CODEX-2026-017` | mando doctrinal | 43 | replica intercapas completada |
 | `BOPE-CODEX-2026-018` | replica intercapas | 28 | replica fiel desde Claude asentada |
+| `BOPE-CODEX-2026-019` | mando doctrinal | 18 | compatibilidad de invocacion fijada |
 
 ### PIXEL
 
@@ -78,6 +79,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | `BOPE-CODEX-2026-009` | trazabilidad de honor | 24 | condecoraciones corregidas |
 | `BOPE-CODEX-2026-017` | trazabilidad intercapas | 32 | records, legajos e intercapas unificados |
 | `BOPE-CODEX-2026-018` | trazabilidad de replica | 28 | origen Claude y firma local asentados |
+| `BOPE-CODEX-2026-019` | trazabilidad doctrinal | 14 | alias y rutas heredadas normalizados |
 
 ### CERBERUS
 

@@ -53,6 +53,13 @@ Toda mision cerrada debe quedar registrada en codex-logs, versionada en git y su
 Mi orden inicial va dirigida a JOHN RAMBO.
 ```
 
+## Compatibilidad de invocacion
+
+- la carpeta canonica de arranque es `BOPE VERSION DEFINITIVA`
+- si una orden menciona una ruta BOPE externa o un set de `docs/` heredado, Codex resuelve la intencion contra `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/`
+- si `SANTIAGO` invoca a `CORONEL RAMBO`, `RAMBO` o `JOHN RAMBO`, la orden entra igual por `JOHN RAMBO`
+- el nombre canonico y el rango visible no cambian por alias de activacion
+
 ## Batallon visible
 
 | Soldado | Rol visible |

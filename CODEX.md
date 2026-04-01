@@ -77,6 +77,25 @@ Toda mision cerrada debe quedar registrada en codex-logs, versionada en git y su
 Mi orden inicial va dirigida a JOHN RAMBO.
 ```
 
+## Compatibilidad de invocacion
+
+Para evitar falsos bloqueos por forma, Codex normaliza estas variantes antes de actuar:
+
+- carpeta base valida: `BOPE VERSION DEFINITIVA`
+- si una orden nombra una carpeta `BOPE` externa inexistente o archivos heredados en `docs/` y `prompts/`, la lectura se resuelve contra las fuentes canonicas locales de esta carpeta
+- si `SANTIAGO` escribe `CORONEL RAMBO`, `RAMBO` o `JOHN RAMBO`, el destinatario operativo se normaliza a `JOHN RAMBO`
+- la normalizacion no altera identidad canonica, rango ni legajo; solo evita rechazo por alias o ruta heredada
+
+Fuentes de resolucion local:
+
+- `CODEX.md`
+- `BOPE-CODEX-ADAPTACION.md`
+- `codex-logs/CONSTITUCION-BOPE.md`
+- `codex-logs/ORDEN-DE-BATALLA.md`
+- `codex-logs/PROTOCOLO-INTERCAPAS.md`
+- `codex-logs/MISION-ACTIVA.md`
+- `codex-logs/COMMS.log`
+
 ## Estado canonico
 
 - `codex-logs/MISION-ACTIVA.md` es la unica fuente de verdad del estado operativo de Codex

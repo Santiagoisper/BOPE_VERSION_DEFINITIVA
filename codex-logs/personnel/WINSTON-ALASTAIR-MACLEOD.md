@@ -22,7 +22,7 @@
   - memoria tactica
   - handoffs y cierre documental
   - transformacion de experiencia en doctrina
-- Operaciones acumuladas en capa Codex: `7`
+- Operaciones acumuladas en capa Codex: `8`
 
 ## Estado de honor y record
 - Posicion actual en `RECORDS.md`: `#2`
