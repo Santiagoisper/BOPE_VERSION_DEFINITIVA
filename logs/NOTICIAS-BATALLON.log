@@ -172,3 +172,29 @@ DESCRIPCIÓN: Se asienta en la capa Claude el protocolo de sincronización
 ESTADO: replicado fiel
 FIRMADO: JOHN + WINSTON
 ══════════════════════════════════════════
+
+══════════════════════════════════════════
+📣 NOTIFICACIÓN DE BATALLÓN — 2026-04-01
+══════════════════════════════════════════
+TIPO: CIERRE DE SESIÓN — MISIONES COMPLETADAS
+PROYECTO: Asistente-CRF (ICHTYS Technology S.A.)
+
+MISIÓN 1: BOPE-CLAUDE-2026-EDC-MODEL-SELECTOR [commit a6b68c2]
+  EDC Model ID ahora se auto-deriva del protocolo.
+  Selector dinámico en UI reemplaza input de texto libre.
+
+MISIÓN 2: BOPE-CLAUDE-2026-AUTH-ROLES [commit 633fc62]
+  Roles coordinator/supervisor/admin implementados.
+  Multi-usuario via AUTH_USERS env var.
+  Operaciones irreversibles protegidas (migration runs, plan confirm).
+
+MISIÓN 3: ANÁLISIS ESTRATÉGICO — RUNNER EDC
+  Descubrimiento clave: ICHTYS construyó ALPHA CR (HCE).
+  EDC platforms en uso: Oracle InForm (Merck), Veeva Vault CDMS (Lilly), Medidata Rave.
+  Arquitectura decidida: runner local Playwright — coordinador se loguea,
+  runner llena todo, coordinador revisa y da OK. GCP-compliant.
+  PENDIENTE: screenshot de Veeva form con campos → diseñar selectores Playwright.
+
+ESTADO DEL BATALLÓN: Operativo. Sin infracciones. Sin bajas.
+FIRMADO: JOHN + WINSTON
+══════════════════════════════════════════
