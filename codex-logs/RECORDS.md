@@ -14,7 +14,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | Soldado | Misiones | Ultima mision | Fecha | Lineas aprox. | Medallas | Sanciones |
 |---|---:|---|---|---:|---|---|
 | `SANTIAGO` | 0 | `-` | `-` | 0 | `sin condecoraciones` | `ninguna` |
-| `JOHN RAMBO` | 9 | `BOPE-CODEX-2026-019` | `2026-04-01` | 231 | `Navy Cross` | `ninguna` |
+| `JOHN RAMBO` | 10 | `BOPE-CODEX-2026-020` | `2026-04-01` | 249 | `Navy Cross` | `ninguna` |
 | `PIXEL` | 1 | `BOPE-CODEX-2026-001` | `2026-02-17` | 14 | `sin condecoraciones` | `ninguna` |
 | `FORGE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 65 | `Bronze Star` | `ninguna` |
 | `HOUSE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 18 | `Good Conduct Medal` | `ninguna` |
@@ -40,6 +40,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | `BOPE-CODEX-2026-017` | mando doctrinal | 43 | replica intercapas completada |
 | `BOPE-CODEX-2026-018` | replica intercapas | 28 | replica fiel desde Claude asentada |
 | `BOPE-CODEX-2026-019` | mando doctrinal | 18 | compatibilidad de invocacion fijada |
+| `BOPE-CODEX-2026-020` | mando doctrinal | 18 | activacion inicial absorbida por el canon local |
 
 ### PIXEL
 

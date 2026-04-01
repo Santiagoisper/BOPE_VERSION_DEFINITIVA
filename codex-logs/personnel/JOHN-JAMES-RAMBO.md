@@ -23,7 +23,7 @@
   - infiltracion
   - combate en selva
   - continuidad operativa bajo desgaste extremo
-- Operaciones acumuladas en capa Codex: `9`
+- Operaciones acumuladas en capa Codex: `10`
 
 ## Estado de honor y record
 - Posicion actual en `RECORDS.md`: `#1`

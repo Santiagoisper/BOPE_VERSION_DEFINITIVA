@@ -116,3 +116,8 @@
 [JOHN RAMBO] INTEL: mision doctrinal local | sin riesgo productivo | activos reales: JOHN + WINSTON | alcance permitido en `README.md`, `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/`
 [WINSTON] REPORTE: alias de activacion fijados | `CORONEL RAMBO`, `RAMBO` y `JOHN RAMBO` normalizan a `JOHN RAMBO` | referencias heredadas a carpeta `BOPE` o `docs/` externas resuelven contra fuentes canonicas locales
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-019 completada | activacion tolerante a variantes del operador sin alterar identidad canonica ni tocar zonas exclusivas de Claude
+[SANTIAGO] ORDEN: BOPE ONLINE | CORONEL RAMBO en mando | cargar doctrina heredada indicada y operar con economia operativa
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-020 | activacion doctrinal y alistamiento inicial | objetivo: resolver la orden heredada contra el canon local, confirmar mando y dejar el batallon en posicion
+[JOHN RAMBO] INTEL: mision doctrinal de encuadre | sin riesgo tecnico ni productivo | alias `CORONEL RAMBO` normalizado a `JOHN RAMBO` | fuerza minima suficiente: JOHN solo
+[JOHN RAMBO] REPORTE: bootstrap heredado interpretado y arranque canonico local completado | fuentes externas `docs/` y `prompts/` mapeadas por compatibilidad a `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | estado actual `STANDBY` y sin mision activa
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-020 completada | batallon listo en modo austero | registro local actualizado | listo para versionado y GitHub
