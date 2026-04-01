@@ -22,10 +22,10 @@
   - memoria tactica
   - handoffs y cierre documental
   - transformacion de experiencia en doctrina
-- Operaciones acumuladas en capa Codex: `6`
+- Operaciones acumuladas en capa Codex: `7`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `#2`
+- Posicion actual en `RECORDS.md`: `#2`
 - Estado de record: `segundo registro historico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[CM] Commendation Medal`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -59,4 +59,12 @@ Quedo marcado al ver una operacion reescrita por gente que no habia estado ahi. 
 - Estilo de comunicacion: formal, sobrio y orientado a hechos
 
 ## Observacion de mando
-Si no quedo trazado, mañana alguien jurara que nunca paso.
+Si no quedo trazado, manana alguien jurara que nunca paso.
+
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| Commendation Medal | `CM` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
+
+## Historial de sanciones
+- sin sanciones registradas

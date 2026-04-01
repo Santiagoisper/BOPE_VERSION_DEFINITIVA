@@ -25,7 +25,7 @@
 - Operaciones acumuladas en capa Codex: `2`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Posicion actual en `RECORDS.md`: `#3`
 - Estado de record: `empate tecnico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[CA] Combat Action Ribbon`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -60,3 +60,10 @@ Aprendio a mirar antes de moverse y escuchar antes de actuar. La invasion de su 
 
 ## Observacion de mando
 Cuando el perimetro depende de alguien, depende de el.
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| Combat Action Ribbon | `CA` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
+
+## Historial de sanciones
+- sin sanciones registradas

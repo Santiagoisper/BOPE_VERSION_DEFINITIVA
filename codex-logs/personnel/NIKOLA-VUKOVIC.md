@@ -25,7 +25,7 @@
 - Operaciones acumuladas en capa Codex: `0`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `reserva sin operaciones registradas`
+- Posicion actual en `RECORDS.md`: `reserva sin operaciones registradas`
 - Estado de record: `sin record operativo visible`
 - Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -60,3 +60,10 @@ Aprendio desde chico que hablar de mas, mostrarse o confiar en el momento equivo
 
 ## Observacion de mando
 Si me vieron llegar, ya entre mal.
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| sin condecoraciones | `-` | `-` | `-` | `-` |
+
+## Historial de sanciones
+- sin sanciones registradas

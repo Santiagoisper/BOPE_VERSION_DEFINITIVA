@@ -25,7 +25,7 @@
 - Operaciones acumuladas en capa Codex: `0`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `fuera de competencia de tropa`
+- Posicion actual en `RECORDS.md`: `fuera de competencia de tropa`
 - Estado de record: `comando supremo no contabilizado en operaciones de tropa`
 - Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -61,3 +61,10 @@ Nacido en San Isidro y formado emocionalmente en Rio de Janeiro, aprendio tempra
 
 ## Observacion de mando
 No vino a administrar hombres comunes. Vino a forjar una fuerza que no tenga derecho a fallar.
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| sin condecoraciones | `-` | `-` | `-` | `-` |
+
+## Historial de sanciones
+- sin sanciones registradas

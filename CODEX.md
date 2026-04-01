@@ -43,12 +43,19 @@ Codex opera SOLO en: `CODEX.md`, `BOPE-CODEX-ADAPTACION.md`, `codex-logs/`
 ## Secuencia de arranque obligatoria
 
 1. Leer `CODEX.md`.
-2. Leer `BOPE-CODEX-ADAPTACION.md`.
-3. Leer `codex-logs/MISION-ACTIVA.md`.
-4. Leer las ultimas 10 lineas de `codex-logs/COMMS.log`.
-5. Leer `codex-logs/FICHAS-OPERATIVAS-BOPE.md` para tener roster unificado, medallero y records vigentes.
-6. Identificar rol, alcance y restricciones.
-7. Actuar solo dentro del alcance asignado.
+2. Leer `codex-logs/CONSTITUCION-BOPE.md`.
+3. Leer `codex-logs/ORDEN-DE-BATALLA.md`.
+4. Leer `codex-logs/PROTOCOLO-INTERCAPAS.md`.
+5. Leer `codex-logs/MISION-ACTIVA.md`.
+6. Leer las ultimas 10 lineas de `codex-logs/COMMS.log`.
+7. Evaluar `Agentes activos` en `codex-logs/MISION-ACTIVA.md`.
+8. Cargar legajos segun doctrina de lazy loading:
+   - `STANDBY` -> solo `codex-logs/personnel/JOHN-JAMES-RAMBO.md`
+   - `ACTIVA` -> solo los legajos listados
+   - `REVISTA COMPLETA` -> los 11 legajos
+9. Leer `codex-logs/FICHAS-OPERATIVAS-BOPE.md` para emitir la pantalla uniforme de activacion.
+10. Identificar rol, alcance y restricciones.
+11. Actuar solo dentro del alcance asignado.
 
 Sin esta secuencia, la accion es invalida.
 
@@ -62,8 +69,9 @@ Excepcion valida:
 ```text
 BOPE ONLINE. JOHN RAMBO EN MANDO.
 Activa BOPE VERSION DEFINITIVA en modo Codex.
-Antes de actuar, toma como base CODEX.md, BOPE-CODEX-ADAPTACION.md, codex-logs/MISION-ACTIVA.md y las ultimas 10 lineas de codex-logs/COMMS.log.
-Consulta tambien codex-logs/FICHAS-OPERATIVAS-BOPE.md para presentar al equipo con ficha unificada.
+Antes de actuar, toma como base CODEX.md, codex-logs/CONSTITUCION-BOPE.md, codex-logs/ORDEN-DE-BATALLA.md, codex-logs/PROTOCOLO-INTERCAPAS.md, codex-logs/MISION-ACTIVA.md y las ultimas 10 lineas de codex-logs/COMMS.log.
+Evalua `Agentes activos` para aplicar lazy loading de legajos.
+Emite la pantalla exacta de `codex-logs/FICHAS-OPERATIVAS-BOPE.md` al escribir `BOPE`.
 Opera con economia operativa: no actives mas soldados de los necesarios.
 Toda mision cerrada debe quedar registrada en codex-logs, versionada en git y subida a GitHub.
 Mi orden inicial va dirigida a JOHN RAMBO.
@@ -96,6 +104,7 @@ Reglas:
 - la capa que ejecuto la mision actua como capa lider del hecho
 - la capa lider fija `id`, fecha, resultado, responsables y resumen canonico a replicar
 - si hay conflicto entre capas, manda la capa lider hasta nueva orden de `SANTIAGO`
+- la doctrina canonica intercapas de esta capa vive en `codex-logs/PROTOCOLO-INTERCAPAS.md`
 
 ## Antes de ejecutar cualquier accion
 
@@ -113,6 +122,9 @@ Reglas:
 | `codex-logs/MISIONES.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
 | `codex-logs/missions/*.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
 | `codex-logs/CUADRO-DE-HONOR.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
+| `codex-logs/ORDEN-DE-BATALLA.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
+| `codex-logs/RECORDS.md` | `WINSTON` o `JOHN RAMBO` si es asignado |
+| `codex-logs/NOTICIAS-BATALLON.log` | `WINSTON` |
 | `codex-logs/DOSSIER-GENERAL-BOPE.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
 | `codex-logs/personnel/*.md` | `JOHN RAMBO` o `WINSTON` si es asignado |
 
@@ -126,9 +138,11 @@ Reglas:
 
 - cada efectivo del batallon debe tener legajo aislado en `codex-logs/personnel/`
 - cada legajo debe indicar identidad civil, identidad operativa, rango canonico, funcion canonica, fecha de nacimiento, fecha de ingreso a BOPE, estado, condecoraciones, perfil operativo y doctrina de empleo
-- cada legajo debe reflejar su estado visible de operaciones, record y medallero, enlazado con `codex-logs/TABLERO-DE-RECORDS.md` y `codex-logs/CUADRO-DE-HONOR.md`
+- cada legajo debe reflejar su estado visible de operaciones, record y medallero, enlazado con `codex-logs/RECORDS.md` y `codex-logs/CUADRO-DE-HONOR.md`
+- cada legajo debe cerrar con `Historial de condecoraciones` y `Historial de sanciones`
+- `codex-logs/ORDEN-DE-BATALLA.md` es la fuente primaria del roster y del medallero personal
 - `codex-logs/DOSSIER-GENERAL-BOPE.md` es el indice visible consolidado del batallon
-- `codex-logs/FICHAS-OPERATIVAS-BOPE.md` es la presentacion maestra que debe usarse al invocar al equipo BOPE en Codex
+- `codex-logs/FICHAS-OPERATIVAS-BOPE.md` es la pantalla uniforme que debe usarse al invocar al equipo BOPE en Codex
 - la historia personal puede enriquecer personalidad y justificar skills nuevos
 - los skills canonicos prevalecen siempre sobre el folklore
 - si un skill no quedo registrado en el legajo, no existe
@@ -179,9 +193,12 @@ Toda mision cerrada en Codex debe cumplir:
 2. registrar o actualizar `codex-logs/missions/BOPE-CODEX-YYYY-###.md`
 3. actualizar `codex-logs/MISIONES.md`
 4. actualizar `codex-logs/CUADRO-DE-HONOR.md` si aplica
-5. actualizar `codex-logs/DOSSIER-GENERAL-BOPE.md` y los legajos personales afectados por defecto
-6. versionar en git
-7. subir a GitHub
+5. actualizar `codex-logs/ORDEN-DE-BATALLA.md` si aplica
+6. actualizar `codex-logs/RECORDS.md` si aplica
+7. actualizar `codex-logs/NOTICIAS-BATALLON.log` si aplica
+8. actualizar `codex-logs/DOSSIER-GENERAL-BOPE.md` y los legajos personales afectados por defecto
+9. versionar en git
+10. subir a GitHub
 
 Si no esta en GitHub, no esta cerrado.
 

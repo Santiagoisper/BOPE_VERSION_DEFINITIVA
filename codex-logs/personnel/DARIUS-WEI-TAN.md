@@ -25,7 +25,7 @@
 - Operaciones acumuladas en capa Codex: `2`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Posicion actual en `RECORDS.md`: `#3`
 - Estado de record: `empate tecnico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[MS] Meritorious Service`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -60,3 +60,10 @@ Quedo marcado por una crisis familiar causada por una falla de integracion entre
 
 ## Observacion de mando
 No le importa que cada pieza funcione sola. Le importa que el cuerpo completo no mienta.
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| Meritorious Service | `MS` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
+
+## Historial de sanciones
+- sin sanciones registradas

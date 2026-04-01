@@ -25,7 +25,7 @@
 - Operaciones acumuladas en capa Codex: `2`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Posicion actual en `RECORDS.md`: `#3`
 - Estado de record: `empate tecnico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -60,3 +60,10 @@ Fue marcado por una operacion tacticamente exitosa que destruyo moralmente a los
 
 ## Observacion de mando
 No basta con vencer. Hay que seguir siendo dignos de la victoria.
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| sin condecoraciones | `-` | `-` | `-` | `-` |
+
+## Historial de sanciones
+- sin sanciones registradas

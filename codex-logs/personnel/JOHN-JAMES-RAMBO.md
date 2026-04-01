@@ -23,10 +23,10 @@
   - infiltracion
   - combate en selva
   - continuidad operativa bajo desgaste extremo
-- Operaciones acumuladas en capa Codex: `7`
+- Operaciones acumuladas en capa Codex: `8`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `#1`
+- Posicion actual en `RECORDS.md`: `#1`
 - Estado de record: `lider absoluto vigente`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[NC] Navy Cross`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -61,3 +61,10 @@ Veterano de guerra, cautiverio, rechazo social y supervivencia total. Volvio de 
 
 ## Observacion de mando
 No es solo un combatiente. Es el superviviente que convierte caos en cadena de mando.
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| Navy Cross | `NC` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
+
+## Historial de sanciones
+- sin sanciones registradas

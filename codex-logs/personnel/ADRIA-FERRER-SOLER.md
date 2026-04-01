@@ -24,7 +24,7 @@
 - Operaciones acumuladas en capa Codex: `1`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `#9`
+- Posicion actual en `RECORDS.md`: `#9`
 - Estado de record: `presencia activa`
 - Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -59,3 +59,10 @@ Quedo marcado al ver a un familiar perder acceso a un sistema critico por una su
 
 ## Observacion de mando
 Si el usuario tiene que adivinar, ya estamos perdiendo.
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| sin condecoraciones | `-` | `-` | `-` | `-` |
+
+## Historial de sanciones
+- sin sanciones registradas

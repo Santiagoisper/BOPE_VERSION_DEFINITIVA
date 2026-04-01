@@ -19,3 +19,4 @@ Indice de misiones BOPE ejecutadas bajo Codex.
 - BOPE-CODEX-2026-015 | consolidacion del comando MEMORIA | cerrada | indice rapido, resumen operativo y carpeta prioritaria fijados para recuperar aprendizaje del batallon sin friccion
 - BOPE-CODEX-2026-016 | arsenal oficial de herramientas BOPE | cerrada | banco canonico de herramientas CLI/API/servicio fijado con doctrina de costo bajo, prioridad de empleo y efectivos autorizados
 - BOPE-CODEX-2026-017 | union de fichas, tablero de records y medallero | cerrada | salida maestra del batallon fijada para invocacion en Codex con records, medallas y legajos sincronizados
+- BOPE-CODEX-2026-018 | replica intercapas desde Claude de mejoras estructurales | cerrada | arranque canonico, pantalla uniforme, lazy loading, records e historiales personales alineados en Codex

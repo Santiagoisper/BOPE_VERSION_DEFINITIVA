@@ -26,7 +26,7 @@
 - Operaciones acumuladas en capa Codex: `2`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Posicion actual en `RECORDS.md`: `#3`
 - Estado de record: `empate tecnico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[PH] Purple Heart`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -62,4 +62,12 @@ Nacio sin estructura familiar y crecio en violencia, abuso y marginalidad. Fue a
 - Estilo de comunicacion: seco, directo, sin diplomacia
 
 ## Observacion de mando
-No es un soldado para todas las campañas. Es un arma de guerra contenida por mando firme.
+No es un soldado para todas las campanas. Es un arma de guerra contenida por mando firme.
+
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| Purple Heart | `PH` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
+
+## Historial de sanciones
+- sin sanciones registradas

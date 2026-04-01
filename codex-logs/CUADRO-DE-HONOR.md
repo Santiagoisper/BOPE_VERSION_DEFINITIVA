@@ -10,7 +10,7 @@ Estado visible del medallero BOPE para Codex.
 - mostrar cantidad de operaciones del ganador
 - si no hay ganador, operaciones = `0`
 - actualizar este archivo al cierre de cada mision
-- las operaciones visibles deben coincidir con `codex-logs/TABLERO-DE-RECORDS.md`
+- las operaciones visibles deben coincidir con `codex-logs/RECORDS.md`
 - toda medalla adjudicada debe verse tambien en `codex-logs/DOSSIER-GENERAL-BOPE.md`, `codex-logs/FICHAS-OPERATIVAS-BOPE.md` y en el legajo del efectivo
 - incluir siempre las secciones `SANCIONADOS` y `KIA`
 - `KIA` se reserva para soldados ejecutados por el tribunal y dados de baja definitiva
@@ -20,12 +20,12 @@ Estado visible del medallero BOPE para Codex.
 | Integrante | Operaciones |
 |---|---:|
 | `SANTIAGO` | 0 |
-| `JOHN RAMBO` | 7 |
+| `JOHN RAMBO` | 8 |
 | `PIXEL` | 1 |
 | `FORGE` | 2 |
 | `HOUSE` | 2 |
 | `CERBERUS` | 2 |
-| `WINSTON` | 6 |
+| `WINSTON` | 7 |
 | `NEXUS` | 2 |
 | `MARCO AURELIO` | 2 |
 | `SICARIO | Locura` | 2 |
@@ -52,7 +52,7 @@ CUADRO DE HONOR BOPE
 ========================================
 1. [## ##] NAVY CROSS
    Ganador: JOHN RAMBO
-   Operaciones: 7
+   Operaciones: 8
 
 2. [# == #] BRONZE STAR
    Ganador: FORGE
@@ -60,7 +60,7 @@ CUADRO DE HONOR BOPE
 
 3. [==#==] COMMENDATION MEDAL
    Ganador: WINSTON
-   Operaciones: 6
+   Operaciones: 7
 
 4. [///] COMBAT ACTION RIBBON
    Ganador: CERBERUS

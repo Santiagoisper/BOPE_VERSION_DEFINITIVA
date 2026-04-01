@@ -25,7 +25,7 @@
 - Operaciones acumuladas en capa Codex: `2`
 
 ## Estado de honor y record
-- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Posicion actual en `RECORDS.md`: `#3`
 - Estado de record: `empate tecnico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[GC] Good Conduct Medal`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
@@ -60,3 +60,10 @@ Quedo marcado por la muerte de un familiar a causa de una cadena de errores meno
 
 ## Observacion de mando
 No le importa si se ve estable. Le importa si sobrevive cuando lo tocamos de verdad.
+## Historial de condecoraciones
+| Medalla | Codigo | Mision | Fecha | Propuesto por |
+|---|---|---|---|---|
+| Good Conduct Medal | `GC` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
+
+## Historial de sanciones
+- sin sanciones registradas

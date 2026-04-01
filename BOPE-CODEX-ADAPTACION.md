@@ -10,6 +10,7 @@ Este archivo define como opera `BOPE VERSION DEFINITIVA` en Codex usando su prop
 4. no existe orden lateral valida entre soldados
 5. toda mision cerrada deja registro y push a GitHub
 6. se activa la minima fuerza necesaria
+7. el arranque doctrinal se lee desde archivos canonicos del repo
 
 ## Mando
 
@@ -103,6 +104,7 @@ SIGUIENTE PASO RECOMENDADO:
 - `codex-logs/MISION-ACTIVA.md` es la fuente canonica del estado operativo
 - `codex-logs/COMMS.log` registra decisiones, avances, bloqueos y handoffs
 - si no esta escrito, no existe
+- `Agentes activos` manda la carga perezosa de legajos
 
 ## Replica entre Codex, Claude y Gemini
 
@@ -135,7 +137,11 @@ El medallero visible sigue siendo parte estable del batallon. Toda actualizacion
 - seccion `SANCIONADOS`
 - seccion `KIA`
 
-Fuente operativa: `codex-logs/CUADRO-DE-HONOR.md`
+Fuentes operativas:
+
+- `codex-logs/CUADRO-DE-HONOR.md`
+- `codex-logs/ORDEN-DE-BATALLA.md`
+- `codex-logs/RECORDS.md`
 
 ## Legajos del batallon
 
@@ -149,19 +155,29 @@ Reglas:
 - la identidad operativa no reemplaza el legajo civil
 - cada efectivo debe tener ficha personal aislada en `codex-logs/personnel/`
 - `codex-logs/DOSSIER-GENERAL-BOPE.md` concentra la vista consolidada del batallon
-- `codex-logs/TABLERO-DE-RECORDS.md` fija operaciones y posicion relativa
+- `codex-logs/RECORDS.md` fija operaciones, ultima mision, lineas aproximadas, medallas y sanciones
 - `codex-logs/CUADRO-DE-HONOR.md` fija el medallero visible
+- `codex-logs/ORDEN-DE-BATALLA.md` fija el roster y la medalleria personal vigente
 - `codex-logs/FICHAS-OPERATIVAS-BOPE.md` une ficha, record y medallero en una sola salida de mando
 - toda mision cerrada refresca por defecto el dossier general y los legajos afectados
 - la historia personal puede enriquecer personalidad y justificar skills nuevos
 - los skills canonicos prevalecen siempre sobre el folklore
 - si un skill no esta asentado en el legajo, no existe
+- cada legajo cierra con historial de condecoraciones e historial de sanciones
 
 Regla de union:
 
-- cuando `SANTIAGO` invoque al equipo BOPE en esta capa, la presentacion debe salir desde `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+- cuando `SANTIAGO` invoque al equipo BOPE en esta capa, la presentacion debe salir exactamente desde `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
 - esa presentacion debe incluir para cada efectivo: rango, funcion, estado, operaciones, posicion en records y medalla vigente o declaracion de `sin condecoraciones`
-- si cambia una cifra o una medalla, se corrigen juntos `TABLERO-DE-RECORDS`, `CUADRO-DE-HONOR`, `DOSSIER-GENERAL-BOPE` y los legajos afectados
+- si cambia una cifra o una medalla, se corrigen juntos `RECORDS`, `ORDEN-DE-BATALLA`, `CUADRO-DE-HONOR`, `DOSSIER-GENERAL-BOPE` y los legajos afectados
+
+Regla de lazy loading:
+
+- `STANDBY` -> solo `JOHN RAMBO`
+- `ACTIVA` -> solo agentes listados en `MISION-ACTIVA`
+- `REVISTA COMPLETA` -> los 11 legajos
+
+La pantalla de activacion no obliga a cargar los 11 legajos si el estado no lo exige.
 
 ## Arsenal BOPE
 
@@ -182,11 +198,13 @@ Toda mision cerrada en Codex debe:
 2. registrar aprendizaje
 3. actualizar el indice de misiones
 4. actualizar el cuadro de honor si aplica
-5. actualizar `codex-logs/TABLERO-DE-RECORDS.md` si aplica
-6. actualizar `codex-logs/FICHAS-OPERATIVAS-BOPE.md` por defecto
-7. hacer `git add`
-8. hacer `git commit`
-9. hacer `git push`
+5. actualizar `codex-logs/ORDEN-DE-BATALLA.md` si aplica
+6. actualizar `codex-logs/RECORDS.md` si aplica
+7. actualizar `codex-logs/FICHAS-OPERATIVAS-BOPE.md` por defecto
+8. actualizar `codex-logs/NOTICIAS-BATALLON.log` si aplica
+9. hacer `git add`
+10. hacer `git commit`
+11. hacer `git push`
 
 Si no esta en GitHub, no esta cerrado.
 

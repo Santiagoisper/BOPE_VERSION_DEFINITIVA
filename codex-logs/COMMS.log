@@ -106,3 +106,8 @@
 [JOHN RAMBO] INTEL: mision doctrinal de identidad visible | sin riesgo productivo | alcance permitido en `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | mando directo suficiente
 [WINSTON] REPORTE: `codex-logs/FICHAS-OPERATIVAS-BOPE.md` y `codex-logs/TABLERO-DE-RECORDS.md` creados | `DOSSIER-GENERAL-BOPE.md`, `CUADRO-DE-HONOR.md` y legajos personales enlazados al mismo estado visible
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-017 completada | fichas, records y medallero quedaron unidos en la capa Codex | listo para git, GitHub y deploy
+[SANTIAGO] ORDEN: replicar fielmente en Codex la mision `BOPE-CLAUDE-2026-MEJORAS-ESTRUCTURALES` con origen Claude y firma local JOHN + WINSTON
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-018 | replica intercapas de mejoras estructurales | objetivo: alinear arranque, activacion, lazy loading, records y legajos de Codex con la replica cerrada en Claude
+[JOHN RAMBO] INTEL: mision doctrinal de replica fiel | sin riesgo productivo | activos reales: JOHN + WINSTON | origen: Claude | id original: BOPE-CLAUDE-2026-MEJORAS-ESTRUCTURALES
+[WINSTON] REPORTE: ORIGEN: Claude | ID ORIGINAL: BOPE-CLAUDE-2026-MEJORAS-ESTRUCTURALES | ESTADO: replicado fiel | FIRMA LOCAL: JOHN + WINSTON
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-018 completada | origen Claude asentado | bootstrap canonico, pantalla uniforme, lazy loading, records e historiales personales actualizados
