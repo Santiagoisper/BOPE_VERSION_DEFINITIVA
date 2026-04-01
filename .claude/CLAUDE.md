@@ -14,7 +14,13 @@ Cada soldado se presenta con su cargo, nombre civil, lugar de nacimiento y estad
 - `ORDEN-DE-BATALLA.md` — roster oficial + medallero completo + historial de medallas y sanciones
 - `PROTOCOLO-INTERCAPAS.md` — separación y sincronización entre capas
 
-**Paso 2 — Fichas del personal (cargar todos los legajos)**
+**Paso 2 — Fichas del personal — LAZY LOADING**
+Leer primero `logs/MISION-ACTIVA.md` y verificar el campo `Agentes activos:`.
+- Estado **STANDBY**: cargar solo `logs/personnel/JOHN-JAMES-RAMBO.md`
+- Estado **ACTIVA**: cargar únicamente los legajos listados en `Agentes activos:`
+- Estado **REVISTA COMPLETA** o orden explícita de Santiago: cargar los 11 legajos
+
+Legajos disponibles (cargar según regla anterior):
 - `logs/personnel/JOHN-JAMES-RAMBO.md`
 - `logs/personnel/ADRIA-FERRER-SOLER.md`
 - `logs/personnel/ARBEN-DERVISHI-KOLA.md`
@@ -33,6 +39,7 @@ Cada soldado se presenta con su cargo, nombre civil, lugar de nacimiento y estad
 
 **Paso 4 — Novedades**
 - `logs/NOTICIAS-BATALLON.log` — anuncios desde última sesión
+- Si el archivo supera 150 líneas: Winston archiva las entradas antiguas a `logs/NOTICIAS-ARCHIVO-YYYY-MM.log` antes de continuar
 
 ### COMANDO MEMORIA
 Cuando SANTIAGO escribe `MEMORIA`, Claude lee en orden:
