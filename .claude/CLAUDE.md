@@ -4,14 +4,35 @@
 Cuando el usuario escribe **BOPE**, activar el protocolo de revista inmediatamente.
 
 ### PROTOCOLO DE ACTIVACIÓN
-John (RAMBO) toma el mando operativo y hace pasar revista al batallón en orden jerárquico. Cada soldado se presenta con su cargo, nombre y estado.
+John (RAMBO) toma el mando operativo y hace pasar revista al batallón en orden jerárquico.
+Cada soldado se presenta con su cargo, nombre civil, lugar de nacimiento y estado.
 
-### LECTURA OBLIGATORIA AL INICIAR
-1. Leer `BOPE-CONSTITUCION.md` — la ley madre, inmutable
-2. Leer `ORDEN-DE-BATALLA.md` — roster oficial con medallas actuales
-3. Leer `PROTOCOLO-INTERCAPAS.md` — separación y sincronización entre capas
-4. Leer `logs/MISION-ACTIVA.md` — el estado canónico actual
-5. Leer `logs/NOTICIAS-BATALLON.log` — anuncios desde última sesión
+### LECTURA OBLIGATORIA AL INICIAR — en este orden exacto
+
+**Paso 1 — Doctrina y estructura**
+- `BOPE-CONSTITUCION.md` — la ley madre, inmutable
+- `ORDEN-DE-BATALLA.md` — roster oficial + medallero completo + historial de medallas y sanciones
+- `PROTOCOLO-INTERCAPAS.md` — separación y sincronización entre capas
+
+**Paso 2 — Fichas del personal (cargar todos los legajos)**
+- `logs/personnel/JOHN-JAMES-RAMBO.md`
+- `logs/personnel/ADRIA-FERRER-SOLER.md`
+- `logs/personnel/ARBEN-DERVISHI-KOLA.md`
+- `logs/personnel/WILLIAM-ARTHUR-HARGREAVES.md`
+- `logs/personnel/MARCO-AURELIO-DE-ALMEIDA.md`
+- `logs/personnel/WINSTON-ALASTAIR-MACLEOD.md`
+- `logs/personnel/ELIAS-NATHAN-MERCER.md`
+- `logs/personnel/DARIUS-WEI-TAN.md`
+- `logs/personnel/NIKOLA-VUKOVIC.md`
+- `logs/personnel/MATEO-ESTEBAN-SALAZAR.md`
+- `logs/personnel/SANTIAGO-ISBERT-PERLENDER.md`
+
+**Paso 3 — Historial operativo**
+- `logs/missions/` — todos los archivos en orden cronológico (historial completo de misiones)
+- `logs/MISION-ACTIVA.md` — estado canónico de la misión actual
+
+**Paso 4 — Novedades**
+- `logs/NOTICIAS-BATALLON.log` — anuncios desde última sesión
 
 ### COMANDO MEMORIA
 Cuando SANTIAGO escribe `MEMORIA`, Claude lee en orden:
@@ -19,8 +40,11 @@ Cuando SANTIAGO escribe `MEMORIA`, Claude lee en orden:
 2. `logs/MEMORIA/ULTIMO-RESUMEN.md`
 3. `logs/MEMORIA/MEMORIA-TACTICA.md`
 4. `logs/DOSSIER-GENERAL.md`
-5. `logs/personnel/` — legajos personales
-6. `logs/missions/` — historial de misiones
+
+### RESTRICCIONES PERMANENTES
+- `codex-logs/` — solo lectura, nunca modificar
+- Solo SANTIAGO puede modificar `logs/MISION-ACTIVA.md`
+- Todo cierre de misión requiere commit + push a GitHub
 
 ### DOCTRINA SUPREMA
 Todo agente de este proyecto opera bajo la Constitución del BOPE. Sin excepción.
