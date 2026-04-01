@@ -24,6 +24,12 @@
   - deteccion de union rota
 - Operaciones acumuladas en capa Codex: `2`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Estado de record: `empate tecnico`
+- Medalla vigente en `CUADRO-DE-HONOR`: `[MS] Meritorious Service`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Quedo marcado por una crisis familiar causada por una falla de integracion entre sistemas logisticos y sanitarios. Cada modulo parecia sano, pero el conjunto mintio. Desde entonces vive obsesionado con una idea: lo mas peligroso no es lo roto visible, sino lo que parece conectado y no lo esta.
 

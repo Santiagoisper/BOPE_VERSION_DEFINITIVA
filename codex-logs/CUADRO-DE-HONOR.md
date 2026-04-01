@@ -10,6 +10,8 @@ Estado visible del medallero BOPE para Codex.
 - mostrar cantidad de operaciones del ganador
 - si no hay ganador, operaciones = `0`
 - actualizar este archivo al cierre de cada mision
+- las operaciones visibles deben coincidir con `codex-logs/TABLERO-DE-RECORDS.md`
+- toda medalla adjudicada debe verse tambien en `codex-logs/DOSSIER-GENERAL-BOPE.md`, `codex-logs/FICHAS-OPERATIVAS-BOPE.md` y en el legajo del efectivo
 - incluir siempre las secciones `SANCIONADOS` y `KIA`
 - `KIA` se reserva para soldados ejecutados por el tribunal y dados de baja definitiva
 

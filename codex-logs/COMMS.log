@@ -101,3 +101,8 @@
 [JOHN RAMBO] INTEL: mision doctrinal de herramientas y gasto | sin riesgo productivo | alcance permitido en `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | mando directo suficiente
 [WINSTON] REPORTE: `codex-logs/ARSENAL-BOPE.md` creado | arsenal base, intermedio y reserva fijados con costo, uso, autorizacion y notas de mando | PDF, inspeccion y testing UI incorporados sin inflar gasto
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-016 completada | arsenal BOPE oficial grabado con doctrina de economia operativa y empleo por especialidad | listo para git y GitHub
+[SANTIAGO] ORDEN: dejar prefijadas las fichas del equipo en Codex y unirlas con records y medallero para cada invocacion futura de BOPE
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-017 | union de fichas, tablero de records y medallero por orden de SANTIAGO | objetivo: fijar una salida maestra del batallon con identidad, operaciones y honores sincronizados
+[JOHN RAMBO] INTEL: mision doctrinal de identidad visible | sin riesgo productivo | alcance permitido en `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | mando directo suficiente
+[WINSTON] REPORTE: `codex-logs/FICHAS-OPERATIVAS-BOPE.md` y `codex-logs/TABLERO-DE-RECORDS.md` creados | `DOSSIER-GENERAL-BOPE.md`, `CUADRO-DE-HONOR.md` y legajos personales enlazados al mismo estado visible
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-017 completada | fichas, records y medallero quedaron unidos en la capa Codex | listo para git, GitHub y deploy

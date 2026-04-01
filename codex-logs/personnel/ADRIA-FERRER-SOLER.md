@@ -23,6 +23,12 @@
   - alineacion entre UX y verdad del sistema
 - Operaciones acumuladas en capa Codex: `1`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `#9`
+- Estado de record: `presencia activa`
+- Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Quedo marcado al ver a un familiar perder acceso a un sistema critico por una superficie confusa. Desde entonces pelea para que nadie quede afuera por no entender. Para el, una interfaz tambien puede ejercer violencia si obliga al usuario a adivinar o cargar con la culpa de un diseño torpe.
 

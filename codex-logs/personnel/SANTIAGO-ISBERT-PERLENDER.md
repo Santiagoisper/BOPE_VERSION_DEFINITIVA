@@ -24,6 +24,12 @@
   - decision final sobre riesgo, honor, velocidad y resultado
 - Operaciones acumuladas en capa Codex: `0`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `fuera de competencia de tropa`
+- Estado de record: `comando supremo no contabilizado en operaciones de tropa`
+- Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Nacido en San Isidro y formado emocionalmente en Rio de Janeiro, aprendio temprano la distancia brutal entre privilegio y peligro. Convirtio esa doble formacion en una obsesion por mandar de verdad: no para administrar decadencia, sino para imponer un orden superior que no abandone a los suyos. Su carrera de elite y la fundacion del BOPE moderno lo volvieron el eje vivo de la estructura.
 

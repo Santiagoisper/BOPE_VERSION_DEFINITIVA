@@ -24,6 +24,12 @@
   - contencion del exceso
 - Operaciones acumuladas en capa Codex: `2`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Estado de record: `empate tecnico`
+- Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Fue marcado por una operacion tacticamente exitosa que destruyo moralmente a los suyos. Desde entonces pelea por una idea simple: no basta con vencer si el batallon se pudre por dentro. Se quedo para nombrar exceso, desvio, merito y vergüenza cuando otros prefieren callar.
 

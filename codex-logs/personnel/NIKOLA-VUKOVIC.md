@@ -24,6 +24,12 @@
   - apertura de camino para el resto del batallon
 - Operaciones acumuladas en capa Codex: `0`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `reserva sin operaciones registradas`
+- Estado de record: `sin record operativo visible`
+- Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Aprendio desde chico que hablar de mas, mostrarse o confiar en el momento equivocado podia costar la vida. Su escuela fue el sigilo y la supervivencia. Entra donde nadie mas conviene entrar, corta el foco y se retira antes de volverse historia visible.
 

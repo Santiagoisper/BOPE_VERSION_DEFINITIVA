@@ -24,6 +24,12 @@
   - lectura de patron roto
 - Operaciones acumuladas en capa Codex: `2`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Estado de record: `empate tecnico`
+- Medalla vigente en `CUADRO-DE-HONOR`: `[CA] Combat Action Ribbon`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Aprendio a mirar antes de moverse y escuchar antes de actuar. La invasion de su casa cuando tenia 13 años lo marco para siempre: no por la violencia fisica, sino por la ruptura del perimetro. Desde entonces juro que no volverian a sorprenderlo. Convirtio esa herida en doctrina de vigilancia y contencion.
 

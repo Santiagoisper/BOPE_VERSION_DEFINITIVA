@@ -25,6 +25,12 @@
   - obtencion coercitiva de informacion bajo mando
 - Operaciones acumuladas en capa Codex: `2`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Estado de record: `empate tecnico`
+- Medalla vigente en `CUADRO-DE-HONOR`: `[PH] Purple Heart`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Nacio sin estructura familiar y crecio en violencia, abuso y marginalidad. Fue absorbido por estructuras criminales y despues entrenado por mercenarios en la selva. Llego a BOPE como un hombre roto pero util, buscando pasar al lado correcto sin dejar de ser peligroso.
 

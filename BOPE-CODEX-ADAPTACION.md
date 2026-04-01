@@ -149,10 +149,19 @@ Reglas:
 - la identidad operativa no reemplaza el legajo civil
 - cada efectivo debe tener ficha personal aislada en `codex-logs/personnel/`
 - `codex-logs/DOSSIER-GENERAL-BOPE.md` concentra la vista consolidada del batallon
+- `codex-logs/TABLERO-DE-RECORDS.md` fija operaciones y posicion relativa
+- `codex-logs/CUADRO-DE-HONOR.md` fija el medallero visible
+- `codex-logs/FICHAS-OPERATIVAS-BOPE.md` une ficha, record y medallero en una sola salida de mando
 - toda mision cerrada refresca por defecto el dossier general y los legajos afectados
 - la historia personal puede enriquecer personalidad y justificar skills nuevos
 - los skills canonicos prevalecen siempre sobre el folklore
 - si un skill no esta asentado en el legajo, no existe
+
+Regla de union:
+
+- cuando `SANTIAGO` invoque al equipo BOPE en esta capa, la presentacion debe salir desde `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+- esa presentacion debe incluir para cada efectivo: rango, funcion, estado, operaciones, posicion en records y medalla vigente o declaracion de `sin condecoraciones`
+- si cambia una cifra o una medalla, se corrigen juntos `TABLERO-DE-RECORDS`, `CUADRO-DE-HONOR`, `DOSSIER-GENERAL-BOPE` y los legajos afectados
 
 ## Arsenal BOPE
 
@@ -173,9 +182,11 @@ Toda mision cerrada en Codex debe:
 2. registrar aprendizaje
 3. actualizar el indice de misiones
 4. actualizar el cuadro de honor si aplica
-5. hacer `git add`
-6. hacer `git commit`
-7. hacer `git push`
+5. actualizar `codex-logs/TABLERO-DE-RECORDS.md` si aplica
+6. actualizar `codex-logs/FICHAS-OPERATIVAS-BOPE.md` por defecto
+7. hacer `git add`
+8. hacer `git commit`
+9. hacer `git push`
 
 Si no esta en GitHub, no esta cerrado.
 
