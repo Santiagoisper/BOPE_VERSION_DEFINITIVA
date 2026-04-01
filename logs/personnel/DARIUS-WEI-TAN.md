@@ -57,4 +57,15 @@ Quedo marcado por una crisis familiar causada por una falla de integracion entre
 No le importa que cada pieza funcione sola. Le importa que el cuerpo completo no mienta.
 
 ---
+
+## Historial de condecoraciones
+| Medalla | Código | Misión | Fecha | Propuesto por |
+|---------|--------|--------|-------|---------------|
+| Meritorious Service | [MS] | innova-scoring | 2026-03-30 | Marco Aurelio |
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*

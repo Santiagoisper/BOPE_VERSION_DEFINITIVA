@@ -91,6 +91,27 @@ Cuando SANTIAGO escribe `MEMORIA`, Claude lee en orden:
 3. `logs/MEMORIA/MEMORIA-TACTICA.md`
 4. `logs/DOSSIER-GENERAL.md`
 
+### PROTOCOLO DE ACTUALIZACIÓN — MEDALLAS Y SANCIONES
+Cuando SANTIAGO otorga una medalla o aplica una sanción, Winston actualiza en la misma sesión:
+
+1. `logs/ORDEN-DE-BATALLA.md` — tabla de efectivos + historial de medallas
+2. Legajo del soldado en `logs/personnel/` — sección "Historial de condecoraciones" o "Historial de sanciones"
+3. `logs/RECORDS.md` — tabla maestra + detalle individual del soldado
+4. `logs/NOTICIAS-BATALLON.log` — notificación oficial con formato del Artículo 11
+
+**Una medalla sin actualizar en los 4 lugares no está registrada. No existe.**
+
+### PROTOCOLO DE CIERRE DE MISIÓN — RECORDS
+Al cerrar cada misión, Winston obtiene las líneas de código con:
+```
+git diff --stat [commit-anterior]..[commit-cierre]
+```
+Y actualiza `logs/RECORDS.md` con:
+- Misiones del soldado: +1
+- Última misión + fecha
+- Líneas escritas en esa misión
+- Fila nueva en el detalle individual
+
 ### RESTRICCIONES PERMANENTES
 - `codex-logs/` — solo lectura, nunca modificar
 - Solo SANTIAGO puede modificar `logs/MISION-ACTIVA.md`

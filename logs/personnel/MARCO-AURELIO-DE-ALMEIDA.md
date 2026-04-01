@@ -57,4 +57,13 @@ Fue marcado por una operacion tacticamente exitosa que destruyo moralmente a los
 No basta con vencer. Hay que seguir siendo dignos de la victoria.
 
 ---
+
+## Historial de condecoraciones
+*Sin condecoraciones registradas*
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*

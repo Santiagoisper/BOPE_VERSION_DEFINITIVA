@@ -58,4 +58,13 @@ Nacido en San Isidro y formado emocionalmente en Rio de Janeiro, aprendio tempra
 No vino a administrar hombres comunes. Vino a forjar una fuerza que no tenga derecho a fallar.
 
 ---
+
+## Historial de condecoraciones
+*El Comandante no lleva medallas — las otorga*
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*

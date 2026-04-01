@@ -60,4 +60,15 @@ Nacio sin estructura familiar y crecio en violencia, abuso y marginalidad. Fue a
 No es un soldado para todas las campañas. Es un arma de guerra contenida por mando firme.
 
 ---
+
+## Historial de condecoraciones
+| Medalla | Código | Misión | Fecha | Propuesto por |
+|---------|--------|--------|-------|---------------|
+| Purple Heart | [PH] | innova-scoring | 2026-03-30 | El propio soldado |
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*
