@@ -24,6 +24,12 @@
   - transformacion de experiencia en doctrina
 - Operaciones acumuladas en capa Codex: `6`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `#2`
+- Estado de record: `segundo registro historico`
+- Medalla vigente en `CUADRO-DE-HONOR`: `[CM] Commendation Medal`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Quedo marcado al ver una operacion reescrita por gente que no habia estado ahi. Desde entonces se volvio guardian de la verdad escrita. Para el, lo que no queda trazado se pierde y lo que se pierde vuelve como error repetido.
 

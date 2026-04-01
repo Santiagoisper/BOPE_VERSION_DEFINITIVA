@@ -24,6 +24,12 @@
   - reconstruccion bajo fuego
 - Operaciones acumuladas en capa Codex: `2`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `#3`
+- Estado de record: `empate tecnico`
+- Medalla vigente en `CUADRO-DE-HONOR`: `[BS] Bronze Star`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Vio el asesinato de sus padres en guerra y aprendio que nada se mantiene en pie por default. En vez de quebrarse hacia el caos, se volvio constructor. Donde otros ven ruina, el ve cimientos posibles. Su obsesion es que lo nuestro no se rompa cuando llega el fuego.
 

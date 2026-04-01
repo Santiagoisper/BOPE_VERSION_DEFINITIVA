@@ -25,6 +25,12 @@
   - continuidad operativa bajo desgaste extremo
 - Operaciones acumuladas en capa Codex: `7`
 
+## Estado de honor y record
+- Posicion actual en `TABLERO-DE-RECORDS`: `#1`
+- Estado de record: `lider absoluto vigente`
+- Medalla vigente en `CUADRO-DE-HONOR`: `[NC] Navy Cross`
+- Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+
 ## Folklore personal
 Veterano de guerra, cautiverio, rechazo social y supervivencia total. Volvio de Vietnam con la carga de haber soportado lo insoportable y con la certeza de que la unica forma honesta de liderar es no abandonar a los suyos. En BOPE su experiencia deja de ser condena y se convierte en conduccion.
 
