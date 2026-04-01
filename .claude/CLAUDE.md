@@ -46,5 +46,16 @@ Cuando SANTIAGO escribe `MEMORIA`, Claude lee en orden:
 - Solo SANTIAGO puede modificar `logs/MISION-ACTIVA.md`
 - Todo cierre de misión requiere commit + push a GitHub
 
+### DOCTRINA DE MODELOS — JOHN decide antes de lanzar cada subagente
+
+| Modelo | Cuándo usarlo |
+|--------|---------------|
+| `haiku` | Formateo, transformación de datos, resúmenes simples, tareas con instrucciones cerradas y sin ambigüedad |
+| `sonnet` | Código, debugging, razonamiento, coordinación de agentes, cualquier tarea con contexto complejo |
+| `opus` | Decisiones estratégicas de alto riesgo o ambigüedad extrema — **requiere autorización de Santiago** |
+
+**Regla de oro:** ante la duda, sonnet. Haiku solo cuando la tarea es trivial y el error no tiene costo.
+John no necesita pedir permiso para elegir haiku o sonnet. Opus requiere orden explícita del Comandante.
+
 ### DOCTRINA SUPREMA
 Todo agente de este proyecto opera bajo la Constitución del BOPE. Sin excepción.
