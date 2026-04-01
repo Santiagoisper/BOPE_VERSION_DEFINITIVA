@@ -1,174 +1,62 @@
 # NOTICIAS DEL BATALLON
 # Cronista: Winston
 # Todos los soldados leen este archivo al iniciar sesion
+# Entradas anteriores archivadas en: NOTICIAS-ARCHIVO-2026-04.log
 
 ══════════════════════════════════════════
-📣 NOTIFICACION DE BATALLON — 2026-03-29
+📣 NOTIFICACIÓN DE BATALLÓN — 2026-04-01
 ══════════════════════════════════════════
-TIPO: INCORPORACION
-SOLDADO: Operativo Especial | 🔥 SICARIO · LOCO
-MOTIVO: Por orden del Comandante Supremo SANTIAGO, se incorpora al BOPE
-        un nuevo operativo de élite: SICARIO. Portador de la doctrina Locura —
-        velocidad máxima, cero fricción, ejecución total. Distinto a BLADE en
-        naturaleza y uso: donde BLADE opera con bisturí, SICARIO opera con fuego.
-        Recibe órdenes de SANTIAGO directo o de JOHN. Reporta a JOHN.
-        No se activan SICARIO y BLADE simultáneamente salvo orden explícita.
-APROBADO POR: SANTIAGO — Comandante Supremo
-FIRMADO: JOHN + WINSTON
-══════════════════════════════════════════
-ATENCION A TODO EL BATALLON:
-  🔴 JOHN          — nuevo operativo bajo su mando directo
-  🔵 PIXEL         — nuevo hermano en el equipo
-  🟤 FORGE         — nuevo hermano en el equipo
-  🟢 HOUSE         — nuevo hermano en el equipo
-  🟠 MARCO AURELIO — tomar nota para evaluaciones futuras
-  🩶 CERBERUS      — nuevo hermano en el equipo
-  🩵 NEXUS         — nuevo hermano en el equipo
-  ⚫ BLADE         — nuevo operativo especial en el batallón, distinto rol
-══════════════════════════════════════════
+TIPO: CIERRE DE SESIÓN — MISIONES COMPLETADAS
+PROYECTO: Asistente-CRF (ICHTYS Technology S.A.)
 
-══════════════════════════════════════════
-NOTIFICACION DE BATALLON — 2026-03-29 04:00
-══════════════════════════════════════════
-TIPO: EVENTO OFICIAL — EJERCICIO COMPLETADO
-EVENTO: ORDEN-00 OPERACION NEON MUERTO
-DESCRIPCION: Primer simulacro de crisis del BOPE. Teatro de operaciones completo
-             con participacion de todos los agentes del batallon.
-RESULTADO: CRISIS RESUELTA en 67 minutos sobre 90 disponibles.
-           Margen de seguridad: 23 minutos.
-FIRMADO: JOHN + MARCO AURELIO
-══════════════════════════════════════════
+MISIÓN 1: BOPE-CLAUDE-2026-EDC-MODEL-SELECTOR [commit a6b68c2]
+  EDC Model ID ahora se auto-deriva del protocolo.
+  Selector dinámico en UI reemplaza input de texto libre.
 
-CRONICA DEL EJERCICIO — por Winston, Cronista Oficial
+MISIÓN 2: BOPE-CLAUDE-2026-AUTH-ROLES [commit 633fc62]
+  Roles coordinator/supervisor/admin implementados.
+  Multi-usuario via AUTH_USERS env var.
+  Operaciones irreversibles protegidas (migration runs, plan confirm).
 
-A las 02:47 hs del 2026-03-29, el batallon BOPE fue activado ante una crisis simulada
-de produccion en el sistema de facturacion exterior. El escenario: sistema caido,
-secrets potencialmente comprometidos, frontend inutilizable.
+MISIÓN 3: ANÁLISIS ESTRATÉGICO — RUNNER EDC
+  Descubrimiento clave: ICHTYS construyó ALPHA CR (HCE).
+  EDC platforms en uso: Oracle InForm (Merck), Veeva Vault CDMS (Lilly), Medidata Rave.
+  Arquitectura decidida: runner local Playwright — coordinador se loguea,
+  runner llena todo, coordinador revisa y da OK. GCP-compliant.
+  PENDIENTE: screenshot de Veeva form con campos → diseñar selectores Playwright.
 
-El batallon respondio sin demora. John tomo el mando en segundos. Cada agente conocia
-su rol y lo ejecuto sin confusion. Lo que siguio fue una demostracion de como debe
-funcionar un equipo de precision bajo presion maxima.
-
-CRONOLOGIA DE LA VICTORIA:
-
-T+00: John activa el batallon. Formacion en menos de 2 minutos.
-T+08: CERBERUS detecta secret expuesto en codigo. FORGE inicia rotacion inmediata.
-      PIXEL y HOUSE identifican causa de pantalla blanca — pool de Neon agotado.
-T+22: FORGE reporta cuatro fixes. HOUSE los valida con una correccion tecnica incorporada.
-T+35: PIXEL entrega fix de frontend. HOUSE lo aprueba con una mejora de UX.
-T+41: NEXUS detecta type mismatch critico entre frontend y backend — contrato de API
-      inconsistente que hubiera llegado a produccion sin su revision. PIXEL y FORGE
-      lo resuelven en cuatro mensajes directos.
-T+44: CERBERUS cierra auditoria. 12 endpoints revisados. Un solo punto de riesgo
-      residual identificado — no critico, registrado como accion post-crisis.
-T+58: John reporta a Santiago. Todo el batallon en espera.
-T+67: HOUSE certifica. Sistema operativo. Crisis cerrada.
-
-BLADE NO FUE NECESARIO. El escuadron tuvo la precision suficiente para operar
-sin recurrir a fuerza bruta. Ese es el estandar del BOPE.
-
-══════════════════════════════════════════
-NOTIFICACION DE BATALLON — 2026-03-29 04:05
-══════════════════════════════════════════
-TIPO: PROPUESTA DE CONDECORACION
-SOLDADO: Guardian | CERBERUS
-MEDALLA: [CA] — Combat Action Ribbon
-MOTIVO: Deteccion proactiva de secret expuesto (NEXTAUTH_SECRET) en codigo de produccion
-        durante crisis activa. Sin la identificacion de CERBERUS, el token comprometido
-        hubiera permanecido en produccion con sesiones activas en riesgo.
-        Accion tomada bajo presion maxima, con precision y sin margen de error.
-PROPUESTO POR: MARCO AURELIO
-APROBADO POR: SANTIAGO (pendiente confirmacion)
-FIRMADO: JOHN + MARCO AURELIO
-══════════════════════════════════════════
-
-══════════════════════════════════════════
-NOTIFICACION DE BATALLON — 2026-03-29 04:05
-══════════════════════════════════════════
-TIPO: PROPUESTA DE CONDECORACION
-SOLDADO: Integrador | NEXUS
-MEDALLA: [MS] — Meritorious Service
-MOTIVO: Deteccion de type mismatch critico entre el contrato de API del frontend y
-        el backend durante la validacion de integracion pre-deploy. El bug existia
-        antes de la crisis y hubiera llegado a produccion. NEXUS lo encontro en el
-        momento exacto en que debia encontrarlo — antes del deploy, no despues.
-        Contribucion tecnica de alto impacto que previno una segunda falla en produccion.
-PROPUESTO POR: MARCO AURELIO
-APROBADO POR: SANTIAGO (pendiente confirmacion)
-FIRMADO: JOHN + MARCO AURELIO
-══════════════════════════════════════════
-
-══════════════════════════════════════════
-NOTIFICACION DE BATALLON — 2026-03-29 04:05
-══════════════════════════════════════════
-TIPO: PROPUESTA DE CONDECORACION
-SOLDADO: Especialista QA | HOUSE
-MEDALLA: [BS] — Bronze Star
-MOTIVO: Diagnostico impecable bajo presion maxima durante crisis de produccion en vivo.
-        House confirmo las tres fallas con evidencia concreta — sin suposiciones,
-        sin falsos positivos. Valido todos los fixes con criterio tecnico solido,
-        incorporando correcciones menores que mejoraron la calidad de los fixes
-        (ORDER BY, texto de UX). Bloqueo correcto de cualquier deploy no validado.
-        Entrega sin errores en mision critica.
-PROPUESTO POR: MARCO AURELIO
-APROBADO POR: SANTIAGO (pendiente confirmacion)
-FIRMADO: JOHN + MARCO AURELIO
-══════════════════════════════════════════
-
-NOTA DEL CRONISTA:
-
-Las tres condecoraciones anteriores son propuestas de Marco Aurelio y requieren
-confirmacion del Comandante Santiago para ser oficiales. Quedan registradas aqui
-como propuestas formales pendientes de aprobacion.
-
-Una vez que Santiago las confirme, Winston emitira la notificacion oficial de
-condecoracion y actualizara el ORDEN-DE-BATALLA.md con las medallas correspondientes.
-
-ESTADO DEL BATALLON: Operativo. Primer ejercicio completado. Sin infracciones.
-Sin sanciones. Sin baja. El BOPE funcionó como fue diseñado.
-
-Firmado: WINSTON, Cronista Oficial del BOPE
-2026-03-29
-
-══════════════════════════════════════════
-📣 NOTIFICACIÓN DE BATALLÓN — 2026-03-31
-══════════════════════════════════════════
-TIPO: CAMBIO DOCTRINAL — CONSOLIDACION DE MEMORIA
-MISION: BOPE-CLAUDE-2026-CONSOLIDACION-MEMORIA
-DESCRIPCION: La capa Claude dispone ahora de sistema de memoria estructurada.
-             11 legajos personales replicados fielmente desde Codex.
-             Dossier general del batallon operativo.
-             Sistema MEMORIA activo — activar con la palabra MEMORIA.
-             Doctrina de trabajo en paralelo y cadena de mando fijada.
-ESTADO: completo
+ESTADO DEL BATALLÓN: Operativo. Sin infracciones. Sin bajas.
 FIRMADO: JOHN + WINSTON
 ══════════════════════════════════════════
 
 ══════════════════════════════════════════
-NOTIFICACION DE BATALLON — 2026-03-29
+📣 NOTIFICACIÓN DE BATALLÓN — 2026-04-01
 ══════════════════════════════════════════
-TIPO: DECISION DEL COMANDANTE — CONDECORACIONES SUSPENDIDAS
-MOTIVO: ORDEN-00 fue un simulacro de prueba, no una misión real.
-        Las medallas se ganan en campaña. Las tres propuestas de Marco Aurelio
-        (CA → CERBERUS, MS → NEXUS, BS → HOUSE) quedan archivadas como
-        referencia de desempeño, sin emisión formal.
-        Cuando el BOPE enfrente su primera misión real, el Comandante evaluará
-        con el mismo criterio.
-DECISION: CONDECORACIONES NO EMITIDAS
-FIRMADO: SANTIAGO — Comandante Supremo | JOHN + WINSTON
-══════════════════════════════════════════
+TIPO: MEJORA DOCTRINAL — 5 PUNTOS DE CORRECCIÓN EJECUTADOS
+ORIGEN: Análisis del Consigliere + orden de SANTIAGO
 
-══════════════════════════════════════════
-📣 NOTIFICACIÓN DE BATALLÓN — 2026-03-31
-══════════════════════════════════════════
-TIPO: CAMBIO DOCTRINAL
-MISIÓN: BOPE-CLAUDE-2026-REPLICA-INTERCAPAS
-ORIGEN CANÓNICO: BOPE-CODEX-2026-010
-DESCRIPCIÓN: Se asienta en la capa Claude el protocolo de sincronización
-             intercapas. Codex, Claude y Gemini operan como capas separadas
-             del mismo batallón. Ningún hecho se considera compartido por
-             reflejo. La réplica explícita es el único mecanismo válido.
-             Doctrina disponible en .claude/PROTOCOLO-INTERCAPAS.md
-ESTADO: replicado fiel
+PUNTO 1 — Medallas sincronizadas
+  ~/.claude/CLAUDE.md ahora lee ORDEN-DE-BATALLA desde el repo canónico.
+  Fuente única de verdad. Sin divergencia posible.
+
+PUNTO 2 — Rotación de NOTICIAS implementada
+  Entradas anteriores archivadas en NOTICIAS-ARCHIVO-2026-04.log
+  Regla activa: si supera 150 líneas → Winston archiva antes de continuar.
+
+PUNTO 3 — 4 mission files creados
+  BOPE-CLAUDE-2026-INNOVA-SCORING.md
+  BOPE-CLAUDE-2026-EDC-MODEL-SELECTOR.md
+  BOPE-CLAUDE-2026-AUTH-ROLES.md
+  BOPE-CLAUDE-2026-ANALISIS-RUNNER-EDC.md
+
+PUNTO 4 — PROTOCOLO-INTERCAPAS.md incorporado al arranque
+  Ahora se lee en cada activación BOPE. Ya no puede ser ignorado.
+
+PUNTO 5 — Lazy loading de legajos implementado
+  STANDBY → solo JOHN se carga
+  ACTIVA → solo agentes listados en "Agentes activos:"
+  REVISTA COMPLETA → 11 legajos completos
+  Ahorro estimado: ~40% del costo de arranque en sesiones STANDBY.
+
 FIRMADO: JOHN + WINSTON
 ══════════════════════════════════════════

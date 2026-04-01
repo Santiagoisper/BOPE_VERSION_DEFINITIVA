@@ -57,4 +57,15 @@ Quedo marcado por la muerte de un familiar a causa de una cadena de errores meno
 No le importa si se ve estable. Le importa si sobrevive cuando lo tocamos de verdad.
 
 ---
+
+## Historial de condecoraciones
+| Medalla | Código | Misión | Fecha | Propuesto por |
+|---------|--------|--------|-------|---------------|
+| Good Conduct Medal | [GC] | innova-scoring | 2026-03-30 | Winston |
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*

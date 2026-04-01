@@ -57,4 +57,15 @@ Aprendio a mirar antes de moverse y escuchar antes de actuar. La invasion de su 
 Cuando el perimetro depende de alguien, depende de el.
 
 ---
+
+## Historial de condecoraciones
+| Medalla | Código | Misión | Fecha | Propuesto por |
+|---------|--------|--------|-------|---------------|
+| Combat Action Ribbon | [CA] | innova-scoring | 2026-03-30 | John |
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*

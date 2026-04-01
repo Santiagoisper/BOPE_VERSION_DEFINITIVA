@@ -56,4 +56,13 @@ Quedo marcado al ver a un familiar perder acceso a un sistema critico por una su
 Si el usuario tiene que adivinar, ya estamos perdiendo.
 
 ---
+
+## Historial de condecoraciones
+*Sin condecoraciones registradas*
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*

@@ -56,4 +56,15 @@ Vio el asesinato de sus padres en guerra y aprendio que nada se mantiene en pie 
 No combate destruyendo primero. Combate haciendo que lo nuestro siga en pie.
 
 ---
+
+## Historial de condecoraciones
+| Medalla | Código | Misión | Fecha | Propuesto por |
+|---------|--------|--------|-------|---------------|
+| Bronze Star | [BS] | innova-scoring | 2026-03-30 | Marco Aurelio |
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*

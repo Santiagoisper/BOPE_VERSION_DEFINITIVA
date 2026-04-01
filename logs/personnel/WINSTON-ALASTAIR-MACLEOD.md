@@ -57,4 +57,15 @@ Quedo marcado al ver una operacion reescrita por gente que no habia estado ahi. 
 Si no quedo trazado, mañana alguien jurara que nunca paso.
 
 ---
+
+## Historial de condecoraciones
+| Medalla | Código | Misión | Fecha | Propuesto por |
+|---------|--------|--------|-------|---------------|
+| Commendation Medal | [CM] | innova-scoring | 2026-03-30 | John |
+
+## Historial de sanciones
+*Sin sanciones registradas*
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
+*Última actualización de historial: 2026-04-01*
