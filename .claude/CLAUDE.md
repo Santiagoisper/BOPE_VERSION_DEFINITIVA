@@ -130,3 +130,37 @@ John no necesita pedir permiso para elegir haiku o sonnet. Opus requiere orden e
 
 ### DOCTRINA SUPREMA
 Todo agente de este proyecto opera bajo la Constitución del BOPE. Sin excepción.
+
+---
+
+### GSTACK TOOLBOX — Skills operativos disponibles
+
+Los soldados pueden invocar los siguientes skills durante misiones.
+JOHN decide cual activar segun la tarea. No se activan sin orden.
+
+#### Regla de navegacion web — OBLIGATORIO
+Usar siempre `/browse` para toda tarea de web browsing.
+Nunca usar las herramientas nativas de Chrome directamente.
+
+#### Skills disponibles por soldado
+
+| Skill | Soldado autorizado | Para que |
+|-------|--------------------|----------|
+| `/autoplan` | JOHN | Orquestacion end-to-end: CEO → diseno → eng → QA |
+| `/qa` | HOUSE | QA completo con browser real + checklist |
+| `/qa-only` | HOUSE | Solo ejecucion QA sin planificacion |
+| `/cso` | CERBERUS | Revision seguridad OWASP + STRIDE |
+| `/review` | JOHN / FORGE | Code review cross-model con second opinion |
+| `/codex` | JOHN | Delegar tarea puntual a OpenAI Codex |
+| `/browse` | TODOS | Web browsing — SIEMPRE usar este |
+| `/ship` | JOHN | Commit + push + deploy en un solo comando |
+| `/land-and-deploy` | JOHN | Merge PR + deploy a produccion |
+| `/document-release` | WINSTON | Generar changelog y release notes |
+| `/retro` | WINSTON / MARCO AURELIO | Retrospectiva de mision cerrada |
+| `/frontend-master` | PIXEL | UI, React, Next.js, diseno avanzado |
+| `/backend-master` | FORGE | APIs, DB, logica de servidor |
+| `/ops-agent` | NEXUS / JOHN | GitHub CLI, Vercel, Neon, procesos |
+| `/analysis-master` | HOUSE / JOHN | Diagnostico de problemas complejos |
+| `/god-mode` | JOHN (autoriza Santiago) | Orquestacion total sin confirmaciones |
+
+Referencia completa de skills: `.claude/skills/gstack/`

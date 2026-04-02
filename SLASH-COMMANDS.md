@@ -170,3 +170,30 @@ Los skills se activan como comandos y expanden el prompt con instrucciones espec
 ---
 
 *Generado: 2026-03-31 | Proyecto: BOPE VERSION DEFINITIVA*
+
+---
+
+## Skills gstack integrados (toolbox operativo)
+
+Los siguientes skills provienen de gstack y estan disponibles bajo autorizacion de JOHN RAMBO.
+
+| Skill | Para que | Soldado asignado |
+|-------|----------|-----------------|
+| `/autoplan` | Orquestacion end-to-end con roles CEO/design/eng/QA | JOHN |
+| `/qa` | QA completo con browser real, checklist exhaustivo | HOUSE |
+| `/qa-only` | Solo ejecucion de QA (sin planificacion previa) | HOUSE |
+| `/cso` | Revision de seguridad OWASP + STRIDE + reporte | CERBERUS |
+| `/review` | Code review con second opinion cross-model | JOHN / FORGE |
+| `/codex` | Delegar tarea puntual a OpenAI Codex | JOHN |
+| `/browse` | Web browsing — SIEMPRE en lugar de Chrome directo | TODOS |
+| `/ship` | Commit + push + deploy en secuencia | JOHN |
+| `/land-and-deploy` | Merge de PR + deploy a produccion | JOHN |
+| `/document-release` | Changelog, release notes, documentacion | WINSTON |
+| `/retro` | Retrospectiva posterior al cierre de mision | WINSTON / MARCO AURELIO |
+| `/frontend-master` | UI avanzado: React, Next.js, Tailwind, diseno | PIXEL |
+| `/backend-master` | Backend: APIs, DB, autenticacion, logica | FORGE |
+| `/ops-agent` | DevOps: GitHub CLI, Vercel, Neon, CI/CD | NEXUS / JOHN |
+| `/analysis-master` | Diagnostico profundo de problemas complejos | HOUSE / JOHN |
+| `/god-mode` | Orquestacion total sin confirmaciones (requiere autorizacion Santiago) | JOHN |
+
+*Integrado: 2026-04-02 | Fuente: gstack (garrytan) | Mando: JOHN RAMBO*

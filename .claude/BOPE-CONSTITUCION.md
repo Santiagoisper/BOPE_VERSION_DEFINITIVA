@@ -194,3 +194,14 @@ APROBADO POR: SANTIAGO
 FIRMADO: JOHN + MARCO AURELIO
 ══════════════════════════════════════════
 ```
+
+---
+
+## ARTICULO 14 — TOOLBOX EXTERNO (gstack)
+
+**14.1** El batallon puede usar skills externos cuando JOHN lo determine necesario.
+**14.2** Los skills de gstack son herramientas, no agentes. No tienen rango ni autonomia.
+**14.3** JOHN autoriza la activacion de cada skill segun la mision activa.
+**14.4** `/browse` es obligatorio para toda navegacion web. Chrome directo esta prohibido.
+**14.5** `/god-mode` requiere autorizacion explicita de SANTIAGO antes de activarse.
+**14.6** Cualquier output de gstack que afecte codigo o deploy debe quedar registrado en `logs/`.
