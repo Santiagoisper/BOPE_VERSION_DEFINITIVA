@@ -104,21 +104,20 @@ Fuentes de resolucion local:
 
 ## Sincronizacion intercapas
 
-- `Codex`, `Claude` y `Gemini` operan como capas separadas del mismo batallon
+- `Codex` y `Claude` operan como capas separadas del mismo batallon
 - cada capa tiene su propia fuente canonica de estado y registro
 - ningun hecho se considera compartido por reflejo entre capas
-- si una mision, medalla, sancion o cambio doctrinal debe existir en otra capa, se replica de forma explicita
+- si una mision, medalla, sancion o cambio doctrinal debe existir en la otra capa, se replica de forma explicita
 - si no esta replicado en la capa destino, no existe en esa capa
 
 Fuentes canonicas por capa:
 
 - `Codex` -> `codex-logs/`
 - `Claude` -> `logs/`
-- `Gemini` -> `gemini-logs/`
 
 Reglas:
 
-- `Codex` nunca escribe en `logs/` ni en `gemini-logs/`
+- `Codex` nunca escribe en `logs/`
 - `Codex` solo puede dejar constancia de origen, necesidad de replica y estado local de sincronizacion
 - la capa que ejecuto la mision actua como capa lider del hecho
 - la capa lider fija `id`, fecha, resultado, responsables y resumen canonico a replicar

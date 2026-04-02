@@ -23,7 +23,7 @@ BOPE-CODEX-2026-010
 ## Objetivo
 
 Asentar en la capa Claude el protocolo ya fijado en Codex sobre sincronización
-intercapas entre Codex, Claude y Gemini, sin romper el aislamiento entre capas
+intercapas entre Codex y Claude, sin romper el aislamiento entre capas
 ni presumir sincronización automática.
 
 ## Criterio de éxito
@@ -45,7 +45,7 @@ Se creó `.claude/PROTOCOLO-INTERCAPAS.md` con réplica fiel del protocolo
 canónico originado en BOPE-CODEX-2026-010. El documento establece:
 
 - principio de separación de capas
-- fuentes canónicas por capa (codex-logs / logs / gemini-logs)
+- fuentes canónicas por capa (codex-logs / logs)
 - reglas de escritura exclusiva para la capa Claude
 - definición de capa líder y resolución de conflictos
 - protocolo de réplica en 5 pasos

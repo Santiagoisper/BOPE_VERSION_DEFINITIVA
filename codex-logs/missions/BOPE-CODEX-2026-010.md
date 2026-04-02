@@ -2,7 +2,7 @@
 
 ## Titulo
 
-Protocolo de sincronizacion intercapas entre `Codex`, `Claude` y `Gemini`
+Protocolo de sincronizacion intercapas entre `Codex` y `Claude`
 
 ## Fecha
 
@@ -10,11 +10,11 @@ Protocolo de sincronizacion intercapas entre `Codex`, `Claude` y `Gemini`
 
 ## Objetivo
 
-Dejar asentado en la capa `Codex` como se registran las misiones, medallas, sanciones y cambios doctrinales cuando deben existir tambien en `Claude` y `Gemini`, sin romper el aislamiento entre capas ni inventar sincronizacion automatica.
+Dejar asentado en la capa `Codex` como se registran las misiones, medallas, sanciones y cambios doctrinales cuando deben existir tambien en `Claude`, sin romper el aislamiento entre capas ni inventar sincronizacion automatica.
 
 ## Orden de `SANTIAGO`
 
-Definir si las misiones y medallas quedan grabadas en `Codex`, `Claude` o `Gemini`, como se reflejan entre si, que comparte el batallon y cuales son los riesgos reales de operar con memorias separadas.
+Definir si las misiones y medallas quedan grabadas en `Codex` o `Claude`, como se reflejan entre si, que comparte el batallon y cuales son los riesgos reales de operar con memorias separadas.
 
 ## Alcance
 
@@ -26,7 +26,7 @@ Definir si las misiones y medallas quedan grabadas en `Codex`, `Claude` o `Gemin
 ## Resultado canonico
 
 - `Codex` queda definido como capa con memoria propia en `codex-logs/`
-- se fija que `Claude` usa `logs/` y `Gemini` usa `gemini-logs/`
+- se fija que `Claude` usa `logs/`
 - se establece que ninguna medalla, sancion o mision se comparte por reflejo
 - se establece protocolo de replica canonica explicita cuando un hecho debe existir en todo BOPE
 - se documentan riesgos de divergencia, doble verdad y contaminacion doctrinal por escritura cruzada
@@ -39,4 +39,4 @@ Definir si las misiones y medallas quedan grabadas en `Codex`, `Claude` o `Gemin
 
 ## Cierre
 
-La capa `Codex` ya tiene protocolo escrito para sincronizacion con `Claude` y `Gemini` sin perder aislamiento. Cualquier hecho compartido del batallon exige replica explicita por capa y no puede presumirse por arrastre.
+La capa `Codex` ya tiene protocolo escrito para sincronizacion con `Claude` sin perder aislamiento. Cualquier hecho compartido del batallon exige replica explicita por capa y no puede presumirse por arrastre.
