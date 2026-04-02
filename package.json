@@ -1,0 +1,9 @@
+{
+  "name": "bope-version-definitiva",
+  "private": true,
+  "scripts": {
+    "dev:bope-command-center": "pnpm --dir apps/bope-command-center dev",
+    "build:bope-command-center": "pnpm --dir apps/bope-command-center build",
+    "typecheck:bope-command-center": "pnpm --dir apps/bope-command-center typecheck"
+  }
+}

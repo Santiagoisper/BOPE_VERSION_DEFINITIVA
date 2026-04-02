@@ -1,0 +1,160 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { cn } from "@/lib/utils";
+import { GLOBAL_BUDGET } from "@/lib/budget";
+import { OrdersPanel } from "@/components/orders/OrdersPanel";
+
+interface NavItem {
+  path: string;
+  label: string;
+  icon: string;
+  shortLabel: string;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { path: "/", label: "Centro de Mando", icon: "▣", shortLabel: "Mando" },
+  { path: "/missions", label: "Misiones", icon: "◈", shortLabel: "Misiones" },
+  { path: "/agents", label: "Agentes", icon: "◉", shortLabel: "Agentes" },
+  { path: "/arsenal", label: "Arsenal", icon: "◆", shortLabel: "Arsenal" },
+  { path: "/records", label: "Registros", icon: "◇", shortLabel: "Records" },
+];
+
+function StatusBar() {
+  const now = new Date("2026-04-02T17:00:00Z");
+  const budgetUsedPct = ((GLOBAL_BUDGET.accumulatedSpend / GLOBAL_BUDGET.annual) * 100).toFixed(1);
+
+  return (
+    <div className="h-10 bg-[hsl(222_22%_6%)] border-b border-border flex items-center px-4 gap-6 flex-shrink-0 z-50">
+      <div className="flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block" />
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+      </div>
+
+      <div className="flex items-center gap-1.5">
+        <span className="text-amber font-mono text-[10px] font-semibold tracking-[0.15em] terminal-glow">BOPE</span>
+        <span className="text-muted-foreground font-mono text-[10px]">/</span>
+        <span className="text-foreground/60 font-mono text-[10px] tracking-widest">COMMAND CENTER</span>
+      </div>
+
+      <div className="flex-1" />
+
+      <div className="flex items-center gap-5 text-[10px] font-mono">
+        <div className="flex items-center gap-1.5">
+          <span className="status-dot status-dot-active" />
+          <span className="text-muted-foreground">SISTEMAS</span>
+          <span className="text-green-400 font-semibold">OPERATIVOS</span>
+        </div>
+
+        <div className="h-3 w-px bg-border" />
+
+        <div className="flex items-center gap-1.5">
+          <span className="text-muted-foreground">PRESUPUESTO</span>
+          <span className="text-amber font-semibold">{budgetUsedPct}%</span>
+          <span className="text-muted-foreground">UTILIZADO</span>
+        </div>
+
+        <div className="h-3 w-px bg-border" />
+
+        <div className="flex items-center gap-1.5">
+          <span className="text-muted-foreground">
+            {now.toLocaleString("es-AR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).toUpperCase()}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Sidebar({ collapsed }: { collapsed: boolean }) {
+  const [location] = useLocation();
+
+  return (
+    <aside
+      className={cn(
+        "flex-shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col transition-all duration-200",
+        collapsed ? "w-12" : "w-52"
+      )}
+    >
+      <div className={cn("flex-1 py-3 flex flex-col gap-0.5 overflow-hidden px-1.5")}>
+        {NAV_ITEMS.map((item) => {
+          const isActive = location === item.path;
+          return (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={cn(
+                "flex items-center gap-3 px-2.5 py-2 rounded-md transition-all duration-150 group relative",
+                isActive
+                  ? "bg-accent text-amber-foreground"
+                  : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-foreground"
+              )}
+            >
+              <span
+                className={cn(
+                  "text-sm font-mono flex-shrink-0 transition-colors",
+                  isActive ? "text-amber" : "text-muted-foreground group-hover:text-amber"
+                )}
+              >
+                {item.icon}
+              </span>
+              {!collapsed && (
+                <span className={cn(
+                  "text-[11px] font-mono tracking-wide truncate transition-colors",
+                  isActive ? "text-amber font-semibold" : ""
+                )}>
+                  {item.label}
+                </span>
+              )}
+              {isActive && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-amber rounded-r" />
+              )}
+            </Link>
+          );
+        })}
+      </div>
+
+      {!collapsed && (
+        <div className="px-3 py-3 border-t border-sidebar-border">
+          <div className="text-[9px] font-mono text-muted-foreground tracking-[0.15em] mb-2">BUDGET ANUAL</div>
+          <div className="h-1 bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full bg-amber rounded-full transition-all"
+              style={{ width: `${(GLOBAL_BUDGET.accumulatedSpend / GLOBAL_BUDGET.annual) * 100}%` }}
+            />
+          </div>
+          <div className="flex justify-between mt-1">
+            <span className="text-[9px] font-mono text-muted-foreground">${GLOBAL_BUDGET.accumulatedSpend.toFixed(0)}</span>
+            <span className="text-[9px] font-mono text-muted-foreground">${GLOBAL_BUDGET.annual}</span>
+          </div>
+        </div>
+      )}
+    </aside>
+  );
+}
+
+interface AppLayoutProps {
+  children: React.ReactNode;
+}
+
+export function AppLayout({ children }: AppLayoutProps) {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  return (
+    <div className="flex flex-col h-screen bg-background overflow-hidden">
+      <StatusBar />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar collapsed={sidebarCollapsed} />
+        <button
+          onClick={() => setSidebarCollapsed((v) => !v)}
+          className="absolute left-0 bottom-4 z-50 hidden"
+          aria-label="Toggle sidebar"
+        />
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+      </div>
+      <OrdersPanel />
+    </div>
+  );
+}
