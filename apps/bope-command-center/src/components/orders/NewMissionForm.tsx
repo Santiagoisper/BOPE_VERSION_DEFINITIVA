@@ -26,7 +26,7 @@ export function NewMissionForm({ onSuccess }: Props) {
     );
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const normalizedCodename = codename.trim().toUpperCase();
     if (!normalizedCodename || !title.trim() || !objective.trim()) {
@@ -38,16 +38,20 @@ export function NewMissionForm({ onSuccess }: Props) {
       return;
     }
 
-    createMission({
-      codename: normalizedCodename,
-      title: title.trim(),
-      objective: objective.trim(),
-      priority,
-      leadAgent,
-      assignedAgents: [leadAgent, ...extraAgents.filter((id) => id !== leadAgent)],
-      estimatedBudget: parseFloat(budget) || 0,
-    });
-    onSuccess();
+    try {
+      await createMission({
+        codename: normalizedCodename,
+        title: title.trim(),
+        objective: objective.trim(),
+        priority,
+        leadAgent,
+        assignedAgents: [leadAgent, ...extraAgents.filter((id) => id !== leadAgent)],
+        estimatedBudget: parseFloat(budget) || 0,
+      });
+      onSuccess();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "No se pudo crear la mision.");
+    }
   }
 
   const inputClass =

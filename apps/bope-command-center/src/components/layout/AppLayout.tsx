@@ -84,7 +84,9 @@ function StatusBar() {
               <span className="text-muted-foreground">{session.username.toUpperCase()}</span>
               <button
                 type="button"
-                onClick={logout}
+                onClick={() => {
+                  void logout();
+                }}
                 className="text-[10px] font-mono text-amber hover:text-amber/80 transition-colors"
               >
                 SALIR

@@ -23,7 +23,7 @@ export function DirectOrderForm({ onSuccess }: Props) {
     critical: "text-red-400",
   };
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!message.trim()) {
       setError("La instruccion no puede estar vacia.");
@@ -34,12 +34,16 @@ export function DirectOrderForm({ onSuccess }: Props) {
       return;
     }
 
-    createDirectOrder({
-      agentId,
-      message: message.trim(),
-      priority,
-    });
-    onSuccess();
+    try {
+      await createDirectOrder({
+        agentId,
+        message: message.trim(),
+        priority,
+      });
+      onSuccess();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "No se pudo emitir la orden.");
+    }
   }
 
   const inputClass =

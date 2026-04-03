@@ -4,12 +4,12 @@ Base operativa de `apps/bope-command-center/` dentro de `BOPE VERSION DEFINITIVA
 
 ## Estado actual
 
-- UI React/Vite conservada y recableada a persistencia local real.
-- Persistencia en IndexedDB con estado normalizado del dominio.
-- Autenticacion local con PBKDF2 SHA-256, bloqueo por intentos fallidos y sesion temporal.
-- Presupuesto vivo global, por proveedor y por mision con alertas de umbral.
-- Logging operativo y auditoria interna dentro del estado persistido.
-- Sin integracion externa con Claude o Codex en esta fase.
+- UI React/Vite recableada a backend remoto central.
+- Sesion centralizada por cookie `HttpOnly`.
+- Estado operativo obtenido desde API remota.
+- Presupuesto central editable con trazabilidad.
+- Auditoria central visible en la UI.
+- Sin integracion externa real con Claude o Codex en esta fase.
 
 ## Modelo de datos
 
@@ -30,46 +30,44 @@ El estado normalizado vive en `src/domain/models.ts` e incluye:
 - configuracion de autenticacion
 - sesion local
 
-## Persistencia
+## Persistencia y backend
 
-- `src/lib/persistence.ts` usa IndexedDB con una sola clave primaria (`state/primary`).
-- `src/seeds/bootstrap.ts` inicializa el estado a partir de los datasets historicos existentes.
-- `src/context/CommandCenterContext.tsx` carga, sincroniza y persiste el estado.
+- El backend remoto vive en `../bope-command-center-server/`.
+- El frontend consume API mediante `src/lib/api.ts`.
+- `src/context/CommandCenterContext.tsx` es el adaptador entre la API y la UI.
+- La UI ya no depende de IndexedDB como fuente de verdad.
 
 ## Autenticacion
 
-- Primer arranque: obliga a crear usuario y contraseña.
-- Password hashing: PBKDF2 SHA-256 con salt y 210000 iteraciones.
-- Sesion: `sessionStorage`, expira a las 12 horas.
-- Bloqueo: 5 intentos fallidos activan un lock temporal de 15 minutos.
+- Primer arranque: bootstrap remoto de usuario y contraseña.
+- Password hashing y lockout residen en el backend.
+- La sesion viaja por cookie segura `HttpOnly` con expiracion de 12 horas.
 
 ## Presupuesto y auditoria
 
-- Se recalculan alertas en cada mutacion del estado.
-- Se generan entradas de auditoria para:
-  - bootstrap de auth
-  - login/logout
-  - creacion de misiones
-  - ordenes directas
-  - alertas de presupuesto nuevas
+- El backend recalcula alertas en cada mutacion.
+- La UI permite editar presupuesto global y por proveedor.
+- Cada cambio presupuestario exige motivo operativo y genera auditoria central.
 
 ## Comandos
 
 ```bash
 pnpm --dir apps/bope-command-center typecheck
 pnpm --dir apps/bope-command-center build
+pnpm --dir apps/bope-command-center-server typecheck
+pnpm --dir apps/bope-command-center-server build
 ```
 
 ## Limites actuales
 
-- Persistencia solo local del navegador.
-- Sin backend remoto ni multiusuario.
-- Los datos iniciales siguen naciendo de semillas locales importadas.
+- Sin integracion real con proveedores externos.
+- Persistencia central basada en archivo JSON local del servidor, no en base SQL todavia.
+- Los datos iniciales siguen naciendo de semillas operativas importadas.
 - No hay integracion con APIs externas reales.
 
 ## Proximos pasos
 
-1. Extraer la capa de repositorio para soportar backend sin reescribir la UI.
-2. Conectar un servicio API real para auth, sesiones y auditoria centralizada.
-3. Agregar mutaciones de presupuesto por proveedor y por mision desde la UI.
-4. Incorporar filtros avanzados y exportes de auditoria.
+1. Migrar la persistencia del backend a Postgres o equivalente.
+2. Añadir RBAC real y sesiones revocables por operador.
+3. Conectar providers reales Codex y Claude sobre la capa de proveedores ya preparada.
+4. Incorporar streaming de eventos y colas de trabajos.

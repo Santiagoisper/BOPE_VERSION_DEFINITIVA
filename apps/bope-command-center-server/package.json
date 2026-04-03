@@ -1,0 +1,16 @@
+{
+  "name": "@bope/command-center-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch dist/bope-command-center-server/src/server.js",
+    "build": "pnpm exec tsc -p tsconfig.json",
+    "start": "node dist/bope-command-center-server/src/server.js",
+    "typecheck": "pnpm exec tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.3",
+    "typescript": "~5.9.2"
+  }
+}

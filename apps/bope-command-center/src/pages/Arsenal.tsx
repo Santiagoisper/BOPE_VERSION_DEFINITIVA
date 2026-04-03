@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ProgressRing } from "@/components/shared/ProgressRing";
 import { useCommandCenter } from "@/context/CommandCenterContext";
 import { annualUsagePercent, formatCost } from "@/lib/budget";
@@ -21,7 +22,6 @@ const TOOL_TYPE_ICONS: Record<string, string> = {
 
 function EngineCard({ provider }: { provider: ModelProvider }) {
   const annualPct = (provider.accumulatedCost / provider.annualBudget) * 100;
-  const monthlyPct = (provider.monthlySpend / provider.monthlyBudget) * 100;
   const ringColor = annualPct > 90 ? "hsl(0 62% 50%)" : annualPct > 75 ? "hsl(38 92% 50%)" : "hsl(40 70% 48%)";
   const statusColor =
     provider.status === "active" ? "text-green-400" : provider.status === "maintenance" ? "text-amber" : "text-red-500";
@@ -62,8 +62,6 @@ function EngineCard({ provider }: { provider: ModelProvider }) {
           <div className="text-[11px] font-mono font-semibold text-green-400">{formatCost(provider.annualBudget - provider.accumulatedCost)}</div>
         </div>
       </div>
-
-      <div className="text-[9px] font-mono text-muted-foreground">Mes actual: {monthlyPct.toFixed(1)}%</div>
     </div>
   );
 }
@@ -87,14 +85,60 @@ function ToolCard({ tool }: { tool: ToolConnection }) {
 }
 
 export default function Arsenal() {
-  const { providers, tools, globalBudget, budgetAlerts } = useCommandCenter();
+  const { providers, tools, globalBudget, budgetAlerts, auditLog, budgetPolicy, updateBudgetPolicy } = useCommandCenter();
   const annualPct = globalBudget ? annualUsagePercent(globalBudget) : 0;
+  const [annualBudget, setAnnualBudget] = useState("");
+  const [monthlyTarget, setMonthlyTarget] = useState("");
+  const [reason, setReason] = useState("");
+  const [providerDrafts, setProviderDrafts] = useState<Record<string, { annualBudget: string; monthlyBudget: string }>>({});
+  const [status, setStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!budgetPolicy) {
+      return;
+    }
+
+    setAnnualBudget(String(budgetPolicy.annualBudget));
+    setMonthlyTarget(String(budgetPolicy.monthlyTarget));
+    setProviderDrafts(
+      Object.fromEntries(
+        providers.map((provider) => [
+          provider.id,
+          {
+            annualBudget: String(provider.annualBudget),
+            monthlyBudget: String(provider.monthlyBudget),
+          },
+        ]),
+      ),
+    );
+  }, [budgetPolicy, providers]);
+
+  const budgetHistory = auditLog.filter((entry) => entry.category === "budget").slice(0, 6);
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const result = await updateBudgetPolicy({
+      annualBudget: Number(annualBudget),
+      monthlyTarget: Number(monthlyTarget),
+      reason: reason.trim() || "Ajuste operativo manual.",
+      providerBudgets: providers.map((provider) => ({
+        id: provider.id,
+        annualBudget: Number(providerDrafts[provider.id]?.annualBudget ?? provider.annualBudget),
+        monthlyBudget: Number(providerDrafts[provider.id]?.monthlyBudget ?? provider.monthlyBudget),
+      })),
+    });
+
+    setStatus(result.ok ? "Presupuesto central actualizado." : result.error ?? "No se pudo actualizar.");
+    if (result.ok) {
+      setReason("");
+    }
+  }
 
   return (
     <div className="p-4 space-y-6">
       <div>
         <h1 className="text-base font-mono font-semibold text-foreground tracking-wide">Arsenal</h1>
-        <p className="text-[10px] font-mono text-muted-foreground mt-0.5">Motores activos, herramientas y presupuesto operativo</p>
+        <p className="text-[10px] font-mono text-muted-foreground mt-0.5">Motores activos, herramientas y presupuesto remoto central</p>
       </div>
 
       {globalBudget && (
@@ -126,8 +170,116 @@ export default function Arsenal() {
         </div>
       )}
 
+      <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-6">
+        <form onSubmit={handleSubmit} className="bg-card border border-border rounded-lg p-4 space-y-4">
+          <div>
+            <div className="text-[10px] font-mono text-muted-foreground tracking-wider">PRESUPUESTO CENTRAL EDITABLE</div>
+            <p className="mt-1 text-[10px] text-muted-foreground">Todos los cambios quedan auditados en backend central.</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <label className="space-y-1">
+              <span className="text-[9px] font-mono text-muted-foreground">ANUAL GLOBAL</span>
+              <input
+                type="number"
+                min="0"
+                className="w-full rounded border border-border bg-muted px-3 py-2 text-[11px] font-mono"
+                value={annualBudget}
+                onChange={(event) => setAnnualBudget(event.target.value)}
+              />
+            </label>
+            <label className="space-y-1">
+              <span className="text-[9px] font-mono text-muted-foreground">OBJETIVO MENSUAL</span>
+              <input
+                type="number"
+                min="0"
+                className="w-full rounded border border-border bg-muted px-3 py-2 text-[11px] font-mono"
+                value={monthlyTarget}
+                onChange={(event) => setMonthlyTarget(event.target.value)}
+              />
+            </label>
+          </div>
+
+          <div className="space-y-3">
+            <div className="text-[9px] font-mono text-muted-foreground">PROVEEDORES</div>
+            {providers.map((provider) => (
+              <div key={provider.id} className="grid grid-cols-[1fr_1fr_1fr] gap-3 items-end">
+                <div className="text-[10px] font-mono text-foreground">{provider.shortName}</div>
+                <input
+                  type="number"
+                  min="0"
+                  className="rounded border border-border bg-muted px-3 py-2 text-[11px] font-mono"
+                  value={providerDrafts[provider.id]?.annualBudget ?? ""}
+                  onChange={(event) =>
+                    setProviderDrafts((current) => ({
+                      ...current,
+                      [provider.id]: {
+                        annualBudget: event.target.value,
+                        monthlyBudget: current[provider.id]?.monthlyBudget ?? String(provider.monthlyBudget),
+                      },
+                    }))
+                  }
+                />
+                <input
+                  type="number"
+                  min="0"
+                  className="rounded border border-border bg-muted px-3 py-2 text-[11px] font-mono"
+                  value={providerDrafts[provider.id]?.monthlyBudget ?? ""}
+                  onChange={(event) =>
+                    setProviderDrafts((current) => ({
+                      ...current,
+                      [provider.id]: {
+                        annualBudget: current[provider.id]?.annualBudget ?? String(provider.annualBudget),
+                        monthlyBudget: event.target.value,
+                      },
+                    }))
+                  }
+                />
+              </div>
+            ))}
+          </div>
+
+          <label className="space-y-1 block">
+            <span className="text-[9px] font-mono text-muted-foreground">MOTIVO OPERATIVO</span>
+            <textarea
+              className="w-full rounded border border-border bg-muted px-3 py-2 text-[11px] font-mono min-h-24"
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              placeholder="Justifica el ajuste presupuestario central..."
+            />
+          </label>
+
+          {status && <div className="text-[10px] font-mono text-amber">{status}</div>}
+
+          <button
+            type="submit"
+            className="rounded border border-[#B22234]/50 bg-[#8B1A1A] px-4 py-2 text-[11px] font-mono font-semibold tracking-[0.14em] text-white hover:bg-[#B22234]"
+          >
+            ACTUALIZAR PRESUPUESTO
+          </button>
+        </form>
+
+        <div className="bg-card border border-border rounded-lg p-4 space-y-3">
+          <div className="text-[10px] font-mono text-muted-foreground tracking-wider">HISTORIAL DE PRESUPUESTO</div>
+          <div className="space-y-2">
+            {budgetHistory.map((entry) => (
+              <div key={entry.id} className="rounded border border-border bg-muted/40 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[9px] font-mono text-amber">{entry.actorLabel}</span>
+                  <span className="text-[9px] font-mono text-muted-foreground">
+                    {new Date(entry.timestamp).toLocaleString("es-AR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </div>
+                <p className="mt-1 text-[10px] text-foreground/80">{entry.message}</p>
+              </div>
+            ))}
+            {budgetHistory.length === 0 && <div className="text-[10px] font-mono text-muted-foreground">Sin cambios auditados todavia.</div>}
+          </div>
+        </div>
+      </div>
+
       <div>
-        <div className="text-[10px] font-mono text-muted-foreground tracking-wider mb-3">MOTORES DE IA</div>
+        <div className="text-[10px] font-mono text-muted-foreground tracking-wider mb-3">MOTORES PREPARADOS PARA FUTURA INTEGRACION</div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {providers.map((provider) => (
             <EngineCard key={provider.id} provider={provider} />

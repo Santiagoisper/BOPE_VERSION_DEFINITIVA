@@ -2,36 +2,41 @@ import {
   createContext,
   useContext,
   useEffect,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
-import { createBootstrapState } from "@/seeds/bootstrap";
+import {
+  bootstrapAuth as bootstrapAuthRequest,
+  createDirectOrderRequest,
+  createMissionRequest,
+  getBootstrapStatus,
+  getCommandCenterState,
+  login as loginRequest,
+  logout as logoutRequest,
+  updateBudgetPolicyRequest,
+} from "@/lib/api";
 import {
   buildGlobalBudget,
   buildSystemStatus,
-  createDirectOrderInState,
-  createMissionInState,
   mapAgents,
   mapAuditLog,
   mapBudgetAlerts,
   mapMissions,
   mapProviders,
   mapTools,
-  synchronizeState,
 } from "@/lib/command-center";
-import { createAuthConfig, createSession, loadSession, persistSession, verifyPassword } from "@/lib/auth";
-import { loadPersistedState, savePersistedState } from "@/lib/persistence";
 import type { CommandCenterState, SessionRecord } from "@/domain/models";
 import type {
   Agent,
   AuditLogEntry,
   Budget,
   BudgetAlert,
+  BudgetPolicySnapshot,
   DirectOrder,
   Mission,
   MissionPriority,
   ModelProvider,
+  ProviderBudgetInput,
   SystemStatus,
   ToolConnection,
 } from "@/types";
@@ -50,6 +55,13 @@ interface CreateDirectOrderInput {
   agentId: string;
   message: string;
   priority: MissionPriority;
+}
+
+interface UpdateBudgetPolicyInput {
+  annualBudget: number;
+  monthlyTarget: number;
+  providerBudgets: ProviderBudgetInput[];
+  reason: string;
 }
 
 interface AuthResult {
@@ -73,35 +85,17 @@ interface CommandCenterContextValue {
   session: SessionRecord | null;
   needsBootstrap: boolean;
   isAuthenticated: boolean;
+  budgetPolicy: BudgetPolicySnapshot | null;
   bootstrapAuth: (username: string, password: string) => Promise<AuthResult>;
   login: (username: string, password: string) => Promise<AuthResult>;
-  logout: () => void;
-  createMission: (input: CreateMissionInput) => void;
-  createDirectOrder: (input: CreateDirectOrderInput) => void;
+  logout: () => Promise<void>;
+  refreshState: () => Promise<void>;
+  createMission: (input: CreateMissionInput) => Promise<void>;
+  createDirectOrder: (input: CreateDirectOrderInput) => Promise<void>;
+  updateBudgetPolicy: (input: UpdateBudgetPolicyInput) => Promise<AuthResult>;
 }
 
 const CommandCenterContext = createContext<CommandCenterContextValue | null>(null);
-
-const MAX_FAILED_ATTEMPTS = 5;
-const LOCK_WINDOW_MS = 15 * 60 * 1000;
-
-function makeAuditEntry(
-  category: "auth" | "mission" | "budget" | "system" | "order",
-  level: "info" | "warning" | "critical",
-  actorLabel: string,
-  message: string,
-  context?: string,
-) {
-  return {
-    id: `audit-${crypto.randomUUID()}`,
-    timestamp: new Date().toISOString(),
-    category,
-    level,
-    actorLabel,
-    message,
-    context,
-  };
-}
 
 function mapDirectOrders(state: CommandCenterState): DirectOrder[] {
   return state.directOrders.map((order) => ({
@@ -126,6 +120,7 @@ function buildViewModel(state: CommandCenterState | null) {
       auditLog: [] as AuditLogEntry[],
       systemStatus: null as SystemStatus | null,
       activeMission: null as Mission | null,
+      budgetPolicy: null as BudgetPolicySnapshot | null,
     };
   }
 
@@ -139,205 +134,115 @@ function buildViewModel(state: CommandCenterState | null) {
     directOrders: mapDirectOrders(state),
     globalBudget: buildGlobalBudget(state),
     budgetAlerts: mapBudgetAlerts(state),
-    auditLog: mapAuditLog(state, 16),
+    auditLog: mapAuditLog(state, 20),
     systemStatus: buildSystemStatus(state),
     activeMission: missions.find((mission) => mission.status === "active") ?? null,
+    budgetPolicy: state.budgetPolicy,
   };
 }
 
 export function CommandCenterProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<CommandCenterState | null>(null);
-  const [isReady, setIsReady] = useState(false);
   const [session, setSession] = useState<SessionRecord | null>(null);
-  const didLoadRef = useRef(false);
+  const [isReady, setIsReady] = useState(false);
+  const [needsBootstrap, setNeedsBootstrap] = useState(false);
+
+  async function refreshState() {
+    const response = await getCommandCenterState();
+    setState(response.state);
+    setSession(response.session);
+  }
 
   useEffect(() => {
     let cancelled = false;
 
     async function initialize() {
-      const persisted = await loadPersistedState();
-      const initialState = synchronizeState(persisted ?? createBootstrapState());
-      const restoredSession = loadSession();
+      try {
+        const bootstrapStatus = await getBootstrapStatus();
+        if (cancelled) {
+          return;
+        }
 
-      if (cancelled) {
-        return;
+        setNeedsBootstrap(!bootstrapStatus.bootstrapped);
+        if (bootstrapStatus.authenticated) {
+          const response = await getCommandCenterState();
+          if (cancelled) {
+            return;
+          }
+          setState(response.state);
+          setSession(response.session);
+        } else {
+          setSession(null);
+          setState(null);
+        }
+      } catch {
+        setSession(null);
+        setState(null);
+      } finally {
+        if (!cancelled) {
+          setIsReady(true);
+        }
       }
-
-      setState(initialState);
-      if (
-        restoredSession &&
-        initialState.authConfig &&
-        restoredSession.username === initialState.authConfig.username &&
-        new Date(restoredSession.expiresAt).getTime() > Date.now()
-      ) {
-        setSession(restoredSession);
-      } else {
-        persistSession(null);
-      }
-
-      didLoadRef.current = true;
-      setIsReady(true);
     }
 
     void initialize();
-
     return () => {
       cancelled = true;
     };
   }, []);
 
-  useEffect(() => {
-    if (!didLoadRef.current || !state) {
-      return;
-    }
-
-    void savePersistedState(state);
-  }, [state]);
-
   const view = buildViewModel(state);
-  const needsBootstrap = Boolean(state && !state.authConfig);
-  const isAuthenticated = Boolean(
-    session && new Date(session.expiresAt).getTime() > Date.now(),
-  );
 
   async function bootstrapAuth(username: string, password: string): Promise<AuthResult> {
-    if (!state) {
-      return { ok: false, error: "Estado no inicializado." };
+    try {
+      const response = await bootstrapAuthRequest(username, password);
+      setState(response.state);
+      setSession(response.session);
+      setNeedsBootstrap(false);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : "No se pudo inicializar la autenticacion." };
     }
-    if (state.authConfig) {
-      return { ok: false, error: "La autenticacion ya fue inicializada." };
-    }
-
-    const cleanUsername = username.trim().toLowerCase();
-    if (cleanUsername.length < 3) {
-      return { ok: false, error: "El usuario debe tener al menos 3 caracteres." };
-    }
-
-    const nowIso = new Date().toISOString();
-    const authConfig = await createAuthConfig(cleanUsername, password, nowIso);
-    const nextSession = createSession(cleanUsername, nowIso);
-    const nextState = synchronizeState({
-      ...state,
-      authConfig,
-      auditLog: [
-        ...state.auditLog,
-        makeAuditEntry("auth", "info", cleanUsername.toUpperCase(), "Credenciales iniciales configuradas.", "bootstrap"),
-      ],
-    });
-
-    setState(nextState);
-    setSession(nextSession);
-    persistSession(nextSession);
-    return { ok: true };
   }
 
   async function login(username: string, password: string): Promise<AuthResult> {
-    if (!state || !state.authConfig) {
-      return { ok: false, error: "La autenticacion todavia no fue configurada." };
+    try {
+      const response = await loginRequest(username, password);
+      setState(response.state);
+      setSession(response.session);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : "Acceso rechazado." };
     }
+  }
 
-    const attemptedUser = username.trim().toLowerCase();
-    const config = state.authConfig;
-    const lockUntil = config.lockUntil ? new Date(config.lockUntil).getTime() : 0;
-    if (lockUntil > Date.now()) {
-      return { ok: false, error: "Acceso bloqueado temporalmente por intentos fallidos." };
-    }
-
-    const isValidUser = attemptedUser === config.username;
-    const isValidPassword = isValidUser ? await verifyPassword(password, config) : false;
-
-    if (!isValidUser || !isValidPassword) {
-      const failedAttempts = config.failedAttempts + 1;
-      const nextConfig = {
-        ...config,
-        failedAttempts,
-        lockUntil:
-          failedAttempts >= MAX_FAILED_ATTEMPTS
-            ? new Date(Date.now() + LOCK_WINDOW_MS).toISOString()
-            : undefined,
-      };
-      const nextState = synchronizeState({
-        ...state,
-        authConfig: nextConfig,
-        auditLog: [
-          ...state.auditLog,
-          makeAuditEntry(
-            "auth",
-            failedAttempts >= MAX_FAILED_ATTEMPTS ? "critical" : "warning",
-            attemptedUser.toUpperCase() || "UNKNOWN",
-            "Intento de acceso rechazado.",
-            "login",
-          ),
-        ],
-      });
-      setState(nextState);
-      persistSession(null);
+  async function logout() {
+    try {
+      await logoutRequest();
+    } finally {
       setSession(null);
-      return {
-        ok: false,
-        error:
-          failedAttempts >= MAX_FAILED_ATTEMPTS
-            ? "Acceso bloqueado temporalmente por intentos fallidos."
-            : "Credenciales invalidas.",
-      };
+      setState(null);
     }
-
-    const nextSession = createSession(config.username, new Date().toISOString());
-    const nextState = synchronizeState({
-      ...state,
-      authConfig: {
-        ...config,
-        failedAttempts: 0,
-        lockUntil: undefined,
-      },
-      auditLog: [
-        ...state.auditLog,
-        makeAuditEntry("auth", "info", config.username.toUpperCase(), "Acceso autorizado al Command Center.", "login"),
-      ],
-    });
-
-    setState(nextState);
-    setSession(nextSession);
-    persistSession(nextSession);
-    return { ok: true };
   }
 
-  function logout() {
-    if (!state || !session) {
-      persistSession(null);
-      setSession(null);
-      return;
+  async function createMission(input: CreateMissionInput) {
+    const response = await createMissionRequest(input);
+    setState(response.state);
+  }
+
+  async function createDirectOrder(input: CreateDirectOrderInput) {
+    const response = await createDirectOrderRequest(input);
+    setState(response.state);
+  }
+
+  async function updateBudgetPolicy(input: UpdateBudgetPolicyInput): Promise<AuthResult> {
+    try {
+      const response = await updateBudgetPolicyRequest(input);
+      setState(response.state);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : "No se pudo actualizar el presupuesto central." };
     }
-
-    const nextState = synchronizeState({
-      ...state,
-      auditLog: [
-        ...state.auditLog,
-        makeAuditEntry("auth", "info", session.username.toUpperCase(), "Sesion finalizada.", "logout"),
-      ],
-    });
-
-    setState(nextState);
-    setSession(null);
-    persistSession(null);
-  }
-
-  function createMission(input: CreateMissionInput) {
-    setState((current) => {
-      if (!current) {
-        return current;
-      }
-      return createMissionInState(current, input);
-    });
-  }
-
-  function createDirectOrder(input: CreateDirectOrderInput) {
-    setState((current) => {
-      if (!current) {
-        return current;
-      }
-      return createDirectOrderInState(current, input);
-    });
   }
 
   return (
@@ -357,12 +262,15 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
         activeMission: view.activeMission,
         session,
         needsBootstrap,
-        isAuthenticated,
+        isAuthenticated: Boolean(session),
+        budgetPolicy: view.budgetPolicy,
         bootstrapAuth,
         login,
         logout,
+        refreshState,
         createMission,
         createDirectOrder,
+        updateBudgetPolicy,
       }}
     >
       {children}

@@ -180,3 +180,17 @@ export interface AuditLogEntry {
   message: string;
   context?: string;
 }
+
+export interface BudgetPolicySnapshot {
+  annualBudget: number;
+  monthlyTarget: number;
+  currency: string;
+  warningThreshold: number;
+  criticalThreshold: number;
+}
+
+export interface ProviderBudgetInput {
+  id: string;
+  annualBudget: number;
+  monthlyBudget: number;
+}
