@@ -158,3 +158,25 @@ export interface DirectOrder {
   priority: MissionPriority;
   issuedAt: string;
 }
+
+export interface BudgetAlert {
+  id: string;
+  scope: "global" | "provider" | "mission";
+  scopeId: string;
+  metric: "annual" | "monthly" | "mission";
+  level: "warning" | "critical";
+  message: string;
+  currentValue: number;
+  thresholdValue: number;
+  createdAt: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  category: "auth" | "mission" | "budget" | "system" | "order";
+  level: "info" | "warning" | "critical";
+  actorLabel: string;
+  message: string;
+  context?: string;
+}

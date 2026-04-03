@@ -1,7 +1,8 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthGate } from "@/components/auth/AuthGate";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { OrdersProvider } from "@/context/OrdersContext";
+import { CommandCenterProvider } from "@/context/CommandCenterContext";
 import Dashboard from "@/pages/Dashboard";
 import Agents from "@/pages/Agents";
 import Missions from "@/pages/Missions";
@@ -39,11 +40,13 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <OrdersProvider>
+      <CommandCenterProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
+          <AuthGate>
+            <Router />
+          </AuthGate>
         </WouterRouter>
-      </OrdersProvider>
+      </CommandCenterProvider>
     </QueryClientProvider>
   );
 }

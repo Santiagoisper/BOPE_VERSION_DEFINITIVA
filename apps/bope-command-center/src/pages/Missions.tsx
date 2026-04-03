@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { MISSIONS } from "@/data/missions";
-import { AGENTS } from "@/data/agents";
-import {
-  cn, missionStatusLabel, missionStatusColor, priorityLabel, priorityColor, priorityBadgeClass,
-  formatDate, formatDateTime, sanctionColor, sanctionLabel
-} from "@/lib/utils";
-import { formatCost, missionCostEfficiency } from "@/lib/budget";
 import { MedalBadge } from "@/components/shared/MedalBadge";
 import { SanctionBadge } from "@/components/shared/SanctionBadge";
-import { useOrders } from "@/context/OrdersContext";
+import { useCommandCenter } from "@/context/CommandCenterContext";
+import { formatCost, missionCostEfficiency } from "@/lib/budget";
+import {
+  cn,
+  formatDateTime,
+  missionStatusColor,
+  missionStatusLabel,
+  priorityBadgeClass,
+  priorityLabel,
+} from "@/lib/utils";
 import type { Mission, MissionStatus } from "@/types";
 
 const EVENT_ICONS: Record<string, string> = {
@@ -36,42 +38,35 @@ const EVENT_COLORS: Record<string, string> = {
 const STATUS_FILTERS: { value: MissionStatus | "all"; label: string }[] = [
   { value: "all", label: "Todas" },
   { value: "active", label: "Activa" },
-  { value: "planning", label: "Planificación" },
+  { value: "planning", label: "Planificacion" },
   { value: "completed", label: "Completada" },
   { value: "failed", label: "Fallida" },
 ];
 
 function MissionTimeline({ mission }: { mission: Mission }) {
+  const { agents } = useCommandCenter();
+
   return (
     <div className="space-y-2">
-      {mission.events.map((evt, i) => {
-        const agent = evt.agentId ? AGENTS.find((a) => a.id === evt.agentId) : null;
-        const isLast = i === mission.events.length - 1;
+      {mission.events.map((event, index) => {
+        const agent = event.agentId ? agents.find((item) => item.id === event.agentId) : null;
+        const isLast = index === mission.events.length - 1;
         return (
-          <div key={evt.id} className="flex gap-3">
+          <div key={event.id} className="flex gap-3">
             <div className="flex flex-col items-center">
-              <span className={cn("text-xs font-mono flex-shrink-0 w-4 text-center", EVENT_COLORS[evt.type])}>
-                {EVENT_ICONS[evt.type]}
+              <span className={cn("text-xs font-mono flex-shrink-0 w-4 text-center", EVENT_COLORS[event.type])}>
+                {EVENT_ICONS[event.type]}
               </span>
               {!isLast && <div className="w-px flex-1 bg-border mt-1" />}
             </div>
             <div className="pb-3 flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[9px] font-mono text-muted-foreground tabular-nums">
-                  {formatDateTime(evt.timestamp)}
-                </span>
-                {agent && (
-                  <span className="text-[9px] font-mono text-amber">[{agent.codename}]</span>
-                )}
-                {evt.engineId && (
-                  <span className="text-[9px] font-mono text-muted-foreground/60">via {evt.engineId.toUpperCase()}</span>
-                )}
+                <span className="text-[9px] font-mono text-muted-foreground tabular-nums">{formatDateTime(event.timestamp)}</span>
+                {agent && <span className="text-[9px] font-mono text-amber">[{agent.codename}]</span>}
               </div>
-              <p className="text-xs text-foreground/70 mt-0.5">{evt.message}</p>
-              {evt.cost !== undefined && evt.cost > 0 && (
-                <span className="text-[9px] font-mono text-amber/60 mt-0.5 inline-block">
-                  +{formatCost(evt.cost)}
-                </span>
+              <p className="text-xs text-foreground/70 mt-0.5">{event.message}</p>
+              {event.cost !== undefined && event.cost > 0 && (
+                <span className="text-[9px] font-mono text-amber/60 mt-0.5 inline-block">+{formatCost(event.cost)}</span>
               )}
             </div>
           </div>
@@ -82,6 +77,7 @@ function MissionTimeline({ mission }: { mission: Mission }) {
 }
 
 function MissionDetail({ mission }: { mission: Mission }) {
+  const { agents } = useCommandCenter();
   const efficiency = missionCostEfficiency(mission.cost.estimated, mission.cost.actual);
   const costDiff = mission.cost.estimated - mission.cost.actual;
   const hasCost = mission.cost.actual > 0;
@@ -91,12 +87,8 @@ function MissionDetail({ mission }: { mission: Mission }) {
       <div>
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[9px] font-mono text-muted-foreground tracking-wider">{mission.codename}</span>
-          <span className={cn("text-[9px] font-mono px-1.5 py-0.5 rounded", priorityBadgeClass(mission.priority))}>
-            {priorityLabel(mission.priority)}
-          </span>
-          <span className={cn("text-[9px] font-mono", missionStatusColor(mission.status))}>
-            {missionStatusLabel(mission.status)}
-          </span>
+          <span className={cn("text-[9px] font-mono px-1.5 py-0.5 rounded", priorityBadgeClass(mission.priority))}>{priorityLabel(mission.priority)}</span>
+          <span className={cn("text-[9px] font-mono", missionStatusColor(mission.status))}>{missionStatusLabel(mission.status)}</span>
         </div>
         <h2 className="text-sm font-semibold text-foreground">{mission.title}</h2>
         <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{mission.objective}</p>
@@ -106,7 +98,7 @@ function MissionDetail({ mission }: { mission: Mission }) {
         <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-2">AGENTES</div>
         <div className="flex flex-wrap gap-1.5">
           {mission.assignedAgents.map((id) => {
-            const agent = AGENTS.find((a) => a.id === id);
+            const agent = agents.find((item) => item.id === id);
             if (!agent) return null;
             const isLead = id === mission.leadAgent;
             return (
@@ -120,7 +112,7 @@ function MissionDetail({ mission }: { mission: Mission }) {
       </div>
 
       <div>
-        <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-2">PRESUPUESTO DE MISIÓN</div>
+        <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-2">PRESUPUESTO DE MISION</div>
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-muted/50 rounded p-2.5">
             <div className="text-[9px] font-mono text-muted-foreground">Estimado</div>
@@ -129,33 +121,16 @@ function MissionDetail({ mission }: { mission: Mission }) {
           <div className="bg-muted/50 rounded p-2.5">
             <div className="text-[9px] font-mono text-muted-foreground">Real</div>
             <div className={cn("text-sm font-mono font-semibold", hasCost ? (costDiff >= 0 ? "text-green-400" : "text-red-500") : "text-muted-foreground")}>
-              {hasCost ? formatCost(mission.cost.actual) : "—"}
+              {hasCost ? formatCost(mission.cost.actual) : "-"}
             </div>
           </div>
           <div className="bg-muted/50 rounded p-2.5">
             <div className="text-[9px] font-mono text-muted-foreground">Eficiencia</div>
             <div className={cn("text-sm font-mono font-semibold", hasCost ? (efficiency >= 0 ? "text-green-400" : "text-red-500") : "text-muted-foreground")}>
-              {hasCost ? `${efficiency >= 0 ? "+" : ""}${efficiency.toFixed(1)}%` : "—"}
+              {hasCost ? `${efficiency >= 0 ? "+" : ""}${efficiency.toFixed(1)}%` : "-"}
             </div>
           </div>
         </div>
-
-        {Object.entries(mission.cost.byProvider).length > 0 && (
-          <div className="mt-2 space-y-1">
-            {Object.entries(mission.cost.byProvider).map(([provider, cost]) => (
-              <div key={provider} className="flex items-center gap-2">
-                <span className="text-[9px] font-mono text-muted-foreground uppercase w-16">{provider}</span>
-                <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-amber/60 rounded-full"
-                    style={{ width: `${(cost / mission.cost.actual) * 100}%` }}
-                  />
-                </div>
-                <span className="text-[9px] font-mono text-foreground/60">{formatCost(cost)}</span>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
       {(mission.medals.length > 0 || mission.sanctions.length > 0) && (
@@ -164,8 +139,8 @@ function MissionDetail({ mission }: { mission: Mission }) {
             <div>
               <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">MEDALLAS</div>
               <div className="space-y-1">
-                {mission.medals.map((m) => (
-                  <MedalBadge key={m.id} medal={m} size="sm" showLabel />
+                {mission.medals.map((medal) => (
+                  <MedalBadge key={medal.id} medal={medal} size="sm" showLabel />
                 ))}
               </div>
             </div>
@@ -174,21 +149,12 @@ function MissionDetail({ mission }: { mission: Mission }) {
             <div>
               <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">SANCIONES</div>
               <div className="space-y-1">
-                {mission.sanctions.map((s) => (
-                  <SanctionBadge key={s.id} sanction={s} size="sm" />
+                {mission.sanctions.map((sanction) => (
+                  <SanctionBadge key={sanction.id} sanction={sanction} size="sm" />
                 ))}
               </div>
             </div>
           )}
-        </div>
-      )}
-
-      {mission.outcome && (
-        <div>
-          <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">RESULTADO</div>
-          <p className="text-xs text-foreground/70 leading-relaxed bg-muted/30 rounded p-2.5 border-l-2 border-amber/50">
-            {mission.outcome}
-          </p>
         </div>
       )}
 
@@ -198,24 +164,17 @@ function MissionDetail({ mission }: { mission: Mission }) {
           <MissionTimeline mission={mission} />
         </div>
       )}
-
-      {mission.events.length === 0 && (
-        <div className="text-center py-6 text-muted-foreground text-xs font-mono">
-          Sin eventos registrados
-        </div>
-      )}
     </div>
   );
 }
 
 export default function Missions() {
+  const { missions } = useCommandCenter();
   const [statusFilter, setStatusFilter] = useState<MissionStatus | "all">("all");
-  const [selectedId, setSelectedId] = useState<string | null>(MISSIONS[1]?.id ?? null);
-  const { missions: contextMissions } = useOrders();
+  const [selectedId, setSelectedId] = useState<string | null>(missions[0]?.id ?? null);
 
-  const allMissions = [...contextMissions, ...MISSIONS];
-  const filtered = allMissions.filter((m) => statusFilter === "all" || m.status === statusFilter);
-  const selected = allMissions.find((m) => m.id === selectedId);
+  const filtered = missions.filter((mission) => statusFilter === "all" || mission.status === statusFilter);
+  const selected = missions.find((mission) => mission.id === selectedId) ?? filtered[0];
 
   return (
     <div className="h-full flex overflow-hidden">
@@ -223,21 +182,19 @@ export default function Missions() {
         <div className="p-4 border-b border-border flex-shrink-0 space-y-3">
           <div>
             <h1 className="text-base font-mono font-semibold text-foreground">Misiones</h1>
-            <p className="text-[10px] font-mono text-muted-foreground">{allMissions.length} registradas</p>
+            <p className="text-[10px] font-mono text-muted-foreground">{missions.length} registradas</p>
           </div>
           <div className="flex gap-1 flex-wrap">
-            {STATUS_FILTERS.map((f) => (
+            {STATUS_FILTERS.map((filter) => (
               <button
-                key={f.value}
-                onClick={() => setStatusFilter(f.value)}
+                key={filter.value}
+                onClick={() => setStatusFilter(filter.value)}
                 className={cn(
                   "px-2 py-0.5 rounded text-[9px] font-mono border transition-colors",
-                  statusFilter === f.value
-                    ? "bg-amber/10 border-amber/40 text-amber"
-                    : "border-border text-muted-foreground hover:text-foreground"
+                  statusFilter === filter.value ? "bg-amber/10 border-amber/40 text-amber" : "border-border text-muted-foreground hover:text-foreground",
                 )}
               >
-                {f.label}
+                {filter.label}
               </button>
             ))}
           </div>
@@ -248,29 +205,16 @@ export default function Missions() {
             <button
               key={mission.id}
               onClick={() => setSelectedId(mission.id)}
-              className={cn(
-                "w-full text-left rounded-md p-3 border transition-all",
-                selectedId === mission.id
-                  ? "border-amber/30 bg-amber/5"
-                  : "border-border hover:border-border/80 bg-card"
-              )}
+              className={cn("w-full text-left rounded-md p-3 border transition-all", selected?.id === mission.id ? "border-amber/30 bg-amber/5" : "border-border hover:border-border/80 bg-card")}
             >
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[9px] font-mono text-muted-foreground">{mission.codename}</span>
-                <span className={cn("text-[9px] font-mono px-1 rounded", priorityBadgeClass(mission.priority))}>
-                  {priorityLabel(mission.priority)}
-                </span>
+                <span className={cn("text-[9px] font-mono px-1 rounded", priorityBadgeClass(mission.priority))}>{priorityLabel(mission.priority)}</span>
               </div>
-              <div className="text-[11px] font-semibold text-foreground leading-snug mb-1 line-clamp-2">
-                {mission.title}
-              </div>
+              <div className="text-[11px] font-semibold text-foreground leading-snug mb-1 line-clamp-2">{mission.title}</div>
               <div className="flex items-center justify-between">
-                <span className={cn("text-[9px] font-mono", missionStatusColor(mission.status))}>
-                  {missionStatusLabel(mission.status)}
-                </span>
-                <span className="text-[9px] font-mono text-muted-foreground">
-                  {formatCost(mission.cost.estimated)}
-                </span>
+                <span className={cn("text-[9px] font-mono", missionStatusColor(mission.status))}>{missionStatusLabel(mission.status)}</span>
+                <span className="text-[9px] font-mono text-muted-foreground">{formatCost(mission.cost.estimated)}</span>
               </div>
             </button>
           ))}
@@ -282,7 +226,7 @@ export default function Missions() {
           <MissionDetail mission={selected} />
         ) : (
           <div className="h-full flex items-center justify-center">
-            <p className="text-muted-foreground text-sm font-mono">Seleccioná una misión</p>
+            <p className="text-muted-foreground text-sm font-mono">Selecciona una mision</p>
           </div>
         )}
       </div>

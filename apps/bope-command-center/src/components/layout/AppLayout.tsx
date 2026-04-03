@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
-import { cn } from "@/lib/utils";
-import { GLOBAL_BUDGET } from "@/lib/budget";
 import { OrdersPanel } from "@/components/orders/OrdersPanel";
+import { useCommandCenter } from "@/context/CommandCenterContext";
+import { formatCost } from "@/lib/budget";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   path: string;
@@ -12,16 +13,19 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { path: "/", label: "Centro de Mando", icon: "▣", shortLabel: "Mando" },
-  { path: "/missions", label: "Misiones", icon: "◈", shortLabel: "Misiones" },
+  { path: "/", label: "Centro de Mando", icon: "■", shortLabel: "Mando" },
+  { path: "/missions", label: "Misiones", icon: "◆", shortLabel: "Misiones" },
   { path: "/agents", label: "Agentes", icon: "◉", shortLabel: "Agentes" },
-  { path: "/arsenal", label: "Arsenal", icon: "◆", shortLabel: "Arsenal" },
+  { path: "/arsenal", label: "Arsenal", icon: "⬢", shortLabel: "Arsenal" },
   { path: "/records", label: "Registros", icon: "◇", shortLabel: "Records" },
 ];
 
 function StatusBar() {
-  const now = new Date("2026-04-02T17:00:00Z");
-  const budgetUsedPct = ((GLOBAL_BUDGET.accumulatedSpend / GLOBAL_BUDGET.annual) * 100).toFixed(1);
+  const { globalBudget, systemStatus, budgetAlerts, session, logout } = useCommandCenter();
+  const now = new Date();
+  const budgetUsedPct = globalBudget
+    ? ((globalBudget.accumulatedSpend / globalBudget.annual) * 100).toFixed(1)
+    : "0.0";
 
   return (
     <div className="h-10 bg-[hsl(222_22%_6%)] border-b border-border flex items-center px-4 gap-6 flex-shrink-0 z-50">
@@ -41,9 +45,11 @@ function StatusBar() {
 
       <div className="flex items-center gap-5 text-[10px] font-mono">
         <div className="flex items-center gap-1.5">
-          <span className="status-dot status-dot-active" />
+          <span className={cn("status-dot", systemStatus?.operational ? "status-dot-active" : "bg-red-500")} />
           <span className="text-muted-foreground">SISTEMAS</span>
-          <span className="text-green-400 font-semibold">OPERATIVOS</span>
+          <span className={cn("font-semibold", systemStatus?.operational ? "text-green-400" : "text-red-400")}>
+            {systemStatus?.operational ? "OPERATIVOS" : "DEGRADADOS"}
+          </span>
         </div>
 
         <div className="h-3 w-px bg-border" />
@@ -57,10 +63,35 @@ function StatusBar() {
         <div className="h-3 w-px bg-border" />
 
         <div className="flex items-center gap-1.5">
+          <span className="text-muted-foreground">ALERTAS</span>
+          <span className={cn("font-semibold", budgetAlerts.length > 0 ? "text-amber" : "text-green-400")}>
+            {budgetAlerts.length}
+          </span>
+        </div>
+
+        <div className="h-3 w-px bg-border" />
+
+        <div className="flex items-center gap-1.5">
           <span className="text-muted-foreground">
             {now.toLocaleString("es-AR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).toUpperCase()}
           </span>
         </div>
+
+        {session && (
+          <>
+            <div className="h-3 w-px bg-border" />
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground">{session.username.toUpperCase()}</span>
+              <button
+                type="button"
+                onClick={logout}
+                className="text-[10px] font-mono text-amber hover:text-amber/80 transition-colors"
+              >
+                SALIR
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -68,12 +99,14 @@ function StatusBar() {
 
 function Sidebar({ collapsed }: { collapsed: boolean }) {
   const [location] = useLocation();
+  const { globalBudget } = useCommandCenter();
+  const progress = globalBudget ? (globalBudget.accumulatedSpend / globalBudget.annual) * 100 : 0;
 
   return (
     <aside
       className={cn(
         "flex-shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col transition-all duration-200",
-        collapsed ? "w-12" : "w-52"
+        collapsed ? "w-12" : "w-52",
       )}
     >
       <div className={cn("flex-1 py-3 flex flex-col gap-0.5 overflow-hidden px-1.5")}>
@@ -87,22 +120,24 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
                 "flex items-center gap-3 px-2.5 py-2 rounded-md transition-all duration-150 group relative",
                 isActive
                   ? "bg-accent text-amber-foreground"
-                  : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-foreground"
+                  : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-foreground",
               )}
             >
               <span
                 className={cn(
                   "text-sm font-mono flex-shrink-0 transition-colors",
-                  isActive ? "text-amber" : "text-muted-foreground group-hover:text-amber"
+                  isActive ? "text-amber" : "text-muted-foreground group-hover:text-amber",
                 )}
               >
                 {item.icon}
               </span>
               {!collapsed && (
-                <span className={cn(
-                  "text-[11px] font-mono tracking-wide truncate transition-colors",
-                  isActive ? "text-amber font-semibold" : ""
-                )}>
+                <span
+                  className={cn(
+                    "text-[11px] font-mono tracking-wide truncate transition-colors",
+                    isActive ? "text-amber font-semibold" : "",
+                  )}
+                >
                   {item.label}
                 </span>
               )}
@@ -118,14 +153,15 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
         <div className="px-3 py-3 border-t border-sidebar-border">
           <div className="text-[9px] font-mono text-muted-foreground tracking-[0.15em] mb-2">BUDGET ANUAL</div>
           <div className="h-1 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-amber rounded-full transition-all"
-              style={{ width: `${(GLOBAL_BUDGET.accumulatedSpend / GLOBAL_BUDGET.annual) * 100}%` }}
-            />
+            <div className="h-full bg-amber rounded-full transition-all" style={{ width: `${progress}%` }} />
           </div>
           <div className="flex justify-between mt-1">
-            <span className="text-[9px] font-mono text-muted-foreground">${GLOBAL_BUDGET.accumulatedSpend.toFixed(0)}</span>
-            <span className="text-[9px] font-mono text-muted-foreground">${GLOBAL_BUDGET.annual}</span>
+            <span className="text-[9px] font-mono text-muted-foreground">
+              {globalBudget ? formatCost(globalBudget.accumulatedSpend) : "$0.00"}
+            </span>
+            <span className="text-[9px] font-mono text-muted-foreground">
+              {globalBudget ? formatCost(globalBudget.annual) : "$0.00"}
+            </span>
           </div>
         </div>
       )}
@@ -134,7 +170,7 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
 }
 
 interface AppLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -146,13 +182,11 @@ export function AppLayout({ children }: AppLayoutProps) {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar collapsed={sidebarCollapsed} />
         <button
-          onClick={() => setSidebarCollapsed((v) => !v)}
+          onClick={() => setSidebarCollapsed((value) => !value)}
           className="absolute left-0 bottom-4 z-50 hidden"
           aria-label="Toggle sidebar"
         />
-        <main className="flex-1 overflow-auto">
-          {children}
-        </main>
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
       <OrdersPanel />
     </div>

@@ -1,53 +1,47 @@
 import { useState } from "react";
-import { AGENTS } from "@/data/agents";
-import { cn, agentStatusLabel, agentStatusColor, agentStatusDotClass, formatTimeAgo, MEDAL_META, priorityColor } from "@/lib/utils";
-import { MedalBadge, MedalRibbonBar } from "@/components/shared/MedalBadge";
-import { SanctionBadge } from "@/components/shared/SanctionBadge";
+import { MedalRibbonBar } from "@/components/shared/MedalBadge";
 import { ProgressRing } from "@/components/shared/ProgressRing";
-import { RankRow, RankRibbon } from "@/components/shared/RankBadge";
-import { useOrders } from "@/context/OrdersContext";
+import { RankRibbon, RankRow } from "@/components/shared/RankBadge";
+import { SanctionBadge } from "@/components/shared/SanctionBadge";
+import { useCommandCenter } from "@/context/CommandCenterContext";
+import {
+  MEDAL_META,
+  agentStatusColor,
+  agentStatusDotClass,
+  agentStatusLabel,
+  cn,
+  formatTimeAgo,
+  priorityColor,
+} from "@/lib/utils";
 import type { Agent, AgentStatus } from "@/types";
 
 const ENGINE_LABELS: Record<string, string> = {
   codex: "CODEX",
   claude: "CLAUDE",
-  hybrid: "HÍBRIDO",
+  hybrid: "HIBRIDO",
 };
 
 const STATUS_FILTERS: { value: AgentStatus | "all"; label: string }[] = [
   { value: "all", label: "Todos" },
   { value: "active", label: "Activo" },
-  { value: "on_mission", label: "En Misión" },
-  { value: "standby", label: "En Espera" },
+  { value: "on_mission", label: "En mision" },
+  { value: "standby", label: "En espera" },
   { value: "offline", label: "Offline" },
 ];
 
 function AgentCard({ agent }: { agent: Agent }) {
   const [expanded, setExpanded] = useState(false);
-  const { directOrders } = useOrders();
-  const agentOrders = directOrders.filter((o) => o.agentId === agent.id);
-
+  const { directOrders } = useCommandCenter();
+  const agentOrders = directOrders.filter((order) => order.agentId === agent.id);
   const trustColor =
-    agent.trustScore >= 95 ? "hsl(142 50% 45%)" :
-    agent.trustScore >= 85 ? "hsl(40 70% 48%)" :
-    "hsl(0 62% 50%)";
+    agent.trustScore >= 95 ? "hsl(142 50% 45%)" : agent.trustScore >= 85 ? "hsl(40 70% 48%)" : "hsl(0 62% 50%)";
 
   return (
-    <div
-      className={cn(
-        "bg-card border border-border rounded-lg transition-all duration-200",
-        expanded ? "border-amber/30" : "hover:border-border/80"
-      )}
-    >
-      <button
-        className="w-full text-left p-4 flex items-center gap-4"
-        onClick={() => setExpanded((v) => !v)}
-      >
+    <div className={cn("bg-card border border-border rounded-lg transition-all duration-200", expanded ? "border-amber/30" : "hover:border-border/80")}>
+      <button className="w-full text-left p-4 flex items-center gap-4" onClick={() => setExpanded((value) => !value)}>
         <div className="relative flex-shrink-0">
           <div className="w-10 h-10 rounded-md bg-muted border border-border flex items-center justify-center">
-            <span className="text-base font-mono font-bold text-amber">
-              {agent.codename.charAt(0)}
-            </span>
+            <span className="text-base font-mono font-bold text-amber">{agent.codename.charAt(0)}</span>
           </div>
           <span className={cn("status-dot absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 border border-card", agentStatusDotClass(agent.status))} />
         </div>
@@ -70,33 +64,8 @@ function AgentCard({ agent }: { agent: Agent }) {
             <div className="text-[9px] font-mono text-muted-foreground">MOTOR</div>
             <div className="text-[10px] font-mono font-semibold text-amber">{ENGINE_LABELS[agent.preferredEngine]}</div>
           </div>
-
-          <ProgressRing
-            percent={agent.trustScore}
-            size={44}
-            strokeWidth={4}
-            color={trustColor}
-            label={`${agent.trustScore}`}
-            sublabel="trust"
-          />
-
-          <div className="text-right hidden sm:block">
-            <div className="text-[9px] font-mono text-muted-foreground">MISIONES</div>
-            <div className="text-[10px] font-mono text-foreground">
-              <span className="text-green-400">{agent.missionsCompleted}</span>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-red-500">{agent.missionsFailed}</span>
-            </div>
-          </div>
-
-          <div className="text-right hidden md:block">
-            <div className="text-[9px] font-mono text-muted-foreground">COSTO</div>
-            <div className="text-[10px] font-mono text-foreground">${agent.historicalCost.toFixed(0)}</div>
-          </div>
-
-          <span className={cn("text-xs font-mono text-muted-foreground transition-transform duration-200", expanded ? "rotate-180" : "")}>
-            ▾
-          </span>
+          <ProgressRing percent={agent.trustScore} size={44} strokeWidth={4} color={trustColor} label={`${agent.trustScore}`} sublabel="trust" />
+          <span className={cn("text-xs font-mono text-muted-foreground transition-transform duration-200", expanded ? "rotate-180" : "")}>▾</span>
         </div>
       </button>
 
@@ -108,12 +77,10 @@ function AgentCard({ agent }: { agent: Agent }) {
                 <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">BIO</div>
                 <p className="text-xs text-foreground/70 leading-relaxed">{agent.bio}</p>
               </div>
-
               <div>
-                <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">ESPECIALIZACIÓN</div>
+                <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">ESPECIALIZACION</div>
                 <p className="text-xs text-foreground/70 leading-relaxed">{agent.specialization}</p>
               </div>
-
               <div>
                 <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">HABILIDADES</div>
                 <div className="flex flex-wrap gap-1">
@@ -132,29 +99,8 @@ function AgentCard({ agent }: { agent: Agent }) {
                 <RankRow rank={agent.rank} />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <div className="bg-muted/50 rounded p-2.5">
-                  <div className="text-[9px] font-mono text-muted-foreground">Trust Score</div>
-                  <div className="text-sm font-mono font-semibold" style={{ color: trustColor }}>{agent.trustScore}%</div>
-                </div>
-                <div className="bg-muted/50 rounded p-2.5">
-                  <div className="text-[9px] font-mono text-muted-foreground">Costo hist.</div>
-                  <div className="text-sm font-mono font-semibold text-foreground">${agent.historicalCost.toFixed(2)}</div>
-                </div>
-                <div className="bg-muted/50 rounded p-2.5">
-                  <div className="text-[9px] font-mono text-muted-foreground">Completadas</div>
-                  <div className="text-sm font-mono font-semibold text-green-400">{agent.missionsCompleted}</div>
-                </div>
-                <div className="bg-muted/50 rounded p-2.5">
-                  <div className="text-[9px] font-mono text-muted-foreground">Fallidas</div>
-                  <div className="text-sm font-mono font-semibold text-red-500">{agent.missionsFailed}</div>
-                </div>
-              </div>
-
               <div>
-                <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-2">
-                  CONDECORACIONES ({agent.medals.length})
-                </div>
+                <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-2">CONDECORACIONES ({agent.medals.length})</div>
                 {agent.medals.length > 0 ? (
                   <div className="space-y-2">
                     {agent.medals.map((medal) => {
@@ -163,18 +109,11 @@ function AgentCard({ agent }: { agent: Agent }) {
                         <div key={medal.id} className="flex items-start gap-2">
                           <div className="flex-shrink-0 mt-0.5 flex flex-col gap-0.5">
                             <MedalRibbonBar type={medal.type} height={10} />
-                            <span className={cn("font-mono text-[8px] text-center", meta.color)}>
-                              {meta.abbreviation}
-                            </span>
+                            <span className={cn("font-mono text-[8px] text-center", meta.color)}>{meta.abbreviation}</span>
                           </div>
                           <div className="min-w-0">
-                            <div className={cn("text-[10px] font-mono font-semibold", meta.color)}>
-                              {medal.label}
-                            </div>
+                            <div className={cn("text-[10px] font-mono font-semibold", meta.color)}>{medal.label}</div>
                             <div className="text-[9px] text-muted-foreground leading-relaxed">{medal.description}</div>
-                            <div className="text-[8px] text-muted-foreground/60 mt-0.5 font-mono">
-                              {meta.label} · otorgada {new Date(medal.awardedAt).toLocaleDateString("es-AR", { day: "2-digit", month: "short", year: "numeric" })}
-                            </div>
                           </div>
                         </div>
                       );
@@ -192,9 +131,7 @@ function AgentCard({ agent }: { agent: Agent }) {
                     {agent.sanctions.map((sanction) => (
                       <div key={sanction.id} className="flex items-start gap-2">
                         <SanctionBadge sanction={sanction} size="sm" />
-                        <div>
-                          <div className="text-[9px] text-muted-foreground">{sanction.reason}</div>
-                        </div>
+                        <div className="text-[9px] text-muted-foreground">{sanction.reason}</div>
                       </div>
                     ))}
                   </div>
@@ -205,9 +142,7 @@ function AgentCard({ agent }: { agent: Agent }) {
 
               {agentOrders.length > 0 && (
                 <div>
-                  <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">
-                    ÓRDENES RECIBIDAS ({agentOrders.length})
-                  </div>
+                  <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">ORDENES RECIBIDAS ({agentOrders.length})</div>
                   <div className="space-y-1.5">
                     {agentOrders.map((order) => (
                       <div key={order.id} className="rounded border border-[hsl(222_22%_18%)] bg-[hsl(222_22%_10%)] p-2">
@@ -226,9 +161,7 @@ function AgentCard({ agent }: { agent: Agent }) {
                 </div>
               )}
 
-              <div className="text-[9px] font-mono text-muted-foreground">
-                Último activo: {formatTimeAgo(agent.lastActive)}
-              </div>
+              <div className="text-[9px] font-mono text-muted-foreground">Ultimo activo: {formatTimeAgo(agent.lastActive)}</div>
             </div>
           </div>
         </div>
@@ -238,12 +171,13 @@ function AgentCard({ agent }: { agent: Agent }) {
 }
 
 export default function Agents() {
+  const { agents } = useCommandCenter();
   const [statusFilter, setStatusFilter] = useState<AgentStatus | "all">("all");
   const [search, setSearch] = useState("");
 
-  const filtered = AGENTS.filter((a) => {
-    if (statusFilter !== "all" && a.status !== statusFilter) return false;
-    if (search && !a.codename.toLowerCase().includes(search.toLowerCase())) return false;
+  const filtered = agents.filter((agent) => {
+    if (statusFilter !== "all" && agent.status !== statusFilter) return false;
+    if (search && !agent.codename.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
@@ -252,35 +186,31 @@ export default function Agents() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-base font-mono font-semibold text-foreground tracking-wide">Agentes</h1>
-          <p className="text-[10px] font-mono text-muted-foreground mt-0.5">
-            {AGENTS.length} operativos registrados
-          </p>
+          <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{agents.length} operativos registrados</p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="search"
-            placeholder="Buscar agente..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-7 w-40 bg-muted border border-border rounded px-2.5 text-[11px] font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-amber/50"
-          />
-        </div>
+        <input
+          type="search"
+          placeholder="Buscar agente..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="h-7 w-40 bg-muted border border-border rounded px-2.5 text-[11px] font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-amber/50"
+        />
       </div>
 
       <div className="flex gap-1.5 flex-wrap">
-        {STATUS_FILTERS.map((f) => (
+        {STATUS_FILTERS.map((filter) => (
           <button
-            key={f.value}
-            onClick={() => setStatusFilter(f.value)}
+            key={filter.value}
+            onClick={() => setStatusFilter(filter.value)}
             className={cn(
               "px-2.5 py-1 rounded text-[10px] font-mono border transition-colors",
-              statusFilter === f.value
+              statusFilter === filter.value
                 ? "bg-amber/10 border-amber/40 text-amber"
-                : "bg-transparent border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
+                : "bg-transparent border-border text-muted-foreground hover:border-border/80 hover:text-foreground",
             )}
           >
-            {f.label}
+            {filter.label}
           </button>
         ))}
       </div>
@@ -289,11 +219,6 @@ export default function Agents() {
         {filtered.map((agent) => (
           <AgentCard key={agent.id} agent={agent} />
         ))}
-        {filtered.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground text-sm font-mono">
-            No se encontraron agentes
-          </div>
-        )}
       </div>
     </div>
   );

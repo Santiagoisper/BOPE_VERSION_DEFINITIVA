@@ -25,7 +25,7 @@ export function formatDateTime(iso: string): string {
 }
 
 export function formatTimeAgo(iso: string): string {
-  const now = new Date("2026-04-02T17:00:00Z");
+  const now = new Date();
   const then = new Date(iso);
   const diffMs = now.getTime() - then.getTime();
   const diffMins = Math.floor(diffMs / 60000);

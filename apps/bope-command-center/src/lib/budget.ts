@@ -65,9 +65,3 @@ export function projectAnnualSpend(accumulatedSpend: number, monthsElapsed: numb
   const monthlyAvg = accumulatedSpend / monthsElapsed;
   return monthlyAvg * 12;
 }
-
-export const GLOBAL_BUDGET: Budget = computeBudget(
-  461.00,
-  76.10,
-  { codex: 312.40, claude: 148.60 }
-);
