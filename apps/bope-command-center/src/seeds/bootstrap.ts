@@ -87,6 +87,8 @@ export function createBootstrapState(): CommandCenterState {
     updatedAt: mission.completedAt ?? mission.startedAt ?? BOOTSTRAP_TIMESTAMP,
   }));
 
+  const validMissionIds = new Set(missions.map((mission) => mission.id));
+
   const missionEvents: MissionEventRecord[] = MISSIONS.flatMap((mission) =>
     mission.events.map((event) => ({
       id: event.id,
@@ -116,7 +118,7 @@ export function createBootstrapState(): CommandCenterState {
       agent.medals.map((medal) => ({
         id: `agent-${medal.id}`,
         agentId: agent.id,
-        missionId: medal.missionId,
+        missionId: medal.missionId && validMissionIds.has(medal.missionId) ? medal.missionId : undefined,
         type: medal.type,
         label: medal.label,
         description: medal.description,
@@ -145,7 +147,7 @@ export function createBootstrapState(): CommandCenterState {
       agent.sanctions.map((sanction) => ({
         id: `agent-${sanction.id}`,
         agentId: agent.id,
-        missionId: sanction.missionId,
+        missionId: sanction.missionId && validMissionIds.has(sanction.missionId) ? sanction.missionId : undefined,
         severity: sanction.severity,
         reason: sanction.reason,
         details: sanction.details,

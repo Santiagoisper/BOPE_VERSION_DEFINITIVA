@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch dist/bope-command-center-server/src/server.js",
+    "dev": "node --env-file=.env --watch dist/bope-command-center-server/src/server.js",
     "build": "pnpm exec tsc -p tsconfig.json",
-    "db:migrate": "pnpm exec tsc -p tsconfig.json && node dist/bope-command-center-server/src/scripts/migrate.js",
-    "start": "node dist/bope-command-center-server/src/server.js",
+    "db:migrate": "pnpm exec tsc -p tsconfig.json && node --env-file=.env dist/bope-command-center-server/src/scripts/migrate.js",
+    "start": "node --env-file=.env dist/bope-command-center-server/src/server.js",
     "typecheck": "pnpm exec tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
