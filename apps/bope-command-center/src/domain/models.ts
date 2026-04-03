@@ -126,6 +126,20 @@ export interface ProviderRecord {
   updatedAt: string;
 }
 
+export interface ProviderConfigRecord {
+  providerId: string;
+  mode: "disabled" | "shadow" | "armed";
+  enabled: boolean;
+  killSwitchActive: boolean;
+  monthlyHardLimit: number;
+  annualHardLimit: number;
+  maxTokensPerRequest: number;
+  maxRequestsPerMinute: number;
+  traceLevel: "standard" | "verbose";
+  notes: string;
+  updatedAt: string;
+}
+
 export interface ToolRecord {
   id: string;
   name: string;
@@ -208,6 +222,7 @@ export interface CommandCenterState {
   medals: MedalAwardRecord[];
   sanctions: SanctionRecord[];
   providers: ProviderRecord[];
+  providerConfigs: ProviderConfigRecord[];
   tools: ToolRecord[];
   directOrders: DirectOrderRecord[];
   budgetPolicy: BudgetPolicyRecord;

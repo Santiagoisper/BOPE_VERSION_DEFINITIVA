@@ -8,6 +8,5 @@ coverage/
 .env
 .env.*
 !.env.example
-apps/bope-command-center-server/data/command-center.json
 Thumbs.db
 .DS_Store

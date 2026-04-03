@@ -3,7 +3,7 @@ import { ProgressRing } from "@/components/shared/ProgressRing";
 import { useCommandCenter } from "@/context/CommandCenterContext";
 import { annualUsagePercent, formatCost } from "@/lib/budget";
 import { cn } from "@/lib/utils";
-import type { ModelProvider, ToolConnection } from "@/types";
+import type { ModelProvider, ProviderControl, ToolConnection } from "@/types";
 
 const ENGINE_ROLE_LABELS: Record<string, string> = {
   execution: "EJECUCION",
@@ -84,8 +84,42 @@ function ToolCard({ tool }: { tool: ToolConnection }) {
   );
 }
 
+function ProviderControlCard({ provider, control }: { provider: ModelProvider; control?: ProviderControl }) {
+  const modeLabel = control?.mode ?? "disabled";
+  const switchLabel = control?.killSwitchActive ? "KILL SWITCH ACTIVO" : "KILL SWITCH LIBERADO";
+
+  return (
+    <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-[10px] font-mono text-foreground">{provider.shortName}</div>
+          <div className="text-[9px] font-mono text-muted-foreground">{provider.name}</div>
+        </div>
+        <div className="text-right">
+          <div className="text-[9px] font-mono text-amber">{modeLabel.toUpperCase()}</div>
+          <div className={cn("text-[9px] font-mono", control?.enabled ? "text-green-400" : "text-red-400")}>
+            {control?.enabled ? "ENABLED" : "DISABLED"}
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-[9px] font-mono text-muted-foreground">
+        <div>RPM LIMITE: {control?.maxRequestsPerMinute ?? 0}</div>
+        <div>TOKENS/REQ: {(control?.maxTokensPerRequest ?? 0).toLocaleString("es-AR")}</div>
+        <div>TOPE MENSUAL: {formatCost(control?.monthlyHardLimit ?? 0)}</div>
+        <div>TOPE ANUAL: {formatCost(control?.annualHardLimit ?? 0)}</div>
+      </div>
+      <div className={cn("text-[9px] font-mono", control?.killSwitchActive ? "text-red-400" : "text-green-400")}>
+        {switchLabel}
+      </div>
+      <p className="text-[10px] text-muted-foreground leading-relaxed">
+        {control?.notes ?? "Proveedor sin politica cargada."}
+      </p>
+    </div>
+  );
+}
+
 export default function Arsenal() {
-  const { providers, tools, globalBudget, budgetAlerts, auditLog, budgetPolicy, updateBudgetPolicy } = useCommandCenter();
+  const { providers, providerControls, tools, globalBudget, budgetAlerts, auditLog, budgetPolicy, updateBudgetPolicy } = useCommandCenter();
   const annualPct = globalBudget ? annualUsagePercent(globalBudget) : 0;
   const [annualBudget, setAnnualBudget] = useState("");
   const [monthlyTarget, setMonthlyTarget] = useState("");
@@ -283,6 +317,19 @@ export default function Arsenal() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {providers.map((provider) => (
             <EngineCard key={provider.id} provider={provider} />
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="text-[10px] font-mono text-muted-foreground tracking-wider mb-3">CONTROLES DE ACTIVACION DE PROVEEDORES</div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {providers.map((provider) => (
+            <ProviderControlCard
+              key={provider.id}
+              provider={provider}
+              control={providerControls.find((control) => control.providerId === provider.id)}
+            />
           ))}
         </div>
       </div>

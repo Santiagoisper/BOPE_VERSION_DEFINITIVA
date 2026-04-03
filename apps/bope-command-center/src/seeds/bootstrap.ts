@@ -9,6 +9,7 @@ import type {
   MedalAwardRecord,
   MissionEventRecord,
   MissionRecord,
+  ProviderConfigRecord,
   ProviderRecord,
   SanctionRecord,
   ToolRecord,
@@ -177,6 +178,20 @@ export function createBootstrapState(): CommandCenterState {
     updatedAt: BOOTSTRAP_TIMESTAMP,
   }));
 
+  const providerConfigs: ProviderConfigRecord[] = providers.map((provider) => ({
+    providerId: provider.id,
+    mode: "disabled",
+    enabled: false,
+    killSwitchActive: true,
+    monthlyHardLimit: provider.monthlyBudget,
+    annualHardLimit: provider.annualBudget,
+    maxTokensPerRequest: provider.id === "codex" ? 120_000 : 90_000,
+    maxRequestsPerMinute: provider.id === "codex" ? 12 : 10,
+    traceLevel: "verbose",
+    notes: `Proveedor ${provider.shortName} preparado para activacion futura bajo control operativo.`,
+    updatedAt: BOOTSTRAP_TIMESTAMP,
+  }));
+
   const tools: ToolRecord[] = TOOL_CONNECTIONS.map((tool) => ({
     ...tool,
     category:
@@ -240,7 +255,7 @@ export function createBootstrapState(): CommandCenterState {
   ];
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 3,
     agents,
     agentPerformance,
     missions,
@@ -248,6 +263,7 @@ export function createBootstrapState(): CommandCenterState {
     medals,
     sanctions,
     providers,
+    providerConfigs,
     tools,
     directOrders: [],
     budgetPolicy: {

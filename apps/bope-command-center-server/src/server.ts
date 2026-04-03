@@ -13,7 +13,7 @@ import {
   verifyPassword,
 } from "./auth.js";
 import type { PersistedStore, SessionRecord } from "./domain.js";
-import { loadStore, saveStore } from "./storage.js";
+import { initializePersistence, loadStore, mutateStore } from "./storage.js";
 import {
   createDirectOrderInState,
   createMissionInState,
@@ -94,12 +94,13 @@ function requireSession(store: PersistedStore, request: IncomingMessage, respons
 async function handler(request: IncomingMessage, response: ServerResponse): Promise<void> {
   const method = request.method ?? "GET";
   const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
-  const store = await loadStore();
 
   if (method === "GET" && url.pathname === "/api/healthz") {
     json(response, 200, { ok: true, service: "bope-command-center-server" });
     return;
   }
+
+  const store = await loadStore();
 
   if (method === "GET" && url.pathname === "/api/bootstrap-status") {
     json(response, 200, {
@@ -128,33 +129,46 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     }
 
     const nowIso = new Date().toISOString();
-    store.state = synchronizeState({
-      ...store.state,
-      authConfig: createAuthConfig(username, password, nowIso),
-      auditLog: [
-        ...store.state.auditLog,
-        {
-          id: `audit-${crypto.randomUUID()}`,
-          timestamp: nowIso,
-          category: "auth",
-          level: "info",
-          actorLabel: username.toUpperCase(),
-          message: "Autenticacion central inicializada.",
-          context: "bootstrap",
+    const payload = await mutateStore((currentStore) => {
+      const nextState = synchronizeState({
+        ...currentStore.state,
+        authConfig: createAuthConfig(username, password, nowIso),
+        auditLog: [
+          ...currentStore.state.auditLog,
+          {
+            id: `audit-${crypto.randomUUID()}`,
+            timestamp: nowIso,
+            category: "auth",
+            level: "info",
+            actorLabel: username.toUpperCase(),
+            message: "Autenticacion central inicializada.",
+            context: "bootstrap",
+          },
+        ],
+      });
+      const created = createSession(username, nowIso);
+      const nextStore: PersistedStore = {
+        state: nextState,
+        sessions: filterActiveSessions([...currentStore.sessions, created.session]),
+      };
+
+      return {
+        store: nextStore,
+        result: {
+          token: created.token,
+          session: {
+            username,
+            loginAt: created.session.loginAt,
+            expiresAt: created.session.expiresAt,
+          },
+          state: sanitizeState(nextState),
         },
-      ],
+      };
     });
-    const created = createSession(username, nowIso);
-    store.sessions = filterActiveSessions([...store.sessions, created.session]);
-    await saveStore(store);
-    writeSessionCookie(response, created.token);
+    writeSessionCookie(response, payload.token);
     json(response, 200, {
-      session: {
-        username,
-        loginAt: created.session.loginAt,
-        expiresAt: created.session.expiresAt,
-      },
-      state: sanitizeState(store.state),
+      session: payload.session,
+      state: payload.state,
     });
     return;
   }
@@ -177,55 +191,73 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     const validPassword = validUser ? verifyPassword(password, config) : false;
 
     if (!validUser || !validPassword) {
-      store.state = synchronizeState({
-        ...store.state,
-        authConfig: registerFailedAttempt(config),
-        auditLog: [
-          ...store.state.auditLog,
-          {
-            id: `audit-${crypto.randomUUID()}`,
-            timestamp: new Date().toISOString(),
-            category: "auth",
-            level: "warning",
-            actorLabel: username.toUpperCase() || "UNKNOWN",
-            message: "Intento de acceso rechazado.",
-            context: "login",
-          },
-        ],
-      });
-      await saveStore(store);
+      await mutateStore((currentStore) => ({
+        store: {
+          state: synchronizeState({
+            ...currentStore.state,
+            authConfig: registerFailedAttempt(config),
+            auditLog: [
+              ...currentStore.state.auditLog,
+              {
+                id: `audit-${crypto.randomUUID()}`,
+                timestamp: new Date().toISOString(),
+                category: "auth",
+                level: "warning",
+                actorLabel: username.toUpperCase() || "UNKNOWN",
+                message: "Intento de acceso rechazado.",
+                context: "login",
+              },
+            ],
+          }),
+          sessions: currentStore.sessions,
+        },
+        result: null,
+      }));
       json(response, 401, { error: "Credenciales invalidas." });
       return;
     }
 
     const nowIso = new Date().toISOString();
-    store.state = synchronizeState({
-      ...store.state,
-      authConfig: clearFailedAttempts(config),
-      auditLog: [
-        ...store.state.auditLog,
-        {
-          id: `audit-${crypto.randomUUID()}`,
-          timestamp: nowIso,
-          category: "auth",
-          level: "info",
-          actorLabel: username.toUpperCase(),
-          message: "Sesion central autorizada.",
-          context: "login",
+    const payload = await mutateStore((currentStore) => {
+      const nextState = synchronizeState({
+        ...currentStore.state,
+        authConfig: clearFailedAttempts(config),
+        auditLog: [
+          ...currentStore.state.auditLog,
+          {
+            id: `audit-${crypto.randomUUID()}`,
+            timestamp: nowIso,
+            category: "auth",
+            level: "info",
+            actorLabel: username.toUpperCase(),
+            message: "Sesion central autorizada.",
+            context: "login",
+          },
+        ],
+      });
+      const created = createSession(username, nowIso);
+      const nextStore: PersistedStore = {
+        state: nextState,
+        sessions: filterActiveSessions([...currentStore.sessions, created.session]),
+      };
+
+      return {
+        store: nextStore,
+        result: {
+          token: created.token,
+          session: {
+            username,
+            loginAt: created.session.loginAt,
+            expiresAt: created.session.expiresAt,
+          },
+          state: sanitizeState(nextState),
         },
-      ],
+      };
     });
-    const created = createSession(username, nowIso);
-    store.sessions = filterActiveSessions([...store.sessions, created.session]);
-    await saveStore(store);
-    writeSessionCookie(response, created.token);
+    writeSessionCookie(response, payload.token);
     json(response, 200, {
-      session: {
-        username,
-        loginAt: created.session.loginAt,
-        expiresAt: created.session.expiresAt,
-      },
-      state: sanitizeState(store.state),
+      session: payload.session,
+      state: payload.state,
     });
     return;
   }
@@ -235,8 +267,13 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     const token = cookies[SESSION_COOKIE];
     if (token) {
       const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-      store.sessions = store.sessions.filter((session) => session.tokenHash !== tokenHash);
-      await saveStore(store);
+      await mutateStore((currentStore) => ({
+        store: {
+          state: currentStore.state,
+          sessions: currentStore.sessions.filter((session) => session.tokenHash !== tokenHash),
+        },
+        result: null,
+      }));
     }
     clearSessionCookie(response);
     json(response, 200, { ok: true });
@@ -279,18 +316,26 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
       assignedAgents?: string[];
       estimatedBudget?: number;
     };
-    store.state = createMissionInState(store.state, {
-      codename: (body.codename ?? "").trim().toUpperCase(),
-      title: (body.title ?? "").trim(),
-      objective: (body.objective ?? "").trim(),
-      priority: body.priority ?? "medium",
-      leadAgent: body.leadAgent ?? "",
-      assignedAgents: body.assignedAgents ?? [],
-      estimatedBudget: Number(body.estimatedBudget ?? 0),
-      actorLabel: session.username.toUpperCase(),
+    const state = await mutateStore((currentStore) => {
+      const nextState = createMissionInState(currentStore.state, {
+        codename: (body.codename ?? "").trim().toUpperCase(),
+        title: (body.title ?? "").trim(),
+        objective: (body.objective ?? "").trim(),
+        priority: body.priority ?? "medium",
+        leadAgent: body.leadAgent ?? "",
+        assignedAgents: body.assignedAgents ?? [],
+        estimatedBudget: Number(body.estimatedBudget ?? 0),
+        actorLabel: session.username.toUpperCase(),
+      });
+      return {
+        store: {
+          state: nextState,
+          sessions: currentStore.sessions,
+        },
+        result: sanitizeState(nextState),
+      };
     });
-    await saveStore(store);
-    json(response, 200, { state: sanitizeState(store.state) });
+    json(response, 200, { state });
     return;
   }
 
@@ -304,14 +349,22 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
       message?: string;
       priority?: "low" | "medium" | "high" | "critical";
     };
-    store.state = createDirectOrderInState(store.state, {
-      agentId: body.agentId ?? "",
-      message: (body.message ?? "").trim(),
-      priority: body.priority ?? "medium",
-      actorLabel: session.username.toUpperCase(),
+    const state = await mutateStore((currentStore) => {
+      const nextState = createDirectOrderInState(currentStore.state, {
+        agentId: body.agentId ?? "",
+        message: (body.message ?? "").trim(),
+        priority: body.priority ?? "medium",
+        actorLabel: session.username.toUpperCase(),
+      });
+      return {
+        store: {
+          state: nextState,
+          sessions: currentStore.sessions,
+        },
+        result: sanitizeState(nextState),
+      };
     });
-    await saveStore(store);
-    json(response, 200, { state: sanitizeState(store.state) });
+    json(response, 200, { state });
     return;
   }
 
@@ -326,24 +379,34 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
       providerBudgets?: Array<{ id: string; annualBudget: number; monthlyBudget: number }>;
       reason?: string;
     };
-    store.state = updateBudgetPolicyInState(store.state, {
-      annualBudget: Number(body.annualBudget ?? store.state.budgetPolicy.annualBudget),
-      monthlyTarget: Number(body.monthlyTarget ?? store.state.budgetPolicy.monthlyTarget),
-      providerBudgets: body.providerBudgets ?? store.state.providers.map((provider) => ({
-        id: provider.id,
-        annualBudget: provider.annualBudget,
-        monthlyBudget: provider.monthlyBudget,
-      })),
-      reason: (body.reason ?? "").trim() || "Sin motivo especificado.",
-      actorLabel: session.username.toUpperCase(),
+    const state = await mutateStore((currentStore) => {
+      const nextState = updateBudgetPolicyInState(currentStore.state, {
+        annualBudget: Number(body.annualBudget ?? currentStore.state.budgetPolicy.annualBudget),
+        monthlyTarget: Number(body.monthlyTarget ?? currentStore.state.budgetPolicy.monthlyTarget),
+        providerBudgets: body.providerBudgets ?? currentStore.state.providers.map((provider) => ({
+          id: provider.id,
+          annualBudget: provider.annualBudget,
+          monthlyBudget: provider.monthlyBudget,
+        })),
+        reason: (body.reason ?? "").trim() || "Sin motivo especificado.",
+        actorLabel: session.username.toUpperCase(),
+      });
+      return {
+        store: {
+          state: nextState,
+          sessions: currentStore.sessions,
+        },
+        result: sanitizeState(nextState),
+      };
     });
-    await saveStore(store);
-    json(response, 200, { state: sanitizeState(store.state) });
+    json(response, 200, { state });
     return;
   }
 
   json(response, 404, { error: "Ruta no encontrada." });
 }
+
+await initializePersistence();
 
 const server = http.createServer((request: IncomingMessage, response: ServerResponse) => {
   void handler(request, response).catch((error) => {

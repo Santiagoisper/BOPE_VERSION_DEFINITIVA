@@ -4,6 +4,7 @@
   "scripts": {
     "dev:bope-command-center-server": "pnpm --dir apps/bope-command-center-server build && pnpm --dir apps/bope-command-center-server start",
     "build:bope-command-center-server": "pnpm --dir apps/bope-command-center-server build",
+    "db:migrate:bope-command-center-server": "pnpm --dir apps/bope-command-center-server db:migrate",
     "typecheck:bope-command-center-server": "pnpm --dir apps/bope-command-center-server typecheck",
     "dev:bope-command-center": "pnpm --dir apps/bope-command-center dev",
     "build:bope-command-center": "pnpm --dir apps/bope-command-center build",

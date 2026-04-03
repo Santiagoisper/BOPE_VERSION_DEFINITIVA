@@ -9,6 +9,8 @@ Base operativa de `apps/bope-command-center/` dentro de `BOPE VERSION DEFINITIVA
 - Estado operativo obtenido desde API remota.
 - Presupuesto central editable con trazabilidad.
 - Auditoria central visible en la UI.
+- Persistencia remota soportada por Postgres.
+- Controles de activacion de proveedores visibles en la UI.
 - Sin integracion externa real con Claude o Codex en esta fase.
 
 ## Modelo de datos
@@ -22,6 +24,7 @@ El estado normalizado vive en `src/domain/models.ts` e incluye:
 - medallas
 - sanciones
 - proveedores
+- configuraciones de proveedor
 - herramientas
 - ordenes directas
 - politica presupuestaria
@@ -36,18 +39,21 @@ El estado normalizado vive en `src/domain/models.ts` e incluye:
 - El frontend consume API mediante `src/lib/api.ts`.
 - `src/context/CommandCenterContext.tsx` es el adaptador entre la API y la UI.
 - La UI ya no depende de IndexedDB como fuente de verdad.
+- El runtime ahora proviene de Postgres en lugar de JSON local.
 
 ## Autenticacion
 
-- Primer arranque: bootstrap remoto de usuario y contraseña.
+- Primer arranque: bootstrap remoto de usuario y contrasena.
 - Password hashing y lockout residen en el backend.
 - La sesion viaja por cookie segura `HttpOnly` con expiracion de 12 horas.
 
-## Presupuesto y auditoria
+## Presupuesto, auditoria y providers
 
 - El backend recalcula alertas en cada mutacion.
 - La UI permite editar presupuesto global y por proveedor.
 - Cada cambio presupuestario exige motivo operativo y genera auditoria central.
+- Los proveedores `codex` y `claude` quedan preparados en modo `disabled`.
+- Cada proveedor expone kill switch, limites y trazabilidad para futura activacion controlada.
 
 ## Comandos
 
@@ -56,18 +62,19 @@ pnpm --dir apps/bope-command-center typecheck
 pnpm --dir apps/bope-command-center build
 pnpm --dir apps/bope-command-center-server typecheck
 pnpm --dir apps/bope-command-center-server build
+pnpm --dir apps/bope-command-center-server db:migrate
 ```
 
 ## Limites actuales
 
 - Sin integracion real con proveedores externos.
-- Persistencia central basada en archivo JSON local del servidor, no en base SQL todavia.
-- Los datos iniciales siguen naciendo de semillas operativas importadas.
+- Los datos iniciales siguen naciendo de semillas operativas importadas si la base arranca vacia.
 - No hay integracion con APIs externas reales.
+- La activacion de proveedores permanece bloqueada por politica y kill switch.
 
 ## Proximos pasos
 
-1. Migrar la persistencia del backend a Postgres o equivalente.
-2. Añadir RBAC real y sesiones revocables por operador.
-3. Conectar providers reales Codex y Claude sobre la capa de proveedores ya preparada.
-4. Incorporar streaming de eventos y colas de trabajos.
+1. Anadir RBAC real y sesiones revocables por operador.
+2. Conectar providers reales Codex y Claude sobre la capa de proveedores ya preparada.
+3. Incorporar streaming de eventos y colas de trabajos.
+4. Implementar activacion controlada de tokens con smoke operativo y quotas duras.

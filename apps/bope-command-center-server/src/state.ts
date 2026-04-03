@@ -355,9 +355,24 @@ export function updateBudgetPolicyInState(
     };
   });
 
+  const nextProviderConfigs = state.providerConfigs.map((config) => {
+    const update = input.providerBudgets.find((item) => item.id === config.providerId);
+    if (!update) {
+      return config;
+    }
+
+    return {
+      ...config,
+      annualHardLimit: update.annualBudget,
+      monthlyHardLimit: update.monthlyBudget,
+      updatedAt: nowIso(),
+    };
+  });
+
   return synchronizeState({
     ...state,
     providers: nextProviders,
+    providerConfigs: nextProviderConfigs,
     budgetPolicy: {
       ...state.budgetPolicy,
       annualBudget: input.annualBudget,

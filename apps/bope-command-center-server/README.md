@@ -1,47 +1,69 @@
 # BOPE Command Center Server
 
-Backend remoto inicial de Fase 2 para `bope-command-center`.
+Backend remoto de Fase 3 para `bope-command-center`.
 
 ## Arquitectura
 
 - Servidor HTTP nativo en Node.
-- Persistencia central en `data/command-center.json`.
+- Persistencia central en Postgres.
+- Migraciones SQL reproducibles en `db/migrations/`.
 - Bootstrap inicial desde datasets historicos del frontend canonico.
 - Sesion central por cookie `HttpOnly`.
-- Auditoria central persistida en el mismo store.
+- Auditoria central, presupuesto y proveedores persistidos en base real.
 
-## Endpoints
+## Variables
 
-- `GET /api/healthz`
-- `GET /api/bootstrap-status`
-- `POST /api/auth/bootstrap`
-- `POST /api/auth/login`
-- `POST /api/auth/logout`
-- `GET /api/auth/me`
-- `GET /api/command-center/state`
-- `POST /api/missions`
-- `POST /api/orders/direct`
-- `PATCH /api/budget/policy`
+- `BOPE_COMMAND_CENTER_DATABASE_URL`
+- `BOPE_COMMAND_CENTER_DATABASE_SSL`
+- `BOPE_COMMAND_CENTER_SERVER_PORT`
 
-## Seguridad
+Referencia local: `.env.example`
 
-- Hashing de password con PBKDF2 SHA-256.
-- Lock temporal tras intentos fallidos.
-- Sesion con expiracion de 12 horas.
-- Cookie `HttpOnly`, `SameSite=Strict`.
+## Esquema principal
 
-## Persistencia
+- `bope_agents`
+- `bope_agent_performance`
+- `bope_missions`
+- `bope_mission_events`
+- `bope_medals`
+- `bope_sanctions`
+- `bope_budget_policy`
+- `bope_providers`
+- `bope_provider_configs`
+- `bope_tools`
+- `bope_direct_orders`
+- `bope_budget_alerts`
+- `bope_audit_logs`
+- `bope_auth_config`
+- `bope_sessions`
+- `bope_meta`
 
-- Si no existe `data/command-center.json`, el servidor crea el store inicial desde semillas.
-- El archivo runtime esta ignorado por git.
-- El store persiste:
-  - estado del command center
-  - autenticacion central
-  - auditoria
-  - sesiones activas
+## Providers preparados
 
-## Proxima fase
+- `codex` y `claude` quedan en modo `disabled`
+- `enabled=false`
+- `killSwitchActive=true`
+- limites mensuales y anuales alineados al presupuesto del proveedor
+- trazabilidad reforzada via `traceLevel=verbose`
 
-- sustituir JSON file por base de datos
-- agregar RBAC
-- integrar proveedores reales Codex y Claude sin romper contratos actuales
+## Comandos
+
+```bash
+pnpm --dir apps/bope-command-center-server typecheck
+pnpm --dir apps/bope-command-center-server build
+pnpm --dir apps/bope-command-center-server db:migrate
+```
+
+## Estado de Fase 3
+
+- el backend ya no depende de `data/command-center.json`
+- la fuente de verdad pasa a Postgres
+- auth central persiste en `bope_auth_config` y `bope_sessions`
+- las mutaciones usan transaccion y advisory lock para serializar escrituras
+
+## Fase 4
+
+1. Incorporar activacion controlada de tokens por proveedor.
+2. Agregar rotacion segura de credenciales y secretos externos.
+3. Instrumentar consumo real, cuotas y kill switch por operador.
+4. Conectar llamadas reales a motores solo despues de smoke operativo y limites auditados.

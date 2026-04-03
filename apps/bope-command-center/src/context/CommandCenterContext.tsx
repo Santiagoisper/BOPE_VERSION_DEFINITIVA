@@ -35,6 +35,7 @@ import type {
   DirectOrder,
   Mission,
   MissionPriority,
+  ProviderControl,
   ModelProvider,
   ProviderBudgetInput,
   SystemStatus,
@@ -75,6 +76,7 @@ interface CommandCenterContextValue {
   agents: Agent[];
   missions: Mission[];
   providers: ModelProvider[];
+  providerControls: ProviderControl[];
   tools: ToolConnection[];
   directOrders: DirectOrder[];
   globalBudget: Budget | null;
@@ -113,6 +115,7 @@ function buildViewModel(state: CommandCenterState | null) {
       agents: [] as Agent[],
       missions: [] as Mission[],
       providers: [] as ModelProvider[],
+      providerControls: [] as ProviderControl[],
       tools: [] as ToolConnection[],
       directOrders: [] as DirectOrder[],
       globalBudget: null as Budget | null,
@@ -130,6 +133,19 @@ function buildViewModel(state: CommandCenterState | null) {
     agents: mapAgents(state),
     missions,
     providers: mapProviders(state),
+    providerControls: state.providerConfigs.map((config) => ({
+      providerId: config.providerId,
+      mode: config.mode,
+      enabled: config.enabled,
+      killSwitchActive: config.killSwitchActive,
+      monthlyHardLimit: config.monthlyHardLimit,
+      annualHardLimit: config.annualHardLimit,
+      maxTokensPerRequest: config.maxTokensPerRequest,
+      maxRequestsPerMinute: config.maxRequestsPerMinute,
+      traceLevel: config.traceLevel,
+      notes: config.notes,
+      updatedAt: config.updatedAt,
+    })),
     tools: mapTools(state),
     directOrders: mapDirectOrders(state),
     globalBudget: buildGlobalBudget(state),
@@ -253,6 +269,7 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
         agents: view.agents,
         missions: view.missions,
         providers: view.providers,
+        providerControls: view.providerControls,
         tools: view.tools,
         directOrders: view.directOrders,
         globalBudget: view.globalBudget,

@@ -122,6 +122,20 @@ export interface ModelProvider {
   capabilities: string[];
 }
 
+export interface ProviderControl {
+  providerId: string;
+  mode: "disabled" | "shadow" | "armed";
+  enabled: boolean;
+  killSwitchActive: boolean;
+  monthlyHardLimit: number;
+  annualHardLimit: number;
+  maxTokensPerRequest: number;
+  maxRequestsPerMinute: number;
+  traceLevel: "standard" | "verbose";
+  notes: string;
+  updatedAt: string;
+}
+
 export interface ToolConnection {
   id: string;
   name: string;
