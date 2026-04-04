@@ -22,3 +22,4 @@ Indice de misiones BOPE ejecutadas bajo Codex.
 - BOPE-CODEX-2026-018 | replica intercapas desde Claude de mejoras estructurales | cerrada | arranque canonico, pantalla uniforme, lazy loading, records e historiales personales alineados en Codex
 - BOPE-CODEX-2026-019 | compatibilidad de invocacion y normalizacion de aliases | cerrada | rutas heredadas y aliases de mando resuelven al bootstrap local canonico sin bloquear la activacion
 - BOPE-CODEX-2026-020 | activacion doctrinal y alistamiento inicial | cerrada | orden heredada absorbida por el canon local, mando confirmado y batallon listo en modo austero
+- BOPE-CODEX-2026-021 | consolidacion de repositorios y criterio de deploy | cerrada | `BOPE VERSION DEFINITIVA` fijado como repo canonico, `PRUEBA` como sandbox y `BOPE 2026` como laboratorio historico

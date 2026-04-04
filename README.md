@@ -86,3 +86,39 @@ Una mision no esta cerrada hasta que:
 5. se haga push a GitHub
 
 Si no esta en GitHub, no esta cerrado.
+
+## Topologia canonica al 3 de abril de 2026
+
+El frente operativo unico de BOPE queda fijado asi:
+
+- repo canonico: `BOPE VERSION DEFINITIVA`
+- GitHub canonico: `https://github.com/Santiagoisper/BOPE_VERSION_DEFINITIVA.git`
+- rama principal: `main`
+- bootstrap Codex: `CODEX.md`
+- bootstrap Claude: `.claude/CLAUDE.md`
+
+Estructuras vecinas y su rol:
+
+- `PRUEBA` queda como sandbox tecnico y artefacto estatico listo para Vercel
+- `BOPE 2026` queda como archivo/laboratorio de exploracion de BOPE con APIs
+- `BOPE ARCHIVADO 2026-03-29` queda como respaldo doctrinal historico y no define arranque local
+
+Regla de operacion:
+
+- toda evolucion real de BOPE sale desde `BOPE VERSION DEFINITIVA`
+- no se abre trabajo nuevo productivo en `PRUEBA` ni en `BOPE 2026`
+- si una idea nacida en sandbox o laboratorio vale la pena, se porta al repo canonico
+
+## Estado Vercel conocido
+
+Estado verificado localmente en esta fecha:
+
+- no existe `.vercel/project.json` en este repo
+- no existe `vercel.json` en este repo
+- el frontend `apps/bope-command-center/` esta preparado para apuntar a backend remoto mediante `BOPE_COMMAND_CENTER_API_URL`
+- el backend `apps/bope-command-center-server/` expone `GET /api/healthz`
+
+Conclusiones operativas:
+
+- el repo esta listo para despliegue, pero el enlace formal con un proyecto Vercel no esta versionado localmente
+- si existe un proyecto Vercel activo, hoy vive fuera del repo o no quedo persistido en disco

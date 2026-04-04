@@ -121,3 +121,8 @@
 [JOHN RAMBO] INTEL: mision doctrinal de encuadre | sin riesgo tecnico ni productivo | alias `CORONEL RAMBO` normalizado a `JOHN RAMBO` | fuerza minima suficiente: JOHN solo
 [JOHN RAMBO] REPORTE: bootstrap heredado interpretado y arranque canonico local completado | fuentes externas `docs/` y `prompts/` mapeadas por compatibilidad a `CODEX.md`, `BOPE-CODEX-ADAPTACION.md` y `codex-logs/` | estado actual `STANDBY` y sin mision activa
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-020 completada | batallon listo en modo austero | registro local actualizado | listo para versionado y GitHub
+[SANTIAGO] ORDEN: consolidar el mapa operativo de repositorios BOPE, dejar una sola fuente de verdad y clasificar sandbox, archivo y estado de deploy
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-021 | consolidacion de repositorios y criterio de deploy | objetivo: fijar `BOPE VERSION DEFINITIVA` como frente canonico, dejar `PRUEBA` como sandbox y `BOPE 2026` como laboratorio historico
+[JOHN RAMBO] INTEL: mision documental y de gobierno tecnico | sin riesgo productivo | hay cambios de codigo ajenos en curso dentro del repo canonico, por lo tanto la operacion se limita a documentacion, trazabilidad y consolidacion de estructura
+[WINSTON] REPORTE: `README.md` y `REPOSITORIOS-Y-DEPLOY.md` actualizados en el repo canonico | `PRUEBA` y `BOPE 2026` quedan senalizados con README de estado y uso esperado | evidencia local confirma GitHub canonico en `BOPE VERSION DEFINITIVA` y ausencia de link local persistido a Vercel
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-021 completada | una sola fuente de verdad definida | sandbox y laboratorio segregados | listo para git y GitHub
