@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { sql, nextApprovalId } from '@/lib/db';
+import { n8nApprovalRequested } from '@/lib/adapters/n8n';
 
 const CreateApprovalSchema = z.object({
   mission_id:    z.string(),
@@ -61,6 +62,16 @@ export async function POST(req: NextRequest) {
       SET status = 'AWAITING_APPROVAL', updated_at = NOW()
       WHERE id = ${missions[0].id}::uuid
     `;
+
+    // Notificar n8n
+    n8nApprovalRequested({
+      approval_id:  rows[0].approval_id,
+      mission_id:   missions[0].id,
+      action_type,
+      risk_level,
+      description,
+      requested_by,
+    }).catch(() => {});
 
     return NextResponse.json({ ok: true, data: rows[0] }, { status: 201 });
   } catch (err) {

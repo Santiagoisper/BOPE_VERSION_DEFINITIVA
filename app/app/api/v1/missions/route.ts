@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { sql, nextMissionId } from '@/lib/db';
+import { n8nMissionCreated } from '@/lib/adapters/n8n';
 import type { BopePriority } from '@/lib/types';
 
 const CreateMissionSchema = z.object({
@@ -62,6 +63,14 @@ export async function POST(req: NextRequest) {
         false
       )
     `;
+
+    // Notificar n8n (fire-and-forget — no bloquea la respuesta)
+    n8nMissionCreated({
+      mission_id: mission.mission_id,
+      intent:     mission.intent,
+      priority:   mission.priority,
+      budget_usd: Number(mission.budget_usd),
+    }).catch(() => {});
 
     return NextResponse.json({ ok: true, data: mission }, { status: 201 });
   } catch (err) {

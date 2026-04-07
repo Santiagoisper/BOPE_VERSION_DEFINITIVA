@@ -110,29 +110,114 @@ export async function callClaude(opts: ClaudeCallOptions): Promise<ClaudeCallRes
   };
 }
 
-// ── Placeholder OpenAI adapter (activar cuando llegue key) ───
+// ── OpenAI adapter — Chat Completions con cost tracking exacto ───
 
-export interface OpenAICallResult {
-  content:     string;
-  cost:        { cost_total_usd: number };
-  stop_reason: string;
-  model:       string;
+let _openaiClient: { apiKey: string } | null = null;
+
+function getOpenAIKey(): string {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) throw new Error('OPENAI_API_KEY no configurada — revisar .env.local');
+  return key;
 }
 
-export async function callOpenAI(opts: {
+export interface OpenAICallOptions {
   mission_id: string;
   task_id?:   string;
   agent:      SoldierId;
   model?:     string;
   messages:   { role: 'system' | 'user' | 'assistant'; content: string }[];
-}): Promise<OpenAICallResult> {
-  // Stub — activar cuando OPENAI_API_KEY esté disponible
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error(
-      `[OpenAI] API key no configurada. Agente ${opts.agent} requiere OpenAI. ` +
-      `Mientras tanto, la misión continúa con agentes Claude disponibles.`
-    );
+  max_tokens?: number;
+}
+
+export interface OpenAICallResult {
+  content:     string;
+  cost: {
+    tokens_input:         number;
+    tokens_output:        number;
+    tokens_cache_read:    number;
+    cost_input_usd:       number;
+    cost_output_usd:      number;
+    cost_cache_read_usd:  number;
+    cost_total_usd:       number;
+  };
+  stop_reason: string;
+  model:       string;
+}
+
+export async function callOpenAI(opts: OpenAICallOptions): Promise<OpenAICallResult> {
+  const apiKey    = getOpenAIKey();
+  const model     = opts.model ?? 'gpt-4o-mini';
+  const max_tokens = opts.max_tokens ?? 4096;
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens,
+      messages: opts.messages,
+    }),
+  });
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`[OpenAI] HTTP ${response.status}: ${err.slice(0, 200)}`);
   }
-  // TODO: implementar con OpenAI SDK (Responses API)
-  throw new Error('OpenAI adapter pendiente de implementación');
+
+  const data = await response.json();
+  const choice = data.choices?.[0];
+  const usage  = data.usage ?? {};
+
+  // ── Extraer tokens ────────────────────────────────────────
+  const tokens_input      = usage.prompt_tokens            ?? 0;
+  const tokens_output     = usage.completion_tokens        ?? 0;
+  const tokens_cache_read = usage.prompt_tokens_details?.cached_tokens ?? 0;
+
+  // ── Calcular costo exacto ────────────────────────────────
+  const cost = calculateCost('openai', model, {
+    input:      tokens_input,
+    output:     tokens_output,
+    cache_read: tokens_cache_read,
+  });
+
+  // ── Persistir en bope_costs ──────────────────────────────
+  await sql`
+    INSERT INTO bope_costs (
+      mission_id, task_id, agent, provider, model,
+      tokens_input, tokens_output, tokens_cache_write, tokens_cache_read,
+      cost_input_usd, cost_output_usd, cost_cache_write_usd, cost_cache_read_usd,
+      cost_total_usd, billing_month
+    ) VALUES (
+      ${opts.mission_id}::uuid,
+      ${opts.task_id ?? null}::uuid,
+      ${opts.agent},
+      ${'openai' as BopeProvider},
+      ${model},
+      ${tokens_input}, ${tokens_output}, ${0}, ${tokens_cache_read},
+      ${cost.cost_input_usd}, ${cost.cost_output_usd},
+      ${0}, ${cost.cost_cache_read_usd},
+      ${cost.cost_total_usd},
+      ${billingMonth()}
+    )
+  `;
+
+  const content = choice?.message?.content ?? '';
+
+  return {
+    content,
+    cost: {
+      tokens_input,
+      tokens_output,
+      tokens_cache_read,
+      cost_input_usd:      cost.cost_input_usd,
+      cost_output_usd:     cost.cost_output_usd,
+      cost_cache_read_usd: cost.cost_cache_read_usd,
+      cost_total_usd:      cost.cost_total_usd,
+    },
+    stop_reason: choice?.finish_reason ?? 'stop',
+    model,
+  };
 }

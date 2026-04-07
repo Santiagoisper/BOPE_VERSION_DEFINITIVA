@@ -49,17 +49,26 @@ export const BOPE_CONFIG = {
 
   // ── Modelos por defecto ───────────────────────────────────
   models: {
-    rambo:             { provider: 'anthropic', model: 'claude-sonnet-4-6' },
-    winston:           { provider: 'anthropic', model: 'claude-sonnet-4-6' },
-    marco:             { provider: 'anthropic', model: 'claude-sonnet-4-6' },
-    blade:             { provider: 'openai',    model: 'gpt-4o-mini' },
-    forge:             { provider: 'openai',    model: 'gpt-4o-mini' },
-    pixel:             { provider: 'openai',    model: 'gpt-4o-mini' },
-    nexus:             { provider: 'openai',    model: 'gpt-4o-mini' },
-    cerberus:          { provider: 'openai',    model: 'gpt-4o-mini' },
-    house:             { provider: 'openai',    model: 'gpt-4o-mini' },
-    loco:              { provider: 'openai',    model: 'gpt-4o-mini' },
-    execution_escalation: { provider: 'openai', model: 'gpt-4o' },
+    rambo:    { provider: 'anthropic', default: 'claude-haiku-4-5-20251001', escalation: 'claude-sonnet-4-6', max: 'claude-opus-4-6' },
+    winston:  { provider: 'anthropic', default: 'claude-haiku-4-5-20251001', escalation: 'claude-sonnet-4-6', max: 'claude-opus-4-6' },
+    marco:    { provider: 'anthropic', default: 'claude-haiku-4-5-20251001', escalation: 'claude-sonnet-4-6', max: 'claude-opus-4-6' },
+    forge:    { provider: 'openai',    default: 'gpt-4o-mini',               escalation: 'gpt-4o',           max: 'gpt-4o' },
+    pixel:    { provider: 'openai',    default: 'gpt-4o-mini',               escalation: 'gpt-4o',           max: 'gpt-4o' },
+    nexus:    { provider: 'openai',    default: 'gpt-4o-mini',               escalation: 'gpt-4o',           max: 'gpt-4o' },
+    cerberus: { provider: 'openai',    default: 'gpt-4o-mini',               escalation: 'gpt-4o',           max: 'gpt-4o' },
+    house:    { provider: 'openai',    default: 'gpt-4o-mini',               escalation: 'gpt-4o',           max: 'gpt-4o' },
+    blade:    { provider: 'openai',    default: 'gpt-4o',                    escalation: 'gpt-4o',           max: 'gpt-4o' },
+    loco:     { provider: 'openai',    default: 'gpt-4o-mini',               escalation: 'gpt-4o',           max: 'gpt-4o' },
+  },
+
+  // ── Reglas de auto-escalación de modelo ──────────────────
+  // JOHN evalúa risk_level antes de cada llamada y elige el tier
+  model_tiers: {
+    LOW:      'default',      // Tareas simples, formateo, resúmenes
+    MEDIUM:   'default',      // Código estándar, debugging rutinario
+    HIGH:     'escalation',   // Bugs críticos, decisiones de arquitectura
+    CRITICAL: 'escalation',   // Crisis en producción — escalation siempre
+    // 'max' (Opus/GPT-4o top) solo con orden explícita de Santiago
   },
 
   // ── Control LOCO ─────────────────────────────────────────
@@ -145,6 +154,17 @@ function computeBreakdown(
 
 function round8(n: number): number {
   return Math.round(n * 1e8) / 1e8;
+}
+
+// ── Helper: resolver modelo según agente + riesgo ────────────────
+
+type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+type AgentId   = keyof typeof BOPE_CONFIG.models;
+
+export function resolveModel(agent: AgentId, risk: RiskLevel): string {
+  const cfg  = BOPE_CONFIG.models[agent];
+  const tier = BOPE_CONFIG.model_tiers[risk] as 'default' | 'escalation';
+  return (cfg as Record<string, string>)[tier] ?? (cfg as Record<string, string>).default;
 }
 
 // ── Billing month helper ──────────────────────────────────────
