@@ -39,3 +39,12 @@ Leer este archivo para retomar contexto sin perder estado.
 
 ---
 *Actualizado: 2026-03-31 | Firmado: JOHN + WINSTON*
+
+## Runtime update 2026-04-07T10:42:24-03:00
+- job_id: BOPE-VC-JOB-001
+- frente: mixto
+- agente responsable: john
+- apoyo minimo: ninguno
+- decision: JOHN resuelve solo por falta de un frente especializado explicito.
+- planner: JOHN mantiene el frente sin delegacion.
+- siguiente paso: Registrar decision de mando y ejecutar frente minimo.

@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: bope-visual-code-runtime
+Version: 0.1.0
+Summary: MVP runtime para BOPE Visual Code con JOHN como router operativo.
+Requires-Python: >=3.10
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"

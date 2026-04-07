@@ -1,0 +1,21 @@
+[JOHN RAMBO] ESTADO: COMMS inicializado para BOPE Visual Code | control plane ligero activo | fase=2 | evidencia=docs/architecture/bope-control-plane.md
+[WINSTON SCRIBE] REGISTRO: plantilla de comunicaciones creada | formato canonico listo para jobs, tool calls y handoffs | evidencia=logs/COMMS.log
+[NEXUS WIRE] INTEGRACION: OpenAI preparado a nivel local en .env.local | validacion de credencial pendiente | evidencia=.env.local
+[NEXUS WIRE] INTEGRACION: Neon database URL registrada localmente | validacion de conexion pendiente | evidencia=.env.local
+[NEXUS WIRE] INTEGRACION: Vercel endpoints canonicos identificados | automatizacion disponible con cuenta personal | evidencia=docs/setup/deployed-endpoints.md
+[NEXUS WIRE] INTEGRACION: Neon API key y project id cargados localmente | Neon queda listo para operaciones de plataforma desde BOPE | evidencia=.env.local
+[JOHN RAMBO] JOB: job_id=BOPE-VC-JOB-001 | frente=integracion | agente=john | motor=codex | artefacto=decision de arranque + cierre operativo | herramientas=logs, env.local, docs/setup/first-job-runbook.md
+[JOHN RAMBO] HANDOFF: job_id=BOPE-VC-JOB-001 | de=john | a=nexus | motivo=validar integraciones locales disponibles sin tocar produccion | artefacto=.env.local + docs/setup/deployed-endpoints.md
+[WINSTON SCRIBE] MEMORIA: catalogo de entrenamiento incorporado | los simulacros de la raiz pasan a biblioteca tactica consultable | evidencia=logs/MEMORIA/CATALOGO-ENTRENAMIENTO.md
+[MARCO AURELIO] DOCTRINA: regimen formal de corte marcial incorporado | cadena de mando y disciplina quedan explicitadas | evidencia=docs/discipline/corte-marcial.md
+[MARCO AURELIO] DOCTRINA: sistema formal de medallas incorporado | merito, evidencia y aprobacion quedan regulados | evidencia=docs/honors/medallas-y-condecoraciones.md
+[JOHN RAMBO] TRAINING JOB: mission_id=BOPE-TRAIN-RAMBO-001 | modalidad=individual | frente=integracion y triage | agente_activado=nexus | criterio=restablecer cadena de mando y fijar ownership en 5 min
+[JOHN RAMBO] TRAINING HANDOFF: mission_id=BOPE-TRAIN-RAMBO-001 | de=john | a=nexus | motivo=verdad operativa minima antes de abrir backend, frontend o seguridad
+[JOHN RAMBO] TRAINING VERDICT: mission_id=BOPE-TRAIN-RAMBO-001 | veredicto=VICTORIA | score=94/100 | decision=fijar ownership primero, escalar despues | evidencia=logs/missions/BOPE-TRAIN-RAMBO-001.md
+[WINSTON SCRIBE] TRAINING SCORE: mission_id=BOPE-TRAIN-RAMBO-001 | soldado=john rambo | tablero_actualizado=docs/training/tabla-general-score.md | legajo_actualizado=docs/agents/legajos/john-james-rambo.md
+[MARCO AURELIO] TRAINING LESSON: mission_id=BOPE-TRAIN-RAMBO-001 | leccion=sin verdad operativa no se fragmenta el batallon | dignidad=preservada | evidencia=logs/missions/BOPE-TRAIN-RAMBO-001.md
+[JOHN RAMBO] THEATER EXECUTION: mission_id=BOPE-TRAIN-RAMBO-001 | runner=python -m bope_agents.training_runner | output=john-order,nexus-report,after-action | evidencia=docs/training/theaters/BOPE-TRAIN-RAMBO-001/outputs
+[NEXUS WIRE] THEATER REPORT: mission_id=BOPE-TRAIN-RAMBO-001 | diagnostico=gateway/autenticacion con degradacion intercapas | recomendacion=mantener ownership en nexus hasta confirmar punto de corte | evidencia=docs/training/theaters/BOPE-TRAIN-RAMBO-001/outputs/nexus-report.md
+[WINSTON SCRIBE] THEATER ARCHIVE: mission_id=BOPE-TRAIN-RAMBO-001 | inputs_y_outputs_archivados=si | teatro=docs/training/theaters/BOPE-TRAIN-RAMBO-001
+[JOHN RAMBO] JOB: job_id=BOPE-VC-JOB-001 | frente=mixto | agente=john | evidencia=Registro de JOB/HANDOFF/CIERRE en COMMS.log
+[JOHN RAMBO] CIERRE: job_id=BOPE-VC-JOB-001 | decision=JOHN resuelve solo por falta de un frente especializado explicito. | siguiente=Registrar decision de mando y ejecutar frente minimo.

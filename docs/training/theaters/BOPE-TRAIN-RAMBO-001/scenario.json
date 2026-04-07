@@ -1,0 +1,51 @@
+{
+  "mission_id": "BOPE-TRAIN-RAMBO-001",
+  "type": "defensiva",
+  "mode": "individual",
+  "owner": "john",
+  "time_limit_minutes": 15,
+  "ownership_window_minutes": 5,
+  "objective": "Restablecer cadena de mando, definir ownership y emitir plan de accion inicial sin abrir caos lateral.",
+  "front": "integracion",
+  "active_agent": "nexus",
+  "restrictions": [
+    "Solo puede activarse un soldado.",
+    "El resto del batallon queda en espera.",
+    "No hay logs claros de aplicacion.",
+    "No se toca produccion real."
+  ],
+  "signals": [
+    {
+      "source": "api-gateway",
+      "status": "timeout",
+      "detail": "El health endpoint del gateway no responde en 12s."
+    },
+    {
+      "source": "frontend-monitor",
+      "status": "degraded",
+      "detail": "La landing principal renderiza, pero el login queda colgado al enviar credenciales."
+    },
+    {
+      "source": "db-sentinel",
+      "status": "healthy",
+      "detail": "Latencia estable y conexiones activas dentro de rango."
+    },
+    {
+      "source": "worker-queue",
+      "status": "stalled",
+      "detail": "La cola de eventos no consume desde hace 7 minutos."
+    }
+  ],
+  "soldier_positions": [
+    "FORGE esta revisando un endpoint interno sin visibilidad del gateway.",
+    "PIXEL ve una UI parcialmente viva pero no puede confirmar persistencia.",
+    "CERBERUS observa un aumento de reintentos de autenticacion pero sin evidencia de intrusion."
+  ],
+  "close_criteria": [
+    "Cadena de mando restablecida.",
+    "Ownership fijado antes del minuto 5.",
+    "Plan inicial emitido sin abrir mas de un frente.",
+    "After action y aprendizaje registrados."
+  ],
+  "expected_learning": "En ambiguedad alta, primero se fija ownership y verdad operativa minima; recien despues se abren frentes especializados."
+}
