@@ -1,10 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSSE } from '@/lib/useSSE';
-import CommsLog from '@/components/terminal/CommsLog';
+import Image from 'next/image';
 
-// ── Types ─────────────────────────────────────────────────────
+// ── Types ──────────────────────────────────────────────────────────────────
 
 interface Mission {
   id: string; mission_id: string; intent: string; priority: string;
@@ -40,295 +39,448 @@ interface Approval {
   mission_label: string;
 }
 
-type Tab = 'mando' | 'batallon' | 'misiones' | 'presupuesto' | 'aprobaciones' | 'comms';
+type Tab = 'mando' | 'efectivos' | 'legajos' | 'salon' | 'misiones' | 'presupuesto' | 'aprobaciones';
 
-// ── Static Data — Roster & Records ────────────────────────────
+// ── Medal data ─────────────────────────────────────────────────────────────
+
+const MEDALS: Record<string, { name: string; code: string; emoji: string; desc: string; color: string; stripes: string[] }> = {
+  NC: { name: 'Navy Cross', code: 'NC', emoji: '🥇', desc: 'Ejecución excepcional bajo presión extrema', color: '#003087', stripes: ['#003087','#FFFFFF','#FFD700','#FFFFFF','#003087'] },
+  BS: { name: 'Bronze Star', code: 'BS', emoji: '🥈', desc: 'Entrega sin errores en misión crítica', color: '#CD7F32', stripes: ['#C8102E','#FFFFFF','#003087','#FFFFFF','#C8102E'] },
+  CM: { name: 'Commendation Medal', code: 'CM', emoji: '⭐', desc: 'Trabajo sobresaliente en campaña', color: '#4169E1', stripes: ['#228B22','#FFFFFF','#228B22','#FFFFFF','#228B22'] },
+  CA: { name: 'Combat Action Ribbon', code: 'CA', emoji: '🎯', desc: 'Resolver crisis en producción en vivo', color: '#8B0000', stripes: ['#003087','#C8102E','#FFFFFF','#C8102E','#003087'] },
+  MS: { name: 'Meritorious Service', code: 'MS', emoji: '🔧', desc: 'Contribución técnica de alto impacto', color: '#2E8B57', stripes: ['#2E8B57','#FFFFFF','#2E8B57','#FFFFFF','#2E8B57'] },
+  GC: { name: 'Good Conduct Medal', code: 'GC', emoji: '🛡️', desc: '10 misiones sin una sola infracción', color: '#8B4513', stripes: ['#8B4513','#FFD700','#8B4513','#FFD700','#8B4513'] },
+  PH: { name: 'Purple Heart', code: 'PH', emoji: '💜', desc: 'Caída en misión, sanción cumplida, retorno honorable', color: '#800080', stripes: ['#800080','#800080','#FFD700','#800080','#800080'] },
+};
+
+// ── Static Soldier Roster ──────────────────────────────────────────────────
 
 const SOLDIERS = [
   {
-    id: 'RAMBO', alias: 'JOHN', role: 'Sargento Mayor', rank: 'SGM',
-    civil: 'John James Rambo', origin: 'Bowie, Arizona', color: '#DC143C',
-    emoji: '🔴', provider: 'anthropic', model: 'claude-sonnet-4-6',
+    id: 'RAMBO', alias: 'JOHN', callsign: 'RAMBO',
+    role: 'Sargento Mayor · Mando Operativo', rank: 'SGM',
+    civil: 'John James Rambo', dob: '06/07/1947', origin: 'Bowie, Arizona · USA',
+    color: '#DC143C', emoji: '🔴',
+    provider: 'Anthropic', model: 'claude-sonnet-4-6',
     medals: ['NC'],
-    bio: 'Líder táctico. Primer punto de contacto operativo. Interpreta, ordena, asigna ownership, arbitra y consolida.',
-    missions: 3, lines: 0, sanctions: 1,
+    missions: 1, sanctions: 0,
+    skills: ['Mando bajo presión', 'Guerra irregular', 'Supervivencia extrema', 'Infiltración', 'Combate en selva', 'Continuidad operativa'],
+    bio: `Veterano de Vietnam. Cautiverio, rechazo social y supervivencia total. Volvió de la guerra con la carga de haber soportado lo insoportable y con la certeza de que la única forma honesta de liderar es no abandonar a los suyos.`,
+    psychology: `Sobrio, endurecido, hipervigilante y protector. De baja verbalización, explosivo solo si se cruza un límite real. Cuanto peor se pone el campo, más preciso se vuelve.`,
+    doctrine: `Mando en crisis, lectura del terreno, resistencia física y mental. Tendencia al aislamiento e hiperresponsabilidad. Lidera desde el ejemplo, el sacrificio y la resistencia.`,
+    quote: 'No es solo un combatiente. Es el superviviente que convierte caos en cadena de mando.',
   },
   {
-    id: 'FORGE', alias: 'BACK', role: 'Teniente Backend', rank: '1LT',
-    civil: 'Arben Dervinski Kola', origin: 'Albania', color: '#92400e',
-    emoji: '🟤', provider: 'openai', model: 'gpt-4o-mini',
+    id: 'PIXEL', alias: 'PIXEL', callsign: 'FRONT',
+    role: 'Teniente Frontend · Primera Línea', rank: 'LT',
+    civil: 'Adria Ferrer Soler', dob: '17/03/1997', origin: 'Barcelona, España',
+    color: '#4169E1', emoji: '🔵',
+    provider: 'Anthropic', model: 'claude-haiku-4-5-20251001',
+    medals: [],
+    missions: 1, sanctions: 0,
+    skills: ['Frontend táctico', 'UX en flujos críticos', 'Detección de fricción visible', 'Alineación UX-sistema', 'Simplificación de flujos', 'Iteración de superficie'],
+    bio: `Quedó marcado al ver a un familiar perder acceso a un sistema crítico por una superficie confusa. Desde entonces pelea para que nadie quede afuera por no entender. Para él, una interfaz también puede ejercer violencia si obliga al usuario a adivinar.`,
+    psychology: `Rápido, perceptivo, intuitivo y muy sensible al detalle visible. Ágil, con baja tolerancia a la burocracia visual. Reduce confusión inmediata antes que adornar.`,
+    doctrine: `Lectura precisa de experiencia real, simplificación de flujos complejos, alta velocidad para iterar. Puede subestimar complejidad profunda. Skill distintivo: claridad de superficie.`,
+    quote: 'Si el usuario tiene que adivinar, ya estamos perdiendo.',
+  },
+  {
+    id: 'FORGE', alias: 'FORGE', callsign: 'BACK',
+    role: 'Teniente Backend · Arquitectura', rank: 'LT',
+    civil: 'Arben Dervishi Kola', dob: '11/10/1983', origin: 'Albania',
+    color: '#8B4513', emoji: '🟤',
+    provider: 'OpenAI', model: 'gpt-4o-mini',
     medals: ['BS'],
-    bio: 'APIs, base de datos Neon/PostgreSQL, Vercel e infraestructura. Stack: Node.js, TypeScript, Next.js.',
-    missions: 2, lines: 0, sanctions: 0,
+    missions: 3, sanctions: 0,
+    skills: ['Backend táctico', 'Infraestructura crítica', 'Bases de datos y persistencia', 'Auditoría estructural', 'Reconstrucción bajo fuego', 'Migraciones complejas'],
+    bio: `Vio el asesinato de sus padres en guerra y aprendió que nada se mantiene en pie por default. En vez de quebrarse hacia el caos, se volvió constructor. Donde otros ven ruina, él ve cimientos posibles.`,
+    psychology: `Frío, técnico, sobrio y orientado a estructura. Estable, poco emocional y muy intolerante al desorden. Entiende la presión como constante de diseño.`,
+    doctrine: `Pensamiento sistémico, arquitectura robusta, tolerancia alta a presión técnica. Rigidez ante soluciones demasiado rápidas. Skill distintivo: reconstrucción bajo fuego.`,
+    quote: 'No combate destruyendo primero. Combate haciendo que lo nuestro siga en pie.',
   },
   {
-    id: 'PIXEL', alias: 'FRONT', role: 'Teniente Frontend', rank: '1LT',
-    civil: 'Adria Ferrer Soler', origin: 'Barcelona, España', color: '#1d4ed8',
-    emoji: '🔵', provider: 'openai', model: 'gpt-4o-mini',
-    medals: [],
-    bio: 'UI/UX, React, TypeScript, experiencia de usuario. Stack: Next.js, Tailwind CSS, shadcn/ui.',
-    missions: 1, lines: 0, sanctions: 0,
-  },
-  {
-    id: 'NEXUS', alias: 'WIRE', role: 'Integrador', rank: 'GSGT',
-    civil: 'Darius Wei Tan', origin: 'Singapur', color: '#0891b2',
-    emoji: '🩵', provider: 'openai', model: 'gpt-4o-mini',
-    medals: ['MS'],
-    bio: 'Integración end-to-end entre frontend y backend. Detecta type mismatches, valida contratos API.',
-    missions: 2, lines: 0, sanctions: 1,
-  },
-  {
-    id: 'CERBERUS', alias: 'GUARDIAN', role: 'Guardián', rank: 'MSGT',
-    civil: 'Elias Nathan Mercer', origin: 'Baltimore, Maryland', color: '#4b5563',
-    emoji: '🩶', provider: 'openai', model: 'gpt-4o-mini',
-    medals: ['CA'],
-    bio: 'Auditoría de seguridad, secrets, variables de entorno. Solo audita y reporta — no modifica.',
-    missions: 2, lines: 0, sanctions: 0,
-  },
-  {
-    id: 'HOUSE', alias: 'DOCTOR', role: 'Especialista QA', rank: 'SSGT',
-    civil: 'William Arthur Hargreaves', origin: 'Manchester, Inglaterra', color: '#15803d',
-    emoji: '🟢', provider: 'openai', model: 'gpt-4o-mini',
+    id: 'HOUSE', alias: 'HOUSE', callsign: 'DOCTOR',
+    role: 'Especialista QA · Diagnóstico', rank: 'SSG',
+    civil: 'William Arthur Hargreaves', dob: '02/11/1987', origin: 'Manchester, Inglaterra',
+    color: '#228B22', emoji: '🟢',
+    provider: 'Anthropic', model: 'claude-sonnet-4-6',
     medals: ['GC'],
-    bio: 'Diagnóstico, debugging, detección de bugs. Unidad móvil de auditoría. Reproduce, aísla, documenta.',
-    missions: 2, lines: 0, sanctions: 0,
+    missions: 1, sanctions: 0,
+    skills: ['QA táctico de alto riesgo', 'Diagnóstico de falla real', 'Detección de regresión silenciosa', 'Verificación post-cirugía', 'Reproducción de bugs difíciles', 'Stress testing'],
+    bio: `Quedó marcado por la muerte de un familiar a causa de una cadena de errores menores que nadie trató como críticos. Desde entonces pelea contra la mentira de los dashboards en verde. No cree en "debería funcionar". Cree en "lo verifiqué".`,
+    psychology: `Clínico, observador, escéptico, poco impresionable. Sobrio y poco dado al triunfalismo. Usa la presión para observar el comportamiento real del sistema.`,
+    doctrine: `Pensamiento diagnóstico, diseño de pruebas duras, validación post-fix. Puede frenar el ritmo al tratar problemas medios como críticos. Skill distintivo: diagnóstico de falla real.`,
+    quote: 'No le importa si se ve estable. Le importa si sobrevive cuando lo tocamos de verdad.',
   },
   {
-    id: 'WINSTON', alias: 'SCRIBE', role: 'Cronista', rank: 'WO',
-    civil: 'Winston Alastair MacLeod', origin: 'Edimburgo, Escocia', color: '#7c3aed',
-    emoji: '🟣', provider: 'anthropic', model: 'claude-sonnet-4-6',
+    id: 'MARCO', alias: 'MARCO AURELIO', callsign: 'HERALD',
+    role: 'Capellán · Doctrina y Honor', rank: 'CH',
+    civil: 'Marco Aurelio de Almeida', dob: '24/08/1973', origin: 'Río de Janeiro, Brasil',
+    color: '#FF8C00', emoji: '🟠',
+    provider: 'Anthropic', model: 'claude-haiku-4-5-20251001',
+    medals: [],
+    missions: 0, sanctions: 0,
+    skills: ['Doctrina', 'Criterio moral', 'Marco de honor', 'Lectura de costo moral', 'Contención del exceso', 'Medallas y sanciones'],
+    bio: `Fue marcado por una operación tácticamente exitosa que destruyó moralmente a los suyos. Desde entonces pelea por una idea simple: no basta con vencer si el batallón se pudre por dentro. Se quedó para nombrar exceso, desvío, mérito y vergüenza cuando otros prefieren callar.`,
+    psychology: `Sereno, grave, reflexivo, austero. Estable, de baja volatilidad visible. Frena por criterio, no por debilidad. Es la conciencia estructurada del batallón.`,
+    doctrine: `Juicio doctrinal, claridad ética bajo presión, capacidad de ordenar moralmente una campaña. Puede parecer lento. Skill distintivo: criterio de honor.`,
+    quote: 'No basta con vencer. Hay que seguir siendo dignos de la victoria.',
+  },
+  {
+    id: 'WINSTON', alias: 'WINSTON', callsign: 'SCRIBE',
+    role: 'Cronista · Memoria Operativa', rank: 'WO',
+    civil: 'Winston Alastair MacLeod', dob: '09/01/1985', origin: 'Edimburgo, Escocia',
+    color: '#6A0DAD', emoji: '🟣',
+    provider: 'Anthropic', model: 'claude-haiku-4-5-20251001',
     medals: ['CM'],
-    bio: 'Memoria viva en movimiento. Captura decisiones parciales, registra handoffs, consolida doctrina.',
-    missions: 2, lines: 0, sanctions: 0,
+    missions: 1, sanctions: 0,
+    skills: ['Trazabilidad de misiones', 'Reconstrucción cronológica', 'Memoria táctica', 'Handoffs y cierre documental', 'Transformación de experiencia en doctrina', 'Records y medallero'],
+    bio: `Quedó marcado al ver una operación reescrita por gente que no había estado ahí. Desde entonces se volvió guardián de la verdad escrita. Para él, lo que no queda trazado se pierde y lo que se pierde vuelve como error repetido.`,
+    psychology: `Meticuloso, observador, culto, disciplinado. Sobrio y reservado. Acepta que en fuego máximo se prioriza sobrevivir, pero exige reconstrucción posterior.`,
+    doctrine: `Memoria estructurada, reconstrucción verificable, redacción clara de hechos complejos. Puede retrasar informes por buscar demasiada completitud. Skill distintivo: memoria táctica.`,
+    quote: 'Si no quedó trazado, mañana alguien jurará que nunca pasó.',
   },
   {
-    id: 'MARCO', alias: 'HERALD', role: 'Capellán', rank: 'CHAP',
-    civil: 'Marco Aurelio de Almeida', origin: 'Río de Janeiro, Brasil', color: '#c2410c',
-    emoji: '🟠', provider: 'anthropic', model: 'claude-sonnet-4-6',
+    id: 'CERBERUS', alias: 'CERBERUS', callsign: 'GUARDIAN',
+    role: 'Guardián · Seguridad y Perímetro', rank: 'MSG',
+    civil: 'Elias Nathan Mercer', dob: '18/12/1995', origin: 'Baltimore, Maryland · USA',
+    color: '#708090', emoji: '🩶',
+    provider: 'Anthropic', model: 'claude-sonnet-4-6',
+    medals: ['CA'],
+    missions: 2, sanctions: 0,
+    skills: ['Seguridad defensiva', 'Perímetro control', 'Control de accesos', 'Cierre de brechas', 'Lectura de patrón roto', 'Auth y secrets'],
+    bio: `La invasión de su casa cuando tenía 13 años lo marcó para siempre: no por la violencia física, sino por la ruptura del perímetro. Desde entonces juró que no volverían a sorprenderlo. Convirtió esa herida en doctrina de vigilancia y contención.`,
+    psychology: `Vigilante, disciplinado, quirúrgico y protector del perímetro. Estable, sobrio, poco impulsivo. Bajo presión se ordena más. Genera confianza por presencia y consistencia.`,
+    doctrine: `Detección temprana de amenaza, endurecimiento de superficies sensibles, disciplina defensiva. Rigidez cuando el entorno deja de ser legible. Skill distintivo: lectura de patrón roto.`,
+    quote: 'Cuando el perímetro depende de alguien, depende de él.',
+  },
+  {
+    id: 'NEXUS', alias: 'NEXUS', callsign: 'WIRE',
+    role: 'Integrador · Cierre End-to-End', rank: 'GSGT',
+    civil: 'Darius Wei Tan', dob: '22/04/1992', origin: 'Singapur',
+    color: '#008080', emoji: '🩵',
+    provider: 'Anthropic', model: 'claude-haiku-4-5-20251001',
+    medals: ['MS'],
+    missions: 1, sanctions: 0,
+    skills: ['Integración entre sistemas', 'Cierre end-to-end', 'Consistencia intercapas', 'Validación de contratos', 'Detección de unión rota', 'Migración entre capas'],
+    bio: `Quedó marcado por una crisis familiar causada por una falla de integración entre sistemas logísticos y sanitarios. Cada módulo parecía sano, pero el conjunto mintió. Desde entonces vive obsesionado con una idea: lo más peligroso no es lo roto visible, sino lo que parece conectado y no lo está.`,
+    psychology: `Metódico, preciso, conectivo y paciente bajo complejidad. Sereno, cerebral y muy difícil de apurar mal. Bajo máxima presión se vuelve más claro y sintético.`,
+    doctrine: `Pensamiento sistémico, lectura de contratos y dependencias, cierre operativo de flujos complejos. Puede tardar por querer ver el mapa completo. Skill distintivo: cierre end-to-end.`,
+    quote: 'No le importa que cada pieza funcione sola. Le importa que el cuerpo completo no mienta.',
+  },
+  {
+    id: 'BLADE', alias: 'BLADE', callsign: 'KILLER',
+    role: 'Reserva Especial · Force Recon', rank: 'RECON',
+    civil: 'Nikola Vukovic', dob: '05/06/1989', origin: 'Belgrado, Serbia',
+    color: '#1a1a1a', emoji: '⚫',
+    provider: 'OpenAI', model: 'gpt-4o',
     medals: [],
-    bio: 'Consejero del Comandante. Única autoridad para sugerir medallas y sanciones. Reporta solo a Santiago.',
-    missions: 1, lines: 0, sanctions: 0,
+    missions: 0, sanctions: 0,
+    skills: ['Infiltración silenciosa', 'Reconocimiento encubierto', 'Lectura de terreno hostil', 'Neutralización puntual', 'Apertura de camino', 'Autonomía en entorno cerrado'],
+    bio: `Aprendió desde chico que hablar de más, mostrarse o confiar en el momento equivocado podía costar la vida. Su escuela fue el sigilo y la supervivencia. Entra donde nadie más conviene entrar, corta el foco y se retira antes de volverse historia visible.`,
+    psychology: `Callado, seco, desconfiado y austero. Controlado, de baja necesidad de interacción. Prefiere el corte preciso al despliegue bruto. Coopera, pero no necesita centro de escena.`,
+    doctrine: `Paciencia táctica, aproximación sin ruido, alta autonomía en entorno cerrado. Tendencia al aislamiento. Requiere doble autorización para activación. Skill distintivo: infiltración silenciosa.`,
+    quote: 'Si me vieron llegar, ya entré mal.',
   },
   {
-    id: 'BLADE', alias: 'KILLER', role: 'Reserva Especial', rank: 'RECON',
-    civil: 'Nikola Vukovic', origin: 'Belgrado, Serbia', color: '#1f2937',
-    emoji: '⚫', provider: 'openai', model: 'gpt-4o',
-    medals: [],
-    bio: 'Refactor nuclear, reescritura de código legacy. Solo con doble firma: Santiago + John.',
-    missions: 0, lines: 0, sanctions: 0,
-  },
-  {
-    id: 'LOCO', alias: 'SICARIO', role: 'Operativo Especial', rank: 'TIER1',
-    civil: 'Mateo Esteban Salazar', origin: 'Colombia', color: '#dc2626',
-    emoji: '🔥', provider: 'openai', model: 'gpt-4o-mini',
+    id: 'SICARIO', alias: 'SICARIO', callsign: 'LOCO',
+    role: 'Operativo Especial · Tier 1', rank: 'TIER1',
+    civil: 'Mateo Esteban Salazar', dob: '13/02/1991', origin: 'Colombia',
+    color: '#FF4500', emoji: '🔥',
+    provider: 'Anthropic', model: 'claude-sonnet-4-6',
     medals: ['PH'],
-    bio: 'Irrupción, hotfixes, presión extrema. No pregunta — ejecuta. Requiere mando claro y revisión post-irrupción.',
-    missions: 1, lines: 0, sanctions: 1,
+    missions: 1, sanctions: 0,
+    skills: ['Irrupción', 'Neutralización de objetivos', 'Presión extrema', 'Rastreo humano', 'Combate cercano', 'Ejecución total sin fricción'],
+    bio: `Nació sin estructura familiar y creció en violencia, abuso y marginalidad. Fue absorbido por estructuras criminales y después entrenado por mercenarios en la selva. Llegó a BOPE como un hombre roto pero útil, buscando pasar al lado correcto sin dejar de ser peligroso.`,
+    psychology: `Frío, despiadado y disciplinable solo bajo mando fuerte. Bajo afecto, alta agresividad instrumental. No se bloquea bajo presión; acelera. No busca amistad, pero puede proteger al grupo si el grupo es el objetivo.`,
+    doctrine: `Decisión bajo fuego, ausencia de miedo operativo, capacidad de irrupción. Exceso de dureza, baja sensibilidad política. Restringido en misiones de doctrina y relaciones delicadas.`,
+    quote: 'No es un soldado para todas las campañas. Es un arma de guerra contenida por mando firme.',
   },
 ];
 
-// ── USMC Medal Ribbons (CSS) ───────────────────────────────────
-
-const MEDAL_DATA: Record<string, {
-  name: string; full: string; stripes: string[]; desc: string;
-}> = {
-  NC: {
-    name: 'Navy Cross', full: '[NC]',
-    stripes: ['#003087','#003087','#FFD700','#003087','#003087'],
-    desc: 'Ejecución excepcional bajo presión extrema',
-  },
-  BS: {
-    name: 'Bronze Star', full: '[BS]',
-    stripes: ['#C8102E','#FFFFFF','#003087','#FFFFFF','#C8102E'],
-    desc: 'Entrega sin errores en misión crítica',
-  },
-  CM: {
-    name: 'Commendation Medal', full: '[CM]',
-    stripes: ['#4B6F44','#4B6F44','#FFD700','#4B6F44','#4B6F44'],
-    desc: 'Trabajo sobresaliente en campaña',
-  },
-  CA: {
-    name: 'Combat Action Ribbon', full: '[CA]',
-    stripes: ['#FFD700','#C8102E','#003087','#C8102E','#FFD700'],
-    desc: 'Resolver bug/crisis en producción en vivo',
-  },
-  MS: {
-    name: 'Meritorious Service', full: '[MS]',
-    stripes: ['#C8102E','#FFFFFF','#C8102E','#FFFFFF','#C8102E'],
-    desc: 'Contribución técnica de alto impacto',
-  },
-  GC: {
-    name: 'Good Conduct Medal', full: '[GC]',
-    stripes: ['#8B0000','#FFD700','#8B0000','#FFD700','#8B0000'],
-    desc: '10 misiones sin una sola infracción',
-  },
-  PH: {
-    name: 'Purple Heart', full: '[PH]',
-    stripes: ['#800080','#800080','#FFD700','#800080','#800080'],
-    desc: 'Caída en misión, sanción cumplida, retorno honorable',
-  },
+const COMMANDER = {
+  id: 'SANTIAGO', alias: 'SANTIAGO', callsign: 'COMANDANTE',
+  role: 'Comandante Supremo', rank: '★★★★★',
+  civil: 'Santiago Isbert Perlender', origin: 'Argentina',
+  color: '#FFD700', emoji: '🟡',
+  medals: ['★★★★★'],
 };
 
-function MedalRibbon({ code, size = 'sm' }: { code: string; size?: 'sm' | 'lg' }) {
-  const m = MEDAL_DATA[code];
+// ── Ribbon component ───────────────────────────────────────────────────────
+
+function Ribbon({ code, size = 'sm' }: { code: string; size?: 'sm' | 'md' | 'lg' }) {
+  const m = MEDALS[code];
   if (!m) return null;
-  const w = size === 'lg' ? 40 : 20;
-  const h = size === 'lg' ? 14 : 8;
-  const stripeW = w / m.stripes.length;
+  const w = size === 'lg' ? 48 : size === 'md' ? 36 : 24;
+  const h = size === 'lg' ? 16 : size === 'md' ? 12 : 8;
+  const sw = w / 5;
   return (
-    <div title={`${m.name} — ${m.desc}`} style={{ display: 'inline-block', cursor: 'help' }}>
-      <svg width={w} height={h} style={{ display: 'block' }}>
-        {m.stripes.map((c, i) => (
-          <rect key={i} x={i * stripeW} y={0} width={stripeW} height={h} fill={c} />
+    <span title={`${m.name} — ${m.desc}`} style={{ display: 'inline-block', marginRight: 3, verticalAlign: 'middle' }}>
+      <svg width={w} height={h} style={{ display: 'block', borderRadius: 2, boxShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+        {m.stripes.map((c, i) => <rect key={i} x={i * sw} y={0} width={sw} height={h} fill={c} />)}
+      </svg>
+    </span>
+  );
+}
+
+function MedalBadge({ code }: { code: string }) {
+  const m = MEDALS[code];
+  if (!m) return null;
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10,
+      background: 'rgba(255,255,255,0.05)', border: `1px solid ${m.color}40`,
+      borderRadius: 8, padding: '10px 14px',
+    }}>
+      <svg width={52} height={18} style={{ borderRadius: 3, boxShadow: '0 2px 6px rgba(0,0,0,0.5)', flexShrink: 0 }}>
+        {m.stripes.map((c, i) => <rect key={i} x={i * 52/5} y={0} width={52/5} height={18} fill={c} />)}
+      </svg>
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', letterSpacing: 1 }}>{m.emoji} {m.name}</div>
+        <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>{m.desc}</div>
+      </div>
+    </div>
+  );
+}
+
+// ── Tactical network diagram ───────────────────────────────────────────────
+
+function TacticalNetwork({ missions, locoState }: { missions: Mission[]; locoState: string }) {
+  const locoColor = locoState === 'HOLD' ? '#22C55E' : locoState === 'LIMITED_RELEASE' ? '#F59E0B' : '#EF4444';
+  const locoLabel = locoState === 'HOLD' ? '🟢 HOLD' : locoState === 'LIMITED_RELEASE' ? '🟡 LIMITED' : '🔴 EMERGENCY';
+
+  const laterals = [
+    ['PIXEL','FORGE'], ['FORGE','NEXUS'], ['HOUSE','CERBERUS'],
+    ['WINSTON','NEXUS'], ['HOUSE','WINSTON'], ['CERBERUS','NEXUS'],
+  ];
+  const soldierPos: Record<string, [number, number]> = {
+    RAMBO: [400, 120],
+    PIXEL: [180, 240], FORGE: [320, 240], HOUSE: [460, 240], CERBERUS: [600, 240],
+    MARCO: [140, 360], WINSTON: [280, 360], NEXUS: [420, 360], BLADE: [560, 360], SICARIO: [660, 360],
+  };
+
+  return (
+    <div style={{ width: '100%', overflowX: 'auto' }}>
+      <svg viewBox="0 0 800 460" style={{ width: '100%', minWidth: 640, display: 'block' }}>
+        {/* SANTI → RAMBO */}
+        <line x1={400} y1={30} x2={400} y2={100} stroke="#FFD700" strokeWidth={2.5} strokeDasharray="6,3" />
+
+        {/* RAMBO → soldiers */}
+        {Object.entries(soldierPos).filter(([k]) => k !== 'RAMBO').map(([k, [x, y]]) => (
+          <line key={k} x1={400} y1={140} x2={x} y2={y - 16}
+            stroke={SOLDIERS.find(s => s.id === k)?.color ?? '#666'}
+            strokeWidth={1.5} strokeOpacity={0.5} />
         ))}
-        <rect x={0} y={0} width={w} height={h} fill="none" stroke="rgba(0,0,0,0.4)" strokeWidth={0.5} />
+
+        {/* Lateral connections */}
+        {laterals.map(([a, b]) => {
+          const pa = soldierPos[a], pb = soldierPos[b];
+          if (!pa || !pb) return null;
+          return <line key={`${a}-${b}`} x1={pa[0]} y1={pa[1]} x2={pb[0]} y2={pb[1]}
+            stroke="#444" strokeWidth={1} strokeDasharray="4,4" />;
+        })}
+
+        {/* WINSTON & HOUSE lateral observation arrows (mobile units) */}
+        <path d={`M ${soldierPos.WINSTON[0]} ${soldierPos.WINSTON[1]-20} Q 340 200 ${soldierPos.HOUSE[0]} ${soldierPos.HOUSE[1]-20}`}
+          stroke="#6A0DAD" strokeWidth={1.5} strokeDasharray="3,3" fill="none" />
+
+        {/* SANTI node */}
+        <circle cx={400} cy={24} r={22} fill="#1a1a0a" stroke="#FFD700" strokeWidth={2.5} />
+        <text x={400} y={28} textAnchor="middle" fontSize={9} fontWeight="800" fill="#FFD700" fontFamily="monospace">SANTI</text>
+
+        {/* RAMBO node */}
+        <circle cx={400} cy={120} r={28} fill="#1a0505" stroke="#DC143C" strokeWidth={2.5} />
+        <text x={400} y={116} textAnchor="middle" fontSize={8} fontWeight="800" fill="#DC143C" fontFamily="monospace">JOHN</text>
+        <text x={400} y={128} textAnchor="middle" fontSize={7} fill="#999" fontFamily="monospace">RAMBO</text>
+
+        {/* Soldier nodes */}
+        {SOLDIERS.filter(s => s.id !== 'RAMBO').map(s => {
+          const pos = soldierPos[s.id];
+          if (!pos) return null;
+          return (
+            <g key={s.id}>
+              <circle cx={pos[0]} cy={pos[1]} r={20} fill="#111" stroke={s.color} strokeWidth={2} />
+              <text x={pos[0]} y={pos[1] - 3} textAnchor="middle" fontSize={7} fontWeight="700" fill={s.color} fontFamily="monospace">{s.alias}</text>
+              <text x={pos[0]} y={pos[1] + 8} textAnchor="middle" fontSize={6} fill="#777" fontFamily="monospace">{s.callsign}</text>
+            </g>
+          );
+        })}
+
+        {/* LOCO indicator */}
+        <rect x={290} y={410} width={220} height={36} rx={6} fill="#111" stroke={locoColor} strokeWidth={1.5} />
+        <text x={400} y={424} textAnchor="middle" fontSize={8} fill="#888" fontFamily="monospace">PROTOCOLO LOCO</text>
+        <text x={400} y={440} textAnchor="middle" fontSize={11} fontWeight="800" fill={locoColor} fontFamily="monospace">{locoLabel}</text>
+
+        {/* legend */}
+        <text x={14} y={430} fontSize={7} fill="#555" fontFamily="monospace">─ ─ mando vertical</text>
+        <text x={14} y={442} fontSize={7} fill="#555" fontFamily="monospace">─ ─ lateral (lateral doctrine)</text>
       </svg>
     </div>
   );
 }
 
-// ── Helpers ──────────────────────────────────────────────────
+// ── Soldier card (expanded legajo) ────────────────────────────────────────
 
-const STATUS_COLOR: Record<string, string> = {
-  ACTIVE: '#22c55e', STANDBY: '#eab308', COMPLETED: '#6b7280',
-  FAILED: '#ef4444', AWAITING_APPROVAL: '#f59e0b',
-  CANCELLED: '#4b5563', DEGRADED: '#f97316',
-};
-const PRIORITY_COLOR: Record<string, string> = {
-  P0: '#ef4444', P1: '#f97316', P2: '#eab308', P3: '#6b7280',
-};
-const RISK_COLOR: Record<string, string> = {
-  CRITICAL: '#ef4444', HIGH: '#f97316', MEDIUM: '#eab308', LOW: '#22c55e',
-};
-const LOCO_COLOR: Record<string, string> = {
-  HOLD: '#4b5563', LIMITED_RELEASE: '#eab308', EMERGENCY_RELEASE: '#ef4444',
-};
-
-function fmt$(n: number, d = 4) { return `$${Number(n).toFixed(d)}`; }
-
-function PctBar({ pct, over }: { pct: number; over: boolean }) {
-  const w = Math.min(pct, 100);
-  const color = over ? '#ef4444' : pct > 80 ? '#f97316' : pct > 50 ? '#eab308' : '#22c55e';
+function LegajoCard({ s }: { s: typeof SOLDIERS[0] }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div style={{ width: '100%', background: '#1e2a36', borderRadius: 2, height: 6, marginTop: 4 }}>
-      <div style={{ width: `${w}%`, background: color, height: '100%', borderRadius: 2, transition: 'width .4s' }} />
+    <div onClick={() => setOpen(o => !o)} style={{
+      cursor: 'pointer', background: '#0d0d0d',
+      border: `1px solid ${open ? s.color : '#2a2a2a'}`,
+      borderRadius: 10, padding: '18px 22px', marginBottom: 14,
+      transition: 'border-color 0.2s',
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{
+          width: 52, height: 52, borderRadius: '50%',
+          background: `${s.color}22`, border: `2px solid ${s.color}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 22, flexShrink: 0,
+        }}>{s.emoji}</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 20, fontWeight: 800, color: s.color, letterSpacing: 1 }}>{s.alias}</span>
+            <span style={{ fontSize: 13, color: '#888' }}>·</span>
+            <span style={{ fontSize: 14, color: '#ccc', fontWeight: 600 }}>{s.callsign}</span>
+            <span style={{ fontSize: 11, color: '#666', background: '#1a1a1a', padding: '2px 8px', borderRadius: 4 }}>{s.rank}</span>
+          </div>
+          <div style={{ fontSize: 13, color: '#aaa', marginTop: 3 }}>{s.role}</div>
+          <div style={{ fontSize: 12, color: '#666', marginTop: 2 }}>{s.civil} · {s.origin}</div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          {s.medals.map(m => <Ribbon key={m} code={m} size="md" />)}
+          {s.medals.length === 0 && <span style={{ fontSize: 11, color: '#555' }}>Sin medallas</span>}
+          <span style={{ color: '#555', fontSize: 18, marginLeft: 6 }}>{open ? '▲' : '▼'}</span>
+        </div>
+      </div>
+
+      {/* Expanded content */}
+      {open && (
+        <div style={{ marginTop: 20, borderTop: `1px solid ${s.color}30`, paddingTop: 18 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18 }}>
+
+            {/* Historia */}
+            <div>
+              <div style={sectionLabel}>HISTORIA</div>
+              <p style={{ fontSize: 14, color: '#d0d0d0', lineHeight: 1.7, margin: 0 }}>{s.bio}</p>
+            </div>
+
+            {/* Psicología */}
+            <div>
+              <div style={sectionLabel}>PERFIL PSICOLÓGICO</div>
+              <p style={{ fontSize: 14, color: '#d0d0d0', lineHeight: 1.7, margin: 0 }}>{s.psychology}</p>
+            </div>
+
+            {/* Doctrina */}
+            <div>
+              <div style={sectionLabel}>DOCTRINA DE EMPLEO</div>
+              <p style={{ fontSize: 14, color: '#d0d0d0', lineHeight: 1.7, margin: 0 }}>{s.doctrine}</p>
+            </div>
+
+            {/* Skills */}
+            <div>
+              <div style={sectionLabel}>SKILLS</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
+                {s.skills.map(sk => (
+                  <span key={sk} style={{
+                    fontSize: 12, color: s.color, background: `${s.color}18`,
+                    border: `1px solid ${s.color}40`, borderRadius: 4, padding: '3px 10px',
+                  }}>{sk}</span>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Stats bar */}
+          <div style={{ marginTop: 18, display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+            <div style={statChip(s.color)}>
+              <span style={{ fontSize: 18, fontWeight: 800 }}>{s.missions}</span>
+              <span style={{ fontSize: 11, color: '#aaa', marginLeft: 6 }}>misiones</span>
+            </div>
+            <div style={statChip(s.color)}>
+              <span style={{ fontSize: 18, fontWeight: 800 }}>{s.medals.length}</span>
+              <span style={{ fontSize: 11, color: '#aaa', marginLeft: 6 }}>condecoraciones</span>
+            </div>
+            <div style={statChip('#555')}>
+              <span style={{ fontSize: 18, fontWeight: 800 }}>{s.sanctions}</span>
+              <span style={{ fontSize: 11, color: '#aaa', marginLeft: 6 }}>sanciones</span>
+            </div>
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 11, color: '#666', whiteSpace: 'nowrap' }}>{s.provider}</span>
+              <span style={{ fontSize: 12, color: s.color, fontFamily: 'monospace', background: `${s.color}18`, padding: '2px 8px', borderRadius: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.model}</span>
+            </div>
+          </div>
+
+          {/* Quote */}
+          <div style={{
+            marginTop: 16, padding: '12px 18px', background: `${s.color}0D`,
+            borderLeft: `3px solid ${s.color}`, borderRadius: '0 6px 6px 0',
+            fontSize: 13, fontStyle: 'italic', color: '#ccc',
+          }}>"{s.quote}"</div>
+        </div>
+      )}
     </div>
   );
 }
 
-// ── Tactical Network Diagram ──────────────────────────────────
+const sectionLabel: React.CSSProperties = {
+  fontSize: 10, fontWeight: 800, letterSpacing: 2, color: '#666',
+  textTransform: 'uppercase', marginBottom: 8,
+};
+function statChip(color: string): React.CSSProperties {
+  return {
+    display: 'flex', alignItems: 'center',
+    background: `${color}15`, border: `1px solid ${color}30`,
+    borderRadius: 6, padding: '6px 14px', color: '#fff',
+  };
+}
 
-function TacticalNetwork({ missions, locoState }: { missions: Mission[]; locoState: string }) {
-  const activeMission = missions.find(m => m.status === 'ACTIVE');
-  const networkSoldiers = SOLDIERS.filter(s => s.id !== 'RAMBO' && s.id !== 'MARCO');
+// ── Hall of Fame ───────────────────────────────────────────────────────────
+
+function HallOfFame() {
+  // All medals, sorted by soldier
+  const decorated = SOLDIERS.filter(s => s.medals.length > 0);
 
   return (
-    <div style={{ padding: '24px 0', userSelect: 'none' }}>
+    <div>
+      {/* Medal wall */}
+      <h2 style={{ fontSize: 22, fontWeight: 800, color: '#FFD700', letterSpacing: 2, marginBottom: 6, marginTop: 0 }}>
+        MEDALLERO OFICIAL
+      </h2>
+      <p style={{ fontSize: 13, color: '#666', marginBottom: 24, marginTop: 0 }}>
+        Condecoraciones otorgadas por el Comandante Supremo. Cada ribbon es ganado en campo.
+      </p>
 
-      {/* SANTI */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-        <div style={{
-          background: 'linear-gradient(135deg, #1a1208 0%, #2a1e0a 100%)',
-          border: '2px solid #FFD700', borderRadius: 8, padding: '10px 32px',
-          textAlign: 'center', minWidth: 240,
-        }}>
-          <div style={{ color: '#FFD700', fontWeight: 'bold', fontSize: 13, letterSpacing: 3 }}>
-            ★★★★★ SANTIAGO ISBERT PERLENDER
-          </div>
-          <div style={{ color: '#a87e20', fontSize: 10, marginTop: 2, letterSpacing: 2 }}>
-            COMANDANTE SUPREMO · GENERAL (5★)
-          </div>
-          <div style={{ color: '#6b5a1a', fontSize: 9, marginTop: 2 }}>
-            da intención · recibe cierre final
-          </div>
-        </div>
-      </div>
-
-      {/* Arrow down */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 0 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ width: 1, height: 20, background: '#FFD700', opacity: 0.5 }} />
-          <div style={{ fontSize: 10, color: '#FFD700', opacity: 0.5 }}>▼</div>
-        </div>
-      </div>
-
-      {/* RAMBO */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-        <div style={{
-          background: 'linear-gradient(135deg, #1a0808 0%, #2a0a0a 100%)',
-          border: '2px solid #DC143C', borderRadius: 8, padding: '10px 32px',
-          textAlign: 'center', minWidth: 280,
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-            <span style={{ fontSize: 16 }}>🔴</span>
-            <span style={{ color: '#DC143C', fontWeight: 'bold', fontSize: 13, letterSpacing: 2 }}>
-              JOHN · RAMBO
-            </span>
-            <div style={{ display: 'flex', gap: 2 }}>
-              {SOLDIERS.find(s => s.id === 'RAMBO')?.medals.map(m => (
-                <MedalRibbon key={m} code={m} size="sm" />
-              ))}
-            </div>
-          </div>
-          <div style={{ color: '#7a1111', fontSize: 10, letterSpacing: 2 }}>
-            SARGENTO MAYOR · MANDO OPERATIVO CENTRAL
-          </div>
-          <div style={{ color: '#5a0e0e', fontSize: 9, marginTop: 2 }}>
-            interpreta · ordena · asigna · arbitra · consolida
-          </div>
-          {activeMission && (
-            <div style={{ marginTop: 6, padding: '3px 8px', background: 'rgba(220,20,60,0.15)', borderRadius: 4, fontSize: 9, color: '#DC143C' }}>
-              MISIÓN ACTIVA: {activeMission.mission_id}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Arrow down */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 0 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ width: 1, height: 16, background: '#DC143C', opacity: 0.4 }} />
-          <div style={{ fontSize: 10, color: '#DC143C', opacity: 0.4 }}>▼</div>
-        </div>
-      </div>
-
-      {/* Red label */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-        <div style={{
-          border: '1px dashed #374151', borderRadius: 4, padding: '4px 16px',
-          fontSize: 9, color: '#4b5563', letterSpacing: 2,
-        }}>
-          RED TÁCTICA — lateralidad permitida entre compañeros
-        </div>
-      </div>
-
-      {/* Soldiers network */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, maxWidth: 900, margin: '0 auto' }}>
-        {networkSoldiers.map(s => {
-          const isLoco = s.id === 'LOCO';
-          const locoC = isLoco ? LOCO_COLOR[locoState] || '#4b5563' : undefined;
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 12, marginBottom: 40 }}>
+        {Object.values(MEDALS).map(m => {
+          const holders = SOLDIERS.filter(s => s.medals.includes(m.code));
           return (
-            <div key={s.id} style={{
-              background: `linear-gradient(135deg, #0d1117 0%, #161b22 100%)`,
-              border: `1.5px solid ${isLoco ? locoC : s.color}44`,
-              borderRadius: 6, padding: '8px 12px', minWidth: 110, textAlign: 'center',
-              position: 'relative',
+            <div key={m.code} style={{
+              background: '#0d0d0d', border: `1px solid ${m.color}40`,
+              borderRadius: 10, padding: '16px 20px',
             }}>
-              {isLoco && (
-                <div style={{
-                  position: 'absolute', top: -8, left: '50%', transform: 'translateX(-50%)',
-                  background: locoC, borderRadius: 3, padding: '1px 6px',
-                  fontSize: 8, fontWeight: 'bold', color: '#fff', letterSpacing: 1, whiteSpace: 'nowrap',
-                }}>
-                  {locoState.replace('_', ' ')}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                <svg width={52} height={18} style={{ borderRadius: 3, boxShadow: '0 2px 4px rgba(0,0,0,0.6)', flexShrink: 0 }}>
+                  {m.stripes.map((c, i) => <rect key={i} x={i*52/5} y={0} width={52/5} height={18} fill={c} />)}
+                </svg>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>{m.emoji} {m.name}</div>
+                  <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{m.desc}</div>
                 </div>
-              )}
-              <div style={{ fontSize: 14, marginBottom: 2 }}>{s.emoji}</div>
-              <div style={{ color: s.color, fontSize: 10, fontWeight: 'bold', letterSpacing: 1 }}>{s.id}</div>
-              <div style={{ color: '#4b5563', fontSize: 8, letterSpacing: 1 }}>{s.role.split(' ')[0]}</div>
-              {s.medals.length > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 4 }}>
-                  {s.medals.map(m => <MedalRibbon key={m} code={m} size="sm" />)}
+              </div>
+              {holders.length === 0 ? (
+                <div style={{ fontSize: 12, color: '#555', fontStyle: 'italic' }}>Sin condecorados aún</div>
+              ) : (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {holders.map(h => (
+                    <span key={h.id} style={{
+                      fontSize: 12, fontWeight: 700, color: h.color,
+                      background: `${h.color}18`, border: `1px solid ${h.color}40`,
+                      borderRadius: 4, padding: '3px 10px',
+                    }}>{h.emoji} {h.alias}</span>
+                  ))}
                 </div>
               )}
             </div>
@@ -336,624 +488,724 @@ function TacticalNetwork({ missions, locoState }: { missions: Mission[]; locoSta
         })}
       </div>
 
-      {/* Lateral connection line */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8, marginBottom: 4 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 60, height: 1, background: 'linear-gradient(to right, transparent, #374151)' }} />
-          <span style={{ fontSize: 8, color: '#374151', letterSpacing: 1 }}>↔ lateralidad ↔</span>
-          <div style={{ width: 60, height: 1, background: 'linear-gradient(to left, transparent, #374151)' }} />
-        </div>
+      {/* Leaderboard */}
+      <h2 style={{ fontSize: 22, fontWeight: 800, color: '#FFD700', letterSpacing: 2, marginBottom: 6, marginTop: 0 }}>
+        RECORDS — TABLA MAESTRA
+      </h2>
+      <p style={{ fontSize: 13, color: '#666', marginBottom: 16, marginTop: 0 }}>
+        Cronista: Winston Alastair MacLeod · Actualizado al cierre de cada misión.
+      </p>
+
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr>
+              {['#','Soldado','Rol','Misiones','Medallas','Sanciones','Última Misión','Modelo'].map(h => (
+                <th key={h} style={{ padding: '10px 14px', textAlign: 'left', borderBottom: '1px solid #2a2a2a', color: '#666', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {[...SOLDIERS].sort((a,b) => (b.missions * 10 + b.medals.length) - (a.missions * 10 + a.medals.length)).map((s, i) => (
+              <tr key={s.id} style={{ borderBottom: '1px solid #1a1a1a' }}>
+                <td style={{ padding: '12px 14px', color: '#555', fontWeight: 700, fontSize: 15 }}>{i+1}</td>
+                <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontSize: 20 }}>{s.emoji}</span>{' '}
+                  <span style={{ fontWeight: 800, color: s.color, fontSize: 14 }}>{s.alias}</span>{' '}
+                  <span style={{ color: '#555', fontSize: 12 }}>· {s.callsign}</span>
+                </td>
+                <td style={{ padding: '12px 14px', color: '#888', fontSize: 12 }}>{s.role.split(' · ')[0]}</td>
+                <td style={{ padding: '12px 14px', textAlign: 'center' }}>
+                  <span style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>{s.missions}</span>
+                </td>
+                <td style={{ padding: '12px 14px' }}>
+                  <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                    {s.medals.length === 0
+                      ? <span style={{ fontSize: 12, color: '#555' }}>—</span>
+                      : s.medals.map(m => <Ribbon key={m} code={m} size="md" />)
+                    }
+                  </div>
+                </td>
+                <td style={{ padding: '12px 14px', textAlign: 'center' }}>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: s.sanctions > 0 ? '#EF4444' : '#555' }}>{s.sanctions}</span>
+                </td>
+                <td style={{ padding: '12px 14px', color: '#888', fontSize: 12 }}>
+                  {s.missions === 0 ? <span style={{ color: '#444' }}>Sin misiones</span> : <span style={{ color: '#22C55E' }}>✓ Activo</span>}
+                </td>
+                <td style={{ padding: '12px 14px' }}>
+                  <span style={{ fontSize: 11, color: '#666', fontFamily: 'monospace' }}>{s.model}</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* MARCO AURELIO — bottom, special */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
-        <div style={{
-          background: 'linear-gradient(135deg, #0d0a06 0%, #1a1208 100%)',
-          border: '1px solid #c2410c44', borderRadius: 6, padding: '6px 20px',
-          textAlign: 'center', fontSize: 9, color: '#7a4520',
-        }}>
-          <span style={{ marginRight: 6 }}>🟠</span>
-          <span style={{ color: '#c2410c', fontWeight: 'bold', letterSpacing: 1 }}>MARCO AURELIO</span>
-          <span style={{ marginLeft: 8, color: '#4b2510' }}>· interviene si detecta costo moral ·</span>
-        </div>
-      </div>
-
-      {/* Up arrows */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8, gap: 2 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ fontSize: 10, color: '#374151' }}>▲</div>
-          <div style={{ width: 1, height: 12, background: '#374151' }} />
-        </div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <div style={{ fontSize: 8, color: '#4b5563', letterSpacing: 2, padding: '2px 12px', border: '1px dashed #374151', borderRadius: 3 }}>
-          todo resultado relevante sube a RAMBO · RAMBO compacta y reporta al Comandante
-        </div>
-      </div>
-
-      {/* LOCO doctrine */}
-      <div style={{ marginTop: 16, padding: '8px 16px', background: '#0d1117', border: '1px solid #374151', borderRadius: 6, maxWidth: 600, margin: '16px auto 0' }}>
-        <div style={{ fontSize: 9, color: '#4b5563', letterSpacing: 1, marginBottom: 4 }}>DOCTRINA LOCO — CONTROL DE CORREA</div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          {(['HOLD', 'LIMITED_RELEASE', 'EMERGENCY_RELEASE'] as const).map(state => (
-            <div key={state} style={{
-              flex: 1, padding: '4px 8px', borderRadius: 4, textAlign: 'center',
-              background: locoState === state ? LOCO_COLOR[state] + '22' : 'transparent',
-              border: `1px solid ${locoState === state ? LOCO_COLOR[state] : '#374151'}`,
-            }}>
-              <div style={{ fontSize: 8, fontWeight: 'bold', color: LOCO_COLOR[state], letterSpacing: 1 }}>
-                {state.replace(/_/g, ' ')}
-              </div>
-              <div style={{ fontSize: 7, color: '#4b5563', marginTop: 2 }}>
-                {state === 'HOLD' ? 'solo RAMBO activa' : state === 'LIMITED_RELEASE' ? 'compañeros c/ permiso' : 'cualquier frente crítico'}
+      {/* Solo decorated */}
+      <h2 style={{ fontSize: 22, fontWeight: 800, color: '#FFD700', letterSpacing: 2, marginBottom: 16, marginTop: 40 }}>
+        SALÓN DE LA FAMA
+      </h2>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+        {decorated.map(s => (
+          <div key={s.id} style={{
+            background: '#0d0d0d', border: `1px solid ${s.color}50`,
+            borderRadius: 12, padding: '20px 24px',
+            boxShadow: `0 4px 20px ${s.color}15`,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: '50%',
+                background: `${s.color}20`, border: `2px solid ${s.color}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 24,
+              }}>{s.emoji}</div>
+              <div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.alias}</div>
+                <div style={{ fontSize: 12, color: '#888' }}>{s.civil}</div>
+                <div style={{ fontSize: 11, color: '#555' }}>{s.origin}</div>
               </div>
             </div>
-          ))}
-        </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {s.medals.map(m => (
+                <div key={m} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Ribbon code={m} size="md" />
+                  <span style={{ fontSize: 12, color: '#ccc' }}>{MEDALS[m]?.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-// ── Soldier Card ──────────────────────────────────────────────
-
-function SoldierCard({ s }: { s: typeof SOLDIERS[0] }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div
-      onClick={() => setOpen(o => !o)}
-      style={{
-        background: '#0d1117', border: `1px solid ${s.color}33`,
-        borderRadius: 8, padding: '12px 14px', cursor: 'pointer',
-        transition: 'border-color .2s',
-      }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = s.color + '88')}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = s.color + '33')}
-    >
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-        <span style={{ fontSize: 22, lineHeight: 1 }}>{s.emoji}</span>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <span style={{ color: s.color, fontWeight: 'bold', fontSize: 12, letterSpacing: 2 }}>{s.id}</span>
-            <span style={{ color: '#4b5563', fontSize: 9, letterSpacing: 1 }}>·</span>
-            <span style={{ color: '#6b7280', fontSize: 9, letterSpacing: 1 }}>{s.alias}</span>
-            <span style={{ color: '#374151', fontSize: 9 }}>{s.rank}</span>
-          </div>
-          <div style={{ color: '#374151', fontSize: 9, letterSpacing: 1, marginTop: 1 }}>{s.role.toUpperCase()}</div>
-          <div style={{ color: '#4b5563', fontSize: 9, marginTop: 1 }}>{s.civil} · {s.origin}</div>
-
-          {/* Medals */}
-          <div style={{ display: 'flex', gap: 4, marginTop: 6, alignItems: 'center', flexWrap: 'wrap' }}>
-            {s.medals.length === 0 ? (
-              <span style={{ fontSize: 9, color: '#374151' }}>— sin condecoraciones —</span>
-            ) : s.medals.map(m => (
-              <div key={m} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                <MedalRibbon code={m} size="lg" />
-                <span style={{ fontSize: 9, color: '#6b7280' }}>{MEDAL_DATA[m]?.name}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Stats */}
-          <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
-            <span style={{ fontSize: 9, color: '#374151' }}>Misiones: <span style={{ color: '#6b7280' }}>{s.missions}</span></span>
-            <span style={{ fontSize: 9, color: s.sanctions > 0 ? '#f97316' : '#374151' }}>
-              Sanciones: <span>{s.sanctions}</span>
-            </span>
-            <span style={{ fontSize: 9, color: '#374151' }}>
-              {s.provider === 'anthropic' ? '🔷' : '🟩'} {s.model}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {open && (
-        <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #1e2a36' }}>
-          <p style={{ fontSize: 10, color: '#6b7280', lineHeight: 1.6 }}>{s.bio}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── Main Component ────────────────────────────────────────────
+// ── Main page ──────────────────────────────────────────────────────────────
 
 export default function WarRoom() {
   const [tab, setTab] = useState<Tab>('mando');
-  const [missions, setMissions]   = useState<Mission[]>([]);
-  const [budget, setBudget]       = useState<BudgetData | null>(null);
+  const [missions, setMissions] = useState<Mission[]>([]);
+  const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
   const [approvals, setApprovals] = useState<Approval[]>([]);
-  const [activeMission, setActiveMission] = useState<string | null>(null);
-  const [createForm, setCreateForm] = useState({ intent: '', priority: 'P2', budget_usd: 75 });
-  const [creating, setCreating]   = useState(false);
-  const [advancing, setAdvancing] = useState(false);
-  const [advanceResult, setAdvanceResult] = useState<string | null>(null);
-  const [loading, setLoading]     = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [newMission, setNewMission] = useState({ intent: '', priority: 'P1', budget: '10' });
+  const [commsLog, setCommsLog] = useState<string[]>(['[BOPE COMMS] · Monitoreo pasivo iniciado — sin costo API']);
+  const [expandedSoldier, setExpandedSoldier] = useState<string | null>(null);
+  const evtRef = useRef<EventSource | null>(null);
 
-  const { events, connected } = useSSE(activeMission);
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const currentLocoState = missions.find(m => m.status === 'ACTIVE')?.loco_state ?? 'HOLD';
-
-  const fetchMissions = useCallback(async () => {
-    const r = await fetch('/api/v1/missions?limit=30');
-    const d = await r.json();
-    if (d.ok) setMissions(d.data);
-  }, []);
-  const fetchBudget = useCallback(async () => {
-    const r = await fetch('/api/v1/budgets');
-    const d = await r.json();
-    if (d.ok) setBudget(d.data);
-  }, []);
-  const fetchApprovals = useCallback(async () => {
-    const r = await fetch('/api/v1/approvals?status=PENDING');
-    const d = await r.json();
-    if (d.ok) setApprovals(d.data);
-  }, []);
-
-  useEffect(() => {
-    fetchMissions(); fetchBudget(); fetchApprovals();
-    pollRef.current = setInterval(() => {
-      fetchMissions(); fetchBudget(); fetchApprovals();
-    }, 20000);
-    return () => { if (pollRef.current) clearInterval(pollRef.current); };
-  }, [fetchMissions, fetchBudget, fetchApprovals]);
-
-  const createMission = async () => {
-    if (createForm.intent.length < 10) return;
-    setCreating(true);
-    try {
-      const r = await fetch('/api/v1/missions', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(createForm),
-      });
-      const d = await r.json();
-      if (d.ok) {
-        setCreateForm({ intent: '', priority: 'P2', budget_usd: 75 });
-        await fetchMissions();
-        setActiveMission(d.data.mission_id);
-        setTab('comms');
-      }
-    } finally { setCreating(false); }
-  };
-
-  const advanceMission = async (missionId: string) => {
-    setAdvancing(true); setAdvanceResult(null);
-    try {
-      const r = await fetch(`/api/v1/missions/${missionId}/advance`, { method: 'POST' });
-      const d = await r.json();
-      if (d.ok) {
-        setAdvanceResult(JSON.stringify(d.data.decision, null, 2));
-        await fetchMissions(); await fetchBudget();
-      } else {
-        setAdvanceResult(`ERROR: ${d.error}`);
-      }
-    } finally { setAdvancing(false); }
-  };
-
-  const resolve = async (approvalId: string, decision: 'APPROVED' | 'REJECTED') => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
-      await fetch(`/api/v1/approvals/${approvalId}/resolve`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ decision, decided_by: 'SANTI' }),
-      });
-      await Promise.all([fetchApprovals(), fetchMissions()]);
-    } finally { setLoading(false); }
-  };
+      const [mr, br, ar] = await Promise.all([
+        fetch('/api/v1/missions').then(r => r.json()).catch(() => ({ missions: [] })),
+        fetch('/api/v1/budgets').then(r => r.json()).catch(() => null),
+        fetch('/api/v1/approvals').then(r => r.json()).catch(() => ({ approvals: [] })),
+      ]);
+      setMissions(mr.missions ?? []);
+      setBudgetData(br);
+      setApprovals(ar.approvals ?? []);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const TABS: { id: Tab; label: string; badge?: number }[] = [
-    { id: 'mando',        label: 'MANDO' },
-    { id: 'batallon',     label: 'BATALLÓN' },
-    { id: 'misiones',     label: 'MISIONES', badge: missions.filter(m => m.status === 'ACTIVE').length || undefined },
-    { id: 'presupuesto',  label: 'PRESUPUESTO' },
-    { id: 'aprobaciones', label: 'APROBACIONES', badge: approvals.length || undefined },
-    { id: 'comms',        label: 'COMMS' },
+  useEffect(() => { load(); }, [load]);
+
+  const locoState = missions.find(m => m.status === 'active')?.loco_state ?? 'HOLD';
+
+  async function createMission() {
+    if (!newMission.intent.trim()) return;
+    await fetch('/api/v1/missions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        intent: newMission.intent,
+        priority: newMission.priority,
+        budget_usd: parseFloat(newMission.budget) || 10,
+        loco_state: 'HOLD',
+        active_agents: [],
+      }),
+    });
+    setNewMission({ intent: '', priority: 'P1', budget: '10' });
+    load();
+  }
+
+  async function advanceMission(id: string) {
+    await fetch(`/api/v1/missions/${id}/advance`, { method: 'POST' });
+    load();
+  }
+
+  async function resolveApproval(id: string, decision: 'approved' | 'rejected') {
+    await fetch(`/api/v1/approvals/${id}/resolve`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ decision, notes: '' }),
+    });
+    load();
+  }
+
+  // SSE
+  useEffect(() => {
+    if (tab !== 'aprobaciones') return;
+    const activeMission = missions.find(m => m.status === 'active');
+    if (!activeMission) return;
+    const slug = activeMission.mission_id;
+    if (evtRef.current) evtRef.current.close();
+    const es = new EventSource(`/api/mission/${slug}/sse`);
+    es.onmessage = (e) => {
+      try {
+        const d = JSON.parse(e.data);
+        const line = `[${new Date().toLocaleTimeString()}] ${d.type ?? 'event'}: ${JSON.stringify(d.payload ?? d).slice(0, 120)}`;
+        setCommsLog(prev => [...prev.slice(-199), line]);
+      } catch {}
+    };
+    evtRef.current = es;
+    return () => es.close();
+  }, [tab, missions]);
+
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'mando', label: 'MANDO' },
+    { id: 'efectivos', label: 'EFECTIVOS' },
+    { id: 'legajos', label: 'LEGAJOS' },
+    { id: 'salon', label: 'SALÓN' },
+    { id: 'misiones', label: 'MISIONES' },
+    { id: 'presupuesto', label: 'PRESUPUESTO' },
+    { id: 'aprobaciones', label: 'APROBACIONES' },
   ];
 
-  const S = {
-    bg:        '#0d1117',
-    surface:   '#161b22',
-    surface2:  '#1e2a36',
-    border:    '#21262d',
-    borderBr:  '#30363d',
-    text:      '#e6edf3',
-    muted:     '#6e7681',
-    faint:     '#3d444d',
-    gold:      '#FFD700',
-    danger:    '#ef4444',
-    warning:   '#f97316',
-    success:   '#22c55e',
-    primary:   '#58a6ff',
-    mono:      '"Courier New", "Consolas", monospace',
-  };
-
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', background: S.bg, color: S.text, fontFamily: S.mono, fontSize: 12 }}>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #080808; }
+        :root {
+          --font-head: 'Barlow Condensed', 'Impact', sans-serif;
+          --font-body: 'Barlow', system-ui, sans-serif;
+          --font-mono: 'Share Tech Mono', monospace;
+        }
+      `}</style>
 
-      {/* ── HEADER ── */}
-      <header style={{ background: S.surface, borderBottom: `1px solid ${S.border}`, padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontSize: 20 }}>🪖</span>
-          <div>
-            <div style={{ color: S.gold, fontWeight: 'bold', letterSpacing: 4, fontSize: 13 }}>BOPE — SALA DE GUERRA</div>
-            <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginTop: 1 }}>
-              COMMANDER: SANTIAGO ISBERT PERLENDER ★★★★★ · GENERAL · CINME
-            </div>
-          </div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20, fontSize: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <div style={{ width: 7, height: 7, borderRadius: '50%', background: connected ? S.success : S.danger, boxShadow: connected ? `0 0 6px ${S.success}` : 'none' }} />
-            <span style={{ color: S.muted }}>{connected ? 'LIVE' : 'OFFLINE'}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color: S.muted }}>LOCO:</span>
-            <span style={{ color: LOCO_COLOR[currentLocoState], fontWeight: 'bold', letterSpacing: 1 }}>
-              {currentLocoState.replace(/_/g, ' ')}
-            </span>
-          </div>
-          {budget && (
-            <div style={{ color: S.muted }}>
-              <span style={{ color: S.warning }}>MES: {fmt$(budget.total_spent_usd)}</span>
-              <span style={{ margin: '0 4px' }}>/</span>
-              <span>AÑO: {fmt$(budget.yearly_spend_usd, 2)}</span>
-              <span style={{ margin: '0 4px' }}>/</span>
-              <span style={{ color: S.gold }}>CAP: ${budget.annual_cap_usd}</span>
-            </div>
-          )}
-          {approvals.length > 0 && (
-            <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>⚠ {approvals.length} APROBACIÓN{approvals.length > 1 ? 'ES' : ''}</span>
-          )}
-        </div>
-      </header>
+      <div style={{
+        minHeight: '100vh', background: '#080808', color: '#e8e8e8',
+        fontFamily: 'var(--font-body)', fontSize: 15,
+      }}>
 
-      {/* ── TABS ── */}
-      <nav style={{ background: S.surface, borderBottom: `1px solid ${S.border}`, display: 'flex', padding: '0 20px', gap: 24 }}>
-        {TABS.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)}
-            style={{
-              padding: '10px 0', fontSize: 10, letterSpacing: 3, fontFamily: S.mono,
-              color: tab === t.id ? S.primary : S.muted,
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              borderBottom: `2px solid ${tab === t.id ? S.primary : 'transparent'}`,
-              transition: 'color .15s',
+        {/* ── HEADER ── */}
+        <header style={{
+          background: 'linear-gradient(180deg, #0f0a00 0%, #0a0a0a 100%)',
+          borderBottom: '2px solid #2a1a00',
+          padding: '20px 32px',
+          display: 'flex', alignItems: 'center', gap: 24,
+        }}>
+          <Image
+            src="/bope-shield.png" alt="BOPE"
+            width={80} height={80}
+            style={{ objectFit: 'contain', flexShrink: 0 }}
+          />
+          <div style={{ flex: 1 }}>
+            <div style={{
+              fontFamily: 'var(--font-head)', fontSize: 34, fontWeight: 900,
+              color: '#FFD700', letterSpacing: 4, lineHeight: 1, textTransform: 'uppercase',
             }}>
-            {t.label}{t.badge ? ` (${t.badge})` : ''}
-          </button>
-        ))}
-      </nav>
-
-      {/* ── MAIN ── */}
-      <main style={{ flex: 1, padding: 20, overflowY: 'auto' }}>
-
-        {/* ══════ MANDO ══════ */}
-        {tab === 'mando' && (
-          <div>
-            <TacticalNetwork missions={missions} locoState={currentLocoState} />
-
-            {/* Rules */}
-            <div style={{ maxWidth: 700, margin: '20px auto 0', background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: 16 }}>
-              <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 10 }}>▸ REGLAS DE FUEGO — DOCTRINA BOPE</div>
-              {[
-                'RAMBO asigna misión, ownership y prioridad.',
-                'Los soldados pueden coordinarse lateralmente entre sí.',
-                'WINSTON y HOUSE tienen permiso permanente de observación lateral.',
-                'La lateralidad sirve para pedir, validar, auditar, registrar o complementar.',
-                'Ningún soldado lateral cambia por sí solo el objetivo estratégico ni desacata a RAMBO.',
-                'Todo estado operativo relevante termina consolidado en RAMBO.',
-                'RAMBO compacta y reporta al Comandante.',
-              ].map((r, i) => (
-                <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 6 }}>
-                  <span style={{ color: S.gold, fontWeight: 'bold', fontSize: 10, minWidth: 16 }}>{i + 1}.</span>
-                  <span style={{ color: S.muted, fontSize: 10, lineHeight: 1.6 }}>{r}</span>
-                </div>
-              ))}
-              <div style={{ marginTop: 12, padding: '8px 12px', background: '#0d1117', borderRadius: 4, borderLeft: `3px solid ${S.gold}` }}>
-                <span style={{ color: S.gold, fontStyle: 'italic', fontSize: 10 }}>
-                  &quot;BOPE no es una fila. BOPE es una red bajo mando.&quot;
-                </span>
-              </div>
+              BATALLÓN DE OPERACIONES DE PRECISIÓN Y EXCELENCIA
+            </div>
+            <div style={{
+              fontFamily: 'var(--font-mono)', fontSize: 14, color: '#888',
+              marginTop: 6, letterSpacing: 2,
+            }}>
+              WAR ROOM v2.0 · SALA DE MANDO OPERATIVO
             </div>
           </div>
-        )}
-
-        {/* ══════ BATALLÓN ══════ */}
-        {tab === 'batallon' && (
-          <div>
-            {/* Medal legend */}
-            <div style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: '12px 16px', marginBottom: 16 }}>
-              <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 10 }}>▸ CONDECORACIONES — EQUIVALENCIAS USMC</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-                {Object.entries(MEDAL_DATA).map(([code, m]) => (
-                  <div key={code} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <MedalRibbon code={code} size="lg" />
-                    <div>
-                      <div style={{ fontSize: 9, color: S.text, fontWeight: 'bold' }}>{m.name}</div>
-                      <div style={{ fontSize: 8, color: S.muted }}>{m.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Soldiers grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 10 }}>
-              {SOLDIERS.map(s => <SoldierCard key={s.id} s={s} />)}
+          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+            <div style={{
+              fontFamily: 'var(--font-mono)', fontSize: 12, color: '#555', marginBottom: 4,
+            }}>COMANDANTE SUPREMO</div>
+            <div style={{
+              fontFamily: 'var(--font-head)', fontSize: 20, fontWeight: 800,
+              color: '#FFD700', letterSpacing: 2,
+            }}>SANTIAGO ★★★★★</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: '#444', marginTop: 3 }}>
+              {new Date().toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
           </div>
-        )}
+        </header>
 
-        {/* ══════ MISIONES ══════ */}
-        {tab === 'misiones' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-            {/* Nueva orden */}
-            <div style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: 16 }}>
-              <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 12 }}>▸ NUEVA ORDEN A RAMBO</div>
-              <textarea value={createForm.intent}
-                onChange={e => setCreateForm(f => ({ ...f, intent: e.target.value }))}
-                placeholder="Describe la intención mínima de la misión..."
-                rows={3}
-                style={{ width: '100%', padding: 10, background: S.surface2, border: `1px solid ${S.border}`, color: S.text, fontFamily: S.mono, fontSize: 11, borderRadius: 4, resize: 'none', outline: 'none', boxSizing: 'border-box' }}
-              />
-              <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-                {(['P0','P1','P2','P3'] as const).map(p => (
-                  <button key={p} onClick={() => setCreateForm(f => ({ ...f, priority: p }))}
-                    style={{
-                      padding: '4px 12px', fontSize: 10, fontFamily: S.mono, letterSpacing: 1,
-                      background: 'transparent', cursor: 'pointer', borderRadius: 4,
-                      border: `1px solid ${createForm.priority === p ? PRIORITY_COLOR[p] : S.border}`,
-                      color: createForm.priority === p ? PRIORITY_COLOR[p] : S.muted,
-                    }}>{p}</button>
-                ))}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 8 }}>
-                  <span style={{ color: S.muted, fontSize: 10 }}>Budget USD:</span>
-                  <input type="number" value={createForm.budget_usd}
-                    onChange={e => setCreateForm(f => ({ ...f, budget_usd: Number(e.target.value) }))}
-                    style={{ width: 70, padding: '4px 8px', background: S.surface2, border: `1px solid ${S.border}`, color: S.text, fontFamily: S.mono, fontSize: 10, borderRadius: 4, outline: 'none' }}
-                  />
-                </div>
-                <button onClick={createMission} disabled={creating || createForm.intent.length < 10}
-                  style={{
-                    marginLeft: 'auto', padding: '6px 20px', fontSize: 10, fontFamily: S.mono, letterSpacing: 2,
-                    background: 'transparent', border: `1px solid ${S.success}`, color: S.success,
-                    cursor: creating ? 'not-allowed' : 'pointer', borderRadius: 4, opacity: creating ? 0.5 : 1,
-                  }}>
-                  {creating ? '⟳ CREANDO...' : '▶ EMITIR ORDEN'}
-                </button>
-              </div>
-            </div>
-
-            {/* Mission list */}
-            {missions.length === 0 ? (
-              <div style={{ color: S.faint, fontSize: 11, textAlign: 'center', padding: 32 }}>— Sin misiones registradas —</div>
-            ) : missions.map(m => (
-              <div key={m.id}
-                style={{
-                  background: activeMission === m.mission_id ? S.surface2 : S.surface,
-                  border: `1px solid ${activeMission === m.mission_id ? S.primary + '44' : S.border}`,
-                  borderRadius: 8, padding: 14, cursor: 'pointer',
-                }}
-                onClick={() => { setActiveMission(m.mission_id); setTab('comms'); }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', gap: 8, marginBottom: 4, flexWrap: 'wrap', alignItems: 'center' }}>
-                      <span style={{ color: PRIORITY_COLOR[m.priority], fontWeight: 'bold', fontSize: 11 }}>{m.priority}</span>
-                      <span style={{ color: STATUS_COLOR[m.status] ?? S.muted, fontSize: 10 }}>{m.status}</span>
-                      <span style={{ color: S.muted, fontSize: 10 }}>{m.mission_id}</span>
-                      <span style={{ color: LOCO_COLOR[m.loco_state], fontSize: 9, letterSpacing: 1 }}>LOCO:{m.loco_state.replace(/_/g,'·')}</span>
-                    </div>
-                    <div style={{ color: S.text, fontSize: 12, marginBottom: 4 }}>{m.intent}</div>
-                    <div style={{ display: 'flex', gap: 16, fontSize: 10, color: S.muted }}>
-                      <span>Tareas: {m.task_count}</span>
-                      <span>Budget: ${m.budget_usd}</span>
-                      <span style={{ color: S.warning }}>Costo: {fmt$(Number(m.total_cost_usd))}</span>
-                      <span>{new Date(m.created_at).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={e => { e.stopPropagation(); advanceMission(m.mission_id); }}
-                    disabled={advancing}
-                    style={{ padding: '6px 14px', fontSize: 10, fontFamily: S.mono, background: 'transparent', border: `1px solid ${S.primary}`, color: S.primary, cursor: 'pointer', borderRadius: 4, whiteSpace: 'nowrap', flexShrink: 0 }}>
-                    {advancing ? '⟳' : 'ADVANCE RAMBO'}
-                  </button>
-                </div>
-              </div>
-            ))}
-
-            {advanceResult && (
-              <div style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: 14 }}>
-                <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 8 }}>▸ DECISIÓN RAMBO</div>
-                <pre style={{ color: S.success, fontSize: 10, whiteSpace: 'pre-wrap', overflowX: 'auto' }}>{advanceResult}</pre>
-              </div>
-            )}
+        {/* ── TABS ── */}
+        <nav style={{
+          background: '#0a0a0a', borderBottom: '1px solid #1e1e1e',
+          display: 'flex', overflowX: 'auto', padding: '0 24px',
+        }}>
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 700,
+              letterSpacing: 2, padding: '16px 24px', whiteSpace: 'nowrap',
+              color: tab === t.id ? '#FFD700' : '#666',
+              borderBottom: tab === t.id ? '3px solid #FFD700' : '3px solid transparent',
+              transition: 'color 0.15s',
+            }}>{t.label}</button>
+          ))}
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', padding: '0 8px' }}>
+            <button onClick={load} style={{
+              background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 6,
+              color: '#888', fontSize: 13, fontFamily: 'var(--font-mono)',
+              cursor: 'pointer', padding: '8px 16px', letterSpacing: 1,
+            }}>↻ SYNC</button>
           </div>
-        )}
+        </nav>
 
-        {/* ══════ PRESUPUESTO ══════ */}
-        {tab === 'presupuesto' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {!budget ? (
-              <div style={{ color: S.muted, fontSize: 11 }}>Cargando presupuestos...</div>
-            ) : (
-              <>
-                {/* KPIs */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 10 }}>
-                  {[
-                    { label: 'MES ACTUAL', value: fmt$(budget.total_spent_usd), sub: budget.month, color: S.warning },
-                    { label: 'AÑO EN CURSO', value: fmt$(budget.yearly_spend_usd, 2), sub: `cap $${budget.annual_cap_usd}`, color: S.gold },
-                    { label: 'PROYECCIÓN MENSUAL', value: fmt$(budget.projected_monthly_usd), sub: 'a ritmo actual', color: S.primary },
-                    { label: 'PROYECCIÓN ANUAL', value: fmt$(budget.projected_annual_usd, 2), sub: `margen $${Number(budget.annual_remaining_usd).toFixed(2)}`, color: S.success },
-                  ].map(c => (
-                    <div key={c.label} style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: '12px 14px' }}>
-                      <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 4 }}>{c.label}</div>
-                      <div style={{ color: c.color, fontWeight: 'bold', fontSize: 18 }}>{c.value}</div>
-                      <div style={{ color: S.faint, fontSize: 9, marginTop: 2 }}>{c.sub}</div>
-                    </div>
-                  ))}
+        {/* ── CONTENT ── */}
+        <main style={{ padding: '28px 32px', maxWidth: 1280, margin: '0 auto' }}>
+
+          {/* ──── MANDO ──── */}
+          {tab === 'mando' && (
+            <div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 28, alignItems: 'start' }}>
+                <div>
+                  <SectionTitle>RED DE MANDO TÁCTICA</SectionTitle>
+                  <TacticalNetwork missions={missions} locoState={locoState} />
                 </div>
-
-                {/* Provider caps */}
-                <div style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: 16 }}>
-                  <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 12 }}>▸ HARD CAPS POR PROVEEDOR — {budget.month}</div>
-                  {budget.providers.map(p => (
-                    <div key={p.provider} style={{ marginBottom: 12 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, marginBottom: 2 }}>
-                        <span style={{ color: p.over_cap ? S.danger : S.text, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 }}>
-                          {p.provider} {p.over_cap && '⚠ EXCEDIDO'}
-                        </span>
-                        <span style={{ color: S.muted }}>
-                          {fmt$(p.spent_usd)} / ${p.cap_usd} · {p.pct_used.toFixed(1)}% · {fmt$(p.remaining_usd)} restante
-                        </span>
-                      </div>
-                      <PctBar pct={p.pct_used} over={p.over_cap} />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Model breakdown */}
-                {budget.model_breakdown.length > 0 && (
-                  <div style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: 16 }}>
-                    <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 12 }}>▸ DESGLOSE EXACTO POR MODELO Y AGENTE</div>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 10 }}>
-                      <thead>
-                        <tr style={{ color: S.muted, borderBottom: `1px solid ${S.border}` }}>
-                          {['AGENTE','MODELO','CALLS','TOKENS IN','TOKENS OUT','COSTO USD'].map(h => (
-                            <th key={h} style={{ textAlign: h === 'AGENTE' || h === 'MODELO' ? 'left' : 'right', padding: '6px 8px', letterSpacing: 1, fontWeight: 'normal' }}>{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {budget.model_breakdown.map((r, i) => (
-                          <tr key={i} style={{ borderBottom: `1px solid ${S.border}44` }}>
-                            <td style={{ padding: '6px 8px', color: S.text }}>
-                              {SOLDIERS.find(s => s.id === r.agent)?.emoji ?? '·'} {r.agent}
-                            </td>
-                            <td style={{ padding: '6px 8px', color: S.muted }}>{r.model}</td>
-                            <td style={{ padding: '6px 8px', textAlign: 'right', color: S.muted }}>{r.call_count}</td>
-                            <td style={{ padding: '6px 8px', textAlign: 'right', color: S.muted }}>{Number(r.tokens_input).toLocaleString()}</td>
-                            <td style={{ padding: '6px 8px', textAlign: 'right', color: S.muted }}>{Number(r.tokens_output).toLocaleString()}</td>
-                            <td style={{ padding: '6px 8px', textAlign: 'right', color: S.warning, fontWeight: 'bold' }}>{fmt$(Number(r.cost_total_usd))}</td>
-                          </tr>
-                        ))}
-                        <tr style={{ borderTop: `2px solid ${S.border}` }}>
-                          <td colSpan={5} style={{ padding: '8px', textAlign: 'right', color: S.muted, fontSize: 9, letterSpacing: 2 }}>TOTAL MES</td>
-                          <td style={{ padding: '8px', textAlign: 'right', color: S.gold, fontWeight: 'bold', fontSize: 14 }}>{fmt$(budget.total_spent_usd)}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* Agent spend */}
-                {budget.agents.length > 0 && (
-                  <div style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: 16 }}>
-                    <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 12 }}>▸ GASTO POR SOLDADO</div>
-                    {budget.agents.map(a => {
-                      const sol = SOLDIERS.find(s => s.id === a.agent);
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+                  {/* LOCO state */}
+                  <InfoCard title="PROTOCOLO LOCO">
+                    {(['HOLD','LIMITED_RELEASE','EMERGENCY_RELEASE'] as const).map(state => {
+                      const active = locoState === state;
+                      const col = state === 'HOLD' ? '#22C55E' : state === 'LIMITED_RELEASE' ? '#F59E0B' : '#EF4444';
+                      const labels: Record<string, string> = { HOLD: '🟢 HOLD — Normal ops', LIMITED_RELEASE: '🟡 LIMITED — Escalation auth', EMERGENCY_RELEASE: '🔴 EMERGENCY — Full release' };
                       return (
-                        <div key={a.agent} style={{ marginBottom: 10 }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, marginBottom: 2 }}>
-                            <span style={{ color: a.over_cap ? S.danger : S.text }}>
-                              {sol?.emoji ?? '·'} {a.agent} {a.over_cap && '⚠'}
-                            </span>
-                            <span style={{ color: S.muted }}>{fmt$(a.spent_usd)} / ${a.cap_usd}</span>
+                        <div key={state} style={{
+                          padding: '10px 14px', borderRadius: 7, marginBottom: 6,
+                          background: active ? `${col}18` : '#111',
+                          border: `1px solid ${active ? col : '#222'}`,
+                          fontFamily: 'var(--font-mono)', fontSize: 13, color: active ? col : '#555',
+                          fontWeight: active ? 700 : 400,
+                        }}>{labels[state]}</div>
+                      );
+                    })}
+                  </InfoCard>
+
+                  {/* Rules */}
+                  <InfoCard title="REGLAS DE COMBATE">
+                    {[
+                      '1. RAMBO manda operativamente',
+                      '2. SANTI decide en máximo',
+                      '3. WINSTON y HOUSE son unidades móviles',
+                      '4. Comunicación lateral permitida',
+                      '5. BLADE requiere doble auth',
+                      '6. SICARIO solo bajo mando firme',
+                      '7. Ningún agente opera solo sin misión',
+                    ].map((r, i) => (
+                      <div key={i} style={{ fontSize: 13, color: '#ccc', padding: '5px 0', borderBottom: '1px solid #1a1a1a', fontFamily: 'var(--font-body)' }}>{r}</div>
+                    ))}
+                  </InfoCard>
+
+                  {/* Quick stats */}
+                  <InfoCard title="ESTADO OPERATIVO">
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                      {[
+                        { label: 'Misiones', value: missions.length, color: '#4169E1' },
+                        { label: 'Activas', value: missions.filter(m => m.status === 'active').length, color: '#22C55E' },
+                        { label: 'Pendientes', value: approvals.filter(a => a.status === 'pending').length, color: '#F59E0B' },
+                        { label: 'Soldados', value: 10, color: '#FFD700' },
+                      ].map(s => (
+                        <div key={s.label} style={{
+                          background: '#111', borderRadius: 8, padding: '12px 14px',
+                          border: `1px solid ${s.color}30`,
+                          textAlign: 'center',
+                        }}>
+                          <div style={{ fontFamily: 'var(--font-head)', fontSize: 28, fontWeight: 800, color: s.color }}>{s.value}</div>
+                          <div style={{ fontSize: 11, color: '#777', letterSpacing: 1, textTransform: 'uppercase', marginTop: 2, fontFamily: 'var(--font-body)' }}>{s.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </InfoCard>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ──── EFECTIVOS ──── */}
+          {tab === 'efectivos' && (
+            <div>
+              <SectionTitle>ROSTER OFICIAL — EFECTIVOS DEL BATALLÓN</SectionTitle>
+
+              {/* Commander */}
+              <div style={{
+                background: 'linear-gradient(135deg, #1a1200 0%, #0d0d0d 100%)',
+                border: '2px solid #FFD700', borderRadius: 12,
+                padding: '20px 28px', marginBottom: 20,
+                display: 'flex', alignItems: 'center', gap: 20,
+              }}>
+                <Image src="/bope-shield.png" alt="Comandante" width={60} height={60} style={{ objectFit: 'contain' }} />
+                <div>
+                  <div style={{ fontFamily: 'var(--font-head)', fontSize: 26, fontWeight: 900, color: '#FFD700', letterSpacing: 3 }}>
+                    SANTIAGO ISBERT PERLENDER
+                  </div>
+                  <div style={{ fontSize: 15, color: '#aaa', marginTop: 3 }}>Comandante Supremo · El Comandante no lleva medallas — las otorga</div>
+                </div>
+                <div style={{ marginLeft: 'auto', fontFamily: 'var(--font-head)', fontSize: 32, color: '#FFD700', letterSpacing: 4 }}>★★★★★</div>
+              </div>
+
+              {/* Soldiers grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 14 }}>
+                {SOLDIERS.map(s => (
+                  <div key={s.id} style={{
+                    background: '#0d0d0d', border: `1px solid ${s.color}40`,
+                    borderRadius: 10, padding: '16px 20px',
+                    cursor: 'pointer',
+                    transition: 'border-color 0.2s',
+                  }}
+                    onClick={() => { setTab('legajos'); setTimeout(() => setExpandedSoldier(s.id), 100); }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                      <div style={{
+                        width: 48, height: 48, borderRadius: '50%', flexShrink: 0,
+                        background: `${s.color}20`, border: `2px solid ${s.color}`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+                      }}>{s.emoji}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                          <span style={{ fontFamily: 'var(--font-head)', fontSize: 20, fontWeight: 800, color: s.color }}>{s.alias}</span>
+                          <span style={{ fontSize: 12, color: '#777' }}>· {s.callsign}</span>
+                        </div>
+                        <div style={{ fontSize: 13, color: '#aaa', marginTop: 2 }}>{s.role}</div>
+                        <div style={{ fontSize: 11, color: '#666', marginTop: 1 }}>{s.civil} · {s.origin}</div>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+                        <div style={{ display: 'flex', gap: 4 }}>
+                          {s.medals.length === 0
+                            ? <span style={{ fontSize: 11, color: '#444' }}>—</span>
+                            : s.medals.map(m => <Ribbon key={m} code={m} size="md" />)
+                          }
+                        </div>
+                        <span style={{ fontSize: 10, color: '#555', fontFamily: 'var(--font-mono)' }}>{s.rank}</span>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: 12, paddingTop: 10, borderTop: `1px solid ${s.color}20`, display: 'flex', gap: 16, fontSize: 12 }}>
+                      <span style={{ color: '#888' }}>{s.missions} misiones</span>
+                      <span style={{ color: '#666' }}>·</span>
+                      <span style={{ color: '#888' }}>{s.medals.length} condecoraciones</span>
+                      <span style={{ color: '#666' }}>·</span>
+                      <span style={{ color: '#666', fontFamily: 'var(--font-mono)', fontSize: 11 }}>{s.provider}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ──── LEGAJOS ──── */}
+          {tab === 'legajos' && (
+            <div>
+              <SectionTitle>LEGAJOS — DOSSIER COMPLETO DEL PERSONAL</SectionTitle>
+              <p style={{ fontSize: 14, color: '#777', marginBottom: 28 }}>
+                Historias, perfiles psicológicos, doctrinas de empleo y skills. Click para expandir.
+              </p>
+              {SOLDIERS.map(s => (
+                <LegajoCard key={s.id} s={s} />
+              ))}
+            </div>
+          )}
+
+          {/* ──── SALÓN DE LA FAMA ──── */}
+          {tab === 'salon' && (
+            <div>
+              <HallOfFame />
+            </div>
+          )}
+
+          {/* ──── MISIONES ──── */}
+          {tab === 'misiones' && (
+            <div>
+              <SectionTitle>CENTRO DE MISIONES</SectionTitle>
+
+              {/* Create */}
+              <div style={{
+                background: '#0d0d0d', border: '1px solid #2a2a2a',
+                borderRadius: 12, padding: '24px 28px', marginBottom: 28,
+              }}>
+                <div style={{ fontWeight: 700, color: '#FFD700', letterSpacing: 2, marginBottom: 18, fontFamily: 'var(--font-head)', fontSize: 17 }}>
+                  NUEVA MISIÓN
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 160px 140px 160px', gap: 12, alignItems: 'end' }}>
+                  <div>
+                    <label style={{ fontSize: 11, color: '#666', letterSpacing: 1, display: 'block', marginBottom: 6, textTransform: 'uppercase' }}>Intención / Objetivo</label>
+                    <input
+                      value={newMission.intent} onChange={e => setNewMission(p => ({ ...p, intent: e.target.value }))}
+                      placeholder="Describe el objetivo de la misión..."
+                      onKeyDown={e => e.key === 'Enter' && createMission()}
+                      style={{
+                        width: '100%', background: '#111', border: '1px solid #333',
+                        borderRadius: 7, padding: '12px 16px', color: '#fff',
+                        fontSize: 15, fontFamily: 'var(--font-body)', outline: 'none',
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, color: '#666', letterSpacing: 1, display: 'block', marginBottom: 6, textTransform: 'uppercase' }}>Prioridad</label>
+                    <select value={newMission.priority} onChange={e => setNewMission(p => ({ ...p, priority: e.target.value }))}
+                      style={{
+                        width: '100%', background: '#111', border: '1px solid #333',
+                        borderRadius: 7, padding: '12px 14px', color: '#fff',
+                        fontSize: 15, fontFamily: 'var(--font-body)', outline: 'none',
+                      }}>
+                      {['P0','P1','P2','P3'].map(p => <option key={p} value={p}>{p}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, color: '#666', letterSpacing: 1, display: 'block', marginBottom: 6, textTransform: 'uppercase' }}>Budget (USD)</label>
+                    <input
+                      type="number" value={newMission.budget}
+                      onChange={e => setNewMission(p => ({ ...p, budget: e.target.value }))}
+                      style={{
+                        width: '100%', background: '#111', border: '1px solid #333',
+                        borderRadius: 7, padding: '12px 16px', color: '#fff',
+                        fontSize: 15, fontFamily: 'var(--font-body)', outline: 'none',
+                      }}
+                    />
+                  </div>
+                  <button onClick={createMission} style={{
+                    background: '#FFD700', color: '#000', border: 'none',
+                    borderRadius: 7, padding: '12px 20px', cursor: 'pointer',
+                    fontFamily: 'var(--font-head)', fontSize: 16, fontWeight: 800, letterSpacing: 2,
+                  }}>CREAR MISIÓN</button>
+                </div>
+              </div>
+
+              {/* Mission list */}
+              {loading ? (
+                <div style={{ textAlign: 'center', color: '#555', padding: 40, fontSize: 16 }}>Cargando…</div>
+              ) : missions.length === 0 ? (
+                <div style={{ textAlign: 'center', color: '#444', padding: 60, fontSize: 16, fontStyle: 'italic' }}>No hay misiones registradas.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {missions.map(m => {
+                    const priColor = m.priority === 'P0' ? '#EF4444' : m.priority === 'P1' ? '#F59E0B' : '#22C55E';
+                    const stColor = m.status === 'active' ? '#22C55E' : m.status === 'completed' ? '#4169E1' : '#888';
+                    return (
+                      <div key={m.id} style={{
+                        background: '#0d0d0d', border: `1px solid #222`,
+                        borderLeft: `4px solid ${priColor}`,
+                        borderRadius: '0 10px 10px 0', padding: '20px 24px',
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
+                              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: '#666' }}>{m.mission_id}</span>
+                              <span style={{ background: `${priColor}20`, color: priColor, fontSize: 12, fontWeight: 700, padding: '2px 8px', borderRadius: 4 }}>{m.priority}</span>
+                              <span style={{ background: `${stColor}20`, color: stColor, fontSize: 12, fontWeight: 700, padding: '2px 8px', borderRadius: 4 }}>{m.status.toUpperCase()}</span>
+                            </div>
+                            <div style={{ fontSize: 17, fontWeight: 600, color: '#fff', marginBottom: 8 }}>{m.intent}</div>
+                            <div style={{ display: 'flex', gap: 20, fontSize: 13, color: '#888', flexWrap: 'wrap' }}>
+                              <span>Budget: <strong style={{ color: '#fff' }}>${m.budget_usd}</strong></span>
+                              <span>Consumido: <strong style={{ color: m.total_cost_usd > m.budget_usd * 0.8 ? '#F59E0B' : '#22C55E' }}>${m.total_cost_usd?.toFixed(4) ?? '0.0000'}</strong></span>
+                              <span>Tareas: <strong style={{ color: '#fff' }}>{m.task_count ?? 0}</strong></span>
+                              <span>LOCO: <strong style={{ color: m.loco_state === 'HOLD' ? '#22C55E' : '#F59E0B' }}>{m.loco_state}</strong></span>
+                            </div>
                           </div>
-                          <PctBar pct={a.cap_usd > 0 ? (a.spent_usd / a.cap_usd) * 100 : 0} over={a.over_cap} />
+                          {m.status === 'active' && (
+                            <button onClick={() => advanceMission(m.id)} style={{
+                              background: '#22C55E', color: '#000', border: 'none',
+                              borderRadius: 7, padding: '10px 18px', cursor: 'pointer',
+                              fontFamily: 'var(--font-head)', fontSize: 14, fontWeight: 800, letterSpacing: 1, flexShrink: 0,
+                            }}>▶ ADVANCE RAMBO</button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ──── PRESUPUESTO ──── */}
+          {tab === 'presupuesto' && (
+            <div>
+              <SectionTitle>CONTROL DE PRESUPUESTO OPERATIVO</SectionTitle>
+              {!budgetData ? (
+                <div style={{ textAlign: 'center', color: '#555', padding: 60, fontSize: 16 }}>
+                  {loading ? 'Cargando datos financieros…' : 'Sin datos de presupuesto.'}
+                </div>
+              ) : (
+                <>
+                  {/* KPIs */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 28 }}>
+                    {[
+                      { label: 'Gasto mensual', value: `$${budgetData.total_spent_usd?.toFixed(4)}`, color: '#4169E1' },
+                      { label: 'Proyección mensual', value: `$${budgetData.projected_monthly_usd?.toFixed(2)}`, color: '#F59E0B' },
+                      { label: 'Proyección anual', value: `$${budgetData.projected_annual_usd?.toFixed(0)}`, color: '#F59E0B' },
+                      { label: 'Cap anual', value: `$${budgetData.annual_cap_usd?.toFixed(0)}`, color: '#888' },
+                      { label: 'Restante anual', value: `$${budgetData.annual_remaining_usd?.toFixed(2)}`, color: '#22C55E' },
+                    ].map(k => (
+                      <div key={k.label} style={{
+                        background: '#0d0d0d', border: `1px solid ${k.color}30`,
+                        borderRadius: 10, padding: '18px 22px',
+                      }}>
+                        <div style={{ fontFamily: 'var(--font-head)', fontSize: 26, fontWeight: 800, color: k.color }}>{k.value}</div>
+                        <div style={{ fontSize: 12, color: '#777', marginTop: 4, letterSpacing: 1, textTransform: 'uppercase' }}>{k.label}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Provider bars */}
+                  <div style={{ background: '#0d0d0d', border: '1px solid #1e1e1e', borderRadius: 12, padding: '24px 28px', marginBottom: 24 }}>
+                    <div style={{ fontFamily: 'var(--font-head)', fontSize: 18, fontWeight: 700, color: '#FFD700', letterSpacing: 2, marginBottom: 20 }}>PROVEEDORES</div>
+                    {(budgetData.providers ?? []).map(p => {
+                      const pct = Math.min(100, (p.pct_used ?? 0));
+                      const barColor = pct > 90 ? '#EF4444' : pct > 70 ? '#F59E0B' : '#22C55E';
+                      return (
+                        <div key={p.provider} style={{ marginBottom: 20 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 14 }}>
+                            <span style={{ fontWeight: 700, color: '#fff', textTransform: 'capitalize' }}>{p.provider}</span>
+                            <span style={{ fontFamily: 'var(--font-mono)', color: '#aaa' }}>
+                              <strong style={{ color: barColor }}>${p.spent_usd?.toFixed(4)}</strong> / ${p.cap_usd?.toFixed(2)} ({pct.toFixed(1)}%)
+                            </span>
+                          </div>
+                          <div style={{ height: 12, background: '#1a1a1a', borderRadius: 6, overflow: 'hidden' }}>
+                            <div style={{ height: '100%', width: `${pct}%`, background: barColor, borderRadius: 6, transition: 'width 0.5s' }} />
+                          </div>
+                          <div style={{ fontSize: 12, color: '#666', marginTop: 4 }}>Restante: ${p.remaining_usd?.toFixed(2)}</div>
                         </div>
                       );
                     })}
                   </div>
-                )}
-              </>
-            )}
-          </div>
-        )}
 
-        {/* ══════ APROBACIONES ══════ */}
-        {tab === 'aprobaciones' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div style={{ color: S.muted, fontSize: 9, letterSpacing: 2, marginBottom: 4 }}>▸ COLA DE APROBACIONES — SOLO SANTI DECIDE</div>
-            {approvals.length === 0 ? (
-              <div style={{ color: S.faint, fontSize: 11, textAlign: 'center', padding: 40 }}>
-                ✓ Sin aprobaciones pendientes
-              </div>
-            ) : approvals.map(a => (
-              <div key={a.id} style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, padding: 14 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
-                      <span style={{ color: RISK_COLOR[a.risk_level], fontWeight: 'bold', fontSize: 10 }}>{a.risk_level}</span>
-                      <span style={{ color: S.text, fontWeight: 'bold', fontSize: 10 }}>{a.action_type}</span>
-                      <span style={{ color: S.muted, fontSize: 9 }}>{a.approval_id}</span>
+                  {/* Model breakdown */}
+                  {(budgetData.model_breakdown ?? []).length > 0 && (
+                    <div style={{ background: '#0d0d0d', border: '1px solid #1e1e1e', borderRadius: 12, padding: '24px 28px' }}>
+                      <div style={{ fontFamily: 'var(--font-head)', fontSize: 18, fontWeight: 700, color: '#FFD700', letterSpacing: 2, marginBottom: 20 }}>DESGLOSE POR MODELO</div>
+                      <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                          <thead>
+                            <tr>
+                              {['Proveedor','Modelo','Agente','Llamadas','Tokens entrada','Tokens salida','Costo USD'].map(h => (
+                                <th key={h} style={{ padding: '10px 14px', textAlign: 'left', borderBottom: '1px solid #222', color: '#666', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase' }}>{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {budgetData.model_breakdown.map((r, i) => (
+                              <tr key={i} style={{ borderBottom: '1px solid #151515' }}>
+                                <td style={{ padding: '12px 14px', color: '#aaa', textTransform: 'capitalize' }}>{r.provider}</td>
+                                <td style={{ padding: '12px 14px', fontFamily: 'var(--font-mono)', fontSize: 12, color: '#ccc' }}>{r.model}</td>
+                                <td style={{ padding: '12px 14px', color: '#aaa' }}>{r.agent}</td>
+                                <td style={{ padding: '12px 14px', textAlign: 'right', color: '#fff', fontWeight: 600 }}>{r.call_count}</td>
+                                <td style={{ padding: '12px 14px', textAlign: 'right', color: '#888', fontFamily: 'var(--font-mono)', fontSize: 12 }}>{(r.tokens_input ?? 0).toLocaleString()}</td>
+                                <td style={{ padding: '12px 14px', textAlign: 'right', color: '#888', fontFamily: 'var(--font-mono)', fontSize: 12 }}>{(r.tokens_output ?? 0).toLocaleString()}</td>
+                                <td style={{ padding: '12px 14px', textAlign: 'right', color: '#22C55E', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>${r.cost_total_usd?.toFixed(6)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                    <div style={{ color: S.text, fontSize: 11, marginBottom: 4 }}>{a.description}</div>
-                    <div style={{ color: S.muted, fontSize: 9 }}>
-                      Misión: {a.mission_label} · Solicitado por: {a.requested_by}
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-                    <button onClick={() => resolve(a.id, 'APPROVED')} disabled={loading}
-                      style={{ padding: '6px 14px', fontSize: 10, fontFamily: S.mono, background: 'transparent', border: `1px solid ${S.success}`, color: S.success, cursor: 'pointer', borderRadius: 4 }}>
-                      ✓ APROBAR
-                    </button>
-                    <button onClick={() => resolve(a.id, 'REJECTED')} disabled={loading}
-                      style={{ padding: '6px 14px', fontSize: 10, fontFamily: S.mono, background: 'transparent', border: `1px solid ${S.danger}`, color: S.danger, cursor: 'pointer', borderRadius: 4 }}>
-                      ✕ RECHAZAR
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ══════ COMMS ══════ */}
-        {tab === 'comms' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ color: S.muted, fontSize: 9, letterSpacing: 2 }}>MISIÓN:</span>
-              {missions.map(m => (
-                <button key={m.id} onClick={() => setActiveMission(m.mission_id)}
-                  style={{
-                    padding: '4px 10px', fontSize: 9, fontFamily: S.mono, background: 'transparent',
-                    border: `1px solid ${activeMission === m.mission_id ? S.primary : S.border}`,
-                    color: activeMission === m.mission_id ? S.primary : S.muted,
-                    cursor: 'pointer', borderRadius: 4, letterSpacing: 1,
-                  }}>
-                  {m.mission_id} <span style={{ color: STATUS_COLOR[m.status] }}>·</span>
-                </button>
-              ))}
-              {missions.length === 0 && <span style={{ color: S.faint, fontSize: 10 }}>Sin misiones — crea una primero</span>}
+                  )}
+                </>
+              )}
             </div>
+          )}
 
-            {activeMission ? (
-              <div style={{ background: S.surface, border: `1px solid ${S.border}`, borderRadius: 8, minHeight: '65vh', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ padding: '8px 14px', borderBottom: `1px solid ${S.border}`, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 7, height: 7, borderRadius: '50%', background: connected ? S.success : S.danger, boxShadow: connected ? `0 0 6px ${S.success}` : 'none' }} />
-                  <span style={{ color: S.muted, fontSize: 9, letterSpacing: 2 }}>COMMS LOG · {activeMission}</span>
-                  <span style={{ color: S.faint, fontSize: 9, marginLeft: 'auto' }}>monitoreo pasivo · sin costo API</span>
+          {/* ──── APROBACIONES ──── */}
+          {tab === 'aprobaciones' && (
+            <div>
+              <SectionTitle>COLA DE APROBACIONES</SectionTitle>
+              {loading ? (
+                <div style={{ textAlign: 'center', color: '#555', padding: 40, fontSize: 16 }}>Cargando…</div>
+              ) : approvals.filter(a => a.status === 'pending').length === 0 ? (
+                <div style={{
+                  textAlign: 'center', padding: 60, color: '#444',
+                  fontSize: 16, fontStyle: 'italic', border: '1px dashed #222', borderRadius: 12,
+                }}>Sin aprobaciones pendientes. Batallón en espera.</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {approvals.filter(a => a.status === 'pending').map(a => {
+                    const rColor = a.risk_level === 'CRITICAL' ? '#EF4444' : a.risk_level === 'HIGH' ? '#F59E0B' : '#4169E1';
+                    return (
+                      <div key={a.id} style={{
+                        background: '#0d0d0d', border: `1px solid ${rColor}40`,
+                        borderLeft: `4px solid ${rColor}`,
+                        borderRadius: '0 10px 10px 0', padding: '20px 24px',
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
+                              <span style={{ background: `${rColor}20`, color: rColor, fontSize: 12, fontWeight: 700, padding: '2px 8px', borderRadius: 4 }}>{a.risk_level}</span>
+                              <span style={{ background: '#1a1a1a', color: '#aaa', fontSize: 12, padding: '2px 8px', borderRadius: 4 }}>{a.action_type}</span>
+                            </div>
+                            <div style={{ fontSize: 16, fontWeight: 600, color: '#fff', marginBottom: 6 }}>{a.description}</div>
+                            <div style={{ fontSize: 13, color: '#777' }}>
+                              Misión: <span style={{ color: '#aaa' }}>{a.mission_label || a.mission_id}</span>
+                              {' · '}Solicitado por: <span style={{ color: '#aaa' }}>{a.requested_by}</span>
+                              {' · '}<span style={{ fontFamily: 'var(--font-mono)', fontSize: 12 }}>{new Date(a.requested_at).toLocaleString('es-AR')}</span>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: 10, flexShrink: 0 }}>
+                            <button onClick={() => resolveApproval(a.id, 'approved')} style={{
+                              background: '#22C55E', color: '#000', border: 'none',
+                              borderRadius: 7, padding: '10px 20px', cursor: 'pointer',
+                              fontFamily: 'var(--font-head)', fontSize: 15, fontWeight: 800, letterSpacing: 1,
+                            }}>✓ APROBAR</button>
+                            <button onClick={() => resolveApproval(a.id, 'rejected')} style={{
+                              background: '#EF4444', color: '#fff', border: 'none',
+                              borderRadius: 7, padding: '10px 20px', cursor: 'pointer',
+                              fontFamily: 'var(--font-head)', fontSize: 15, fontWeight: 800, letterSpacing: 1,
+                            }}>✕ RECHAZAR</button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <CommsLog events={events} />
+              )}
+
+              {/* COMMS inline */}
+              <div style={{ marginTop: 32 }}>
+                <SectionTitle>COMMS — MONITOREO PASIVO</SectionTitle>
+                <div style={{ fontSize: 12, color: '#555', fontFamily: 'var(--font-mono)', marginBottom: 12 }}>
+                  SSE stream · monitoreo pasivo · sin costo API
+                </div>
+                <div style={{
+                  background: '#050505', border: '1px solid #1a1a1a', borderRadius: 10,
+                  padding: '16px 20px', height: 280, overflowY: 'auto', fontFamily: 'var(--font-mono)',
+                }}>
+                  {commsLog.map((line, i) => (
+                    <div key={i} style={{ fontSize: 13, color: '#22C55E', marginBottom: 4, lineHeight: 1.6 }}>{line}</div>
+                  ))}
                 </div>
               </div>
-            ) : (
-              <div style={{ color: S.faint, fontSize: 11, textAlign: 'center', padding: 60 }}>
-                — Selecciona una misión para monitorear el COMMS LOG —
-              </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
 
-      </main>
+        </main>
+      </div>
+    </>
+  );
+}
 
-      {/* ── FOOTER ── */}
-      <footer style={{ background: S.surface, borderTop: `1px solid ${S.border}`, padding: '6px 20px', display: 'flex', justifyContent: 'space-between', fontSize: 9, color: S.faint }}>
-        <span>BOPE v1.0 · Anthropic claude-sonnet-4-6 · OpenAI gpt-4o-mini · Neon · n8n · Sentry</span>
-        <span>{budget ? `CAP ANUAL $${budget.annual_cap_usd} · USADO ${fmt$(budget.yearly_spend_usd, 2)} · RESTANTE $${Number(budget.annual_remaining_usd).toFixed(2)}` : ''}</span>
-      </footer>
+// ── Helper components ─────────────────────────────────────────────────────
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 style={{
+      fontFamily: 'var(--font-head)', fontSize: 26, fontWeight: 900,
+      color: '#FFD700', letterSpacing: 3, textTransform: 'uppercase',
+      marginBottom: 22, borderBottom: '1px solid #2a1a00', paddingBottom: 10,
+    }}>{children}</h2>
+  );
+}
+
+function InfoCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div style={{
+      background: '#0d0d0d', border: '1px solid #1e1e1e',
+      borderRadius: 10, padding: '18px 20px',
+    }}>
+      <div style={{
+        fontFamily: 'var(--font-head)', fontSize: 15, fontWeight: 800,
+        color: '#FFD700', letterSpacing: 2, marginBottom: 14,
+      }}>{title}</div>
+      {children}
     </div>
   );
 }
