@@ -1,0 +1,1 @@
+# No external dependencies — bope_agents is pure Python stdlib
