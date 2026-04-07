@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #080b0e;
+  --color-surface: #0d1117;
+  --color-surface-2: #111820;
+  --color-border: #1e2a36;
+  --color-border-bright: #2a3a4a;
+  --color-text: #c9d1d9;
+  --color-text-muted: #6e7f8f;
+  --color-text-faint: #3d4f5f;
+  --color-primary: #58a6ff;
+  --color-primary-dim: #1f3a5f;
+  --color-success: #3fb950;
+  --color-warning: #d29922;
+  --color-danger: #f85149;
+  --color-gold: #e3b341;
+  --color-idle: #3d4f5f;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  min-height: 100dvh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-bright); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+
+/* Pulse animation */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.pulse { animation: pulse-dot 1.8s ease-in-out infinite; }
+
+/* Scan line effect */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Flicker in */
+@keyframes flicker-in {
+  0% { opacity: 0; }
+  20% { opacity: 0.8; }
+  40% { opacity: 0.3; }
+  60% { opacity: 1; }
+  80% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+.flicker { animation: flicker-in 0.4s ease forwards; }
+
+/* Blink cursor */
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.cursor::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+  color: var(--color-primary);
+}
+
+/* Tab active */
+.tab-active {
+  color: var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/* Medal badge */
+.medal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+
+/* Status dot */
+.dot-active { background: var(--color-success); box-shadow: 0 0 6px var(--color-success); }
+.dot-idle { background: var(--color-idle); }
+.dot-standby { background: var(--color-warning); }
