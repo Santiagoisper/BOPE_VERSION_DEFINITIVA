@@ -5,16 +5,23 @@ import {
   clearFailedAttempts,
   createAuthConfig,
   createSession,
+  createTokenPair,
+  getAccessTokenTtlSeconds,
+  getRefreshTokenTtlSeconds,
   isLocked,
   isStrongPassword,
   registerFailedAttempt,
+  resolveRefreshToken,
   resolveSession,
+  signJwt,
+  verifyJwt,
   verifyPassword,
 } from "./auth.js";
-import type { MedalAwardRecord, PersistedStore, SanctionRecord, SessionRecord } from "./domain.js";
+import type { CommandCenterState, MedalAwardRecord, PersistedStore, SanctionRecord, SessionRecord } from "./domain.js";
 import {
   bootstrapAuthMutation,
   createMissionMutation,
+  createRefreshTokenMutation,
   initializePersistence,
   loadStore,
   loginFailureMutation,
@@ -23,6 +30,7 @@ import {
   mutateIncremental,
   mutateStore,
   recordProviderAttemptMutation,
+  revokeRefreshTokenMutation,
   updateProviderControlMutation,
   updateProviderGovernanceMutation,
   updateBudgetPolicyMutation,
@@ -36,9 +44,12 @@ import {
 } from "./state.js";
 import { execute, type ExecuteInput } from "./engine/executor.js";
 import { readBudget, getBudgetSummary } from "./engine/budget.js";
+import { getEngineStatus } from "./engine/llm.js";
 
 const PORT = Number(process.env.PORT ?? process.env.BOPE_COMMAND_CENTER_SERVER_PORT ?? "3100");
-const SESSION_COOKIE = "bope_command_center_session";
+const SESSION_COOKIE         = "bope_command_center_session";
+const ACCESS_TOKEN_COOKIE    = "bope_access_token";
+const REFRESH_TOKEN_COOKIE   = "bope_refresh_token";
 
 // ─── SSE CLIENT REGISTRY ──────────────────────────────────────────────────────
 const sseClients = new Map<string, ServerResponse>();
@@ -98,19 +109,60 @@ function parseCookies(request: IncomingMessage): Record<string, string> {
   );
 }
 
+const SECURE_FLAG = process.env.NODE_ENV === "production" ? "; Secure" : "";
+
 function writeSessionCookie(response: ServerResponse, sessionToken: string): void {
   response.setHeader(
     "Set-Cookie",
-    `${SESSION_COOKIE}=${encodeURIComponent(sessionToken)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${60 * 60 * 12}`,
+    `${SESSION_COOKIE}=${encodeURIComponent(sessionToken)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${60 * 60 * 12}${SECURE_FLAG}`,
   );
+}
+
+function writeTokenCookies(response: ServerResponse, accessToken: string, refreshToken: string): void {
+  const existing = response.getHeader("Set-Cookie");
+  const cookies = [
+    ...(Array.isArray(existing) ? existing : existing ? [existing] : []),
+    `${ACCESS_TOKEN_COOKIE}=${accessToken}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${getAccessTokenTtlSeconds()}${SECURE_FLAG}`,
+    `${REFRESH_TOKEN_COOKIE}=${encodeURIComponent(refreshToken)}; HttpOnly; SameSite=Strict; Path=/api/auth; Max-Age=${getRefreshTokenTtlSeconds()}${SECURE_FLAG}`,
+  ];
+  response.setHeader("Set-Cookie", cookies as string[]);
+}
+
+function clearAllAuthCookies(response: ServerResponse): void {
+  response.setHeader("Set-Cookie", [
+    `${SESSION_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${SECURE_FLAG}`,
+    `${ACCESS_TOKEN_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${SECURE_FLAG}`,
+    `${REFRESH_TOKEN_COOKIE}=; HttpOnly; SameSite=Strict; Path=/api/auth; Max-Age=0${SECURE_FLAG}`,
+  ]);
 }
 
 function clearSessionCookie(response: ServerResponse): void {
   response.setHeader("Set-Cookie", `${SESSION_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`);
 }
 
+function extractBearerToken(request: IncomingMessage): string | undefined {
+  const auth = request.headers.authorization;
+  if (auth?.startsWith("Bearer ")) return auth.slice(7);
+  return undefined;
+}
+
 function currentSession(store: PersistedStore, request: IncomingMessage): SessionRecord | null {
+  // 1. JWT en Authorization: Bearer
+  const bearer = extractBearerToken(request);
+  if (bearer) {
+    const claims = verifyJwt(bearer);
+    if (claims) return { username: claims.sub, loginAt: new Date(claims.iat * 1000).toISOString(), expiresAt: new Date(claims.exp * 1000).toISOString() };
+  }
+
+  // 2. JWT en cookie bope_access_token
   const cookies = parseCookies(request);
+  const accessCookie = cookies[ACCESS_TOKEN_COOKIE];
+  if (accessCookie) {
+    const claims = verifyJwt(accessCookie);
+    if (claims) return { username: claims.sub, loginAt: new Date(claims.iat * 1000).toISOString(), expiresAt: new Date(claims.exp * 1000).toISOString() };
+  }
+
+  // 3. Fallback: cookie de sesión opaca legacy
   return resolveSession(store.sessions, cookies[SESSION_COOKIE]);
 }
 
@@ -152,6 +204,15 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
+  if (method === "GET" && url.pathname === "/api/engine-status") {
+    const store = await loadStore();
+    const session = requireSession(store, request, response);
+    if (!session) return;
+    const status = await getEngineStatus();
+    json(response, 200, status);
+    return;
+  }
+
   const store = await loadStore();
 
   if (method === "GET" && url.pathname === "/api/bootstrap-status") {
@@ -184,6 +245,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     const payload = await mutateIncremental(async (client, currentStore) => {
       const authConfig = createAuthConfig(username, password, nowIso);
       const created = createSession(username, nowIso);
+      const tokens = createTokenPair(username, nowIso);
       const auditEntry = {
         id: `audit-${crypto.randomUUID()}`,
         timestamp: nowIso,
@@ -194,10 +256,13 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         context: "bootstrap",
       };
       const nextState = await bootstrapAuthMutation(client, currentStore, authConfig, created.session, auditEntry);
+      await createRefreshTokenMutation(client, currentStore, tokens.refreshRecord);
 
       return {
         result: {
           token: created.token,
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
           session: {
             username,
             loginAt: created.session.loginAt,
@@ -208,12 +273,16 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         nextStore: {
           state: nextState,
           sessions: [...currentStore.sessions, created.session],
+          refreshTokens: [...currentStore.refreshTokens, tokens.refreshRecord],
         },
       };
     });
     writeSessionCookie(response, payload.token);
+    writeTokenCookies(response, payload.accessToken, payload.refreshToken);
     json(response, 200, {
       session: payload.session,
+      accessToken: payload.accessToken,
+      accessTokenExpiresIn: getAccessTokenTtlSeconds(),
       state: payload.state,
     });
     return;
@@ -258,6 +327,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
               auditLog: [...currentStore.state.auditLog, auditEntry],
             }),
             sessions: currentStore.sessions,
+            refreshTokens: currentStore.refreshTokens,
           },
         };
       });
@@ -268,6 +338,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     const nowIso = new Date().toISOString();
     const payload = await mutateIncremental(async (client, currentStore) => {
       const created = createSession(username, nowIso);
+      const tokens = createTokenPair(username, nowIso);
       const clearedConfig = clearFailedAttempts(config);
       const auditEntry = {
         id: `audit-${crypto.randomUUID()}`,
@@ -285,10 +356,13 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         created.session,
         auditEntry,
       );
+      await createRefreshTokenMutation(client, currentStore, tokens.refreshRecord);
 
       return {
         result: {
           token: created.token,
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
           session: {
             username,
             loginAt: created.session.loginAt,
@@ -299,10 +373,12 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         nextStore: {
           state: nextState,
           sessions: [...currentStore.sessions, created.session],
+          refreshTokens: [...currentStore.refreshTokens, tokens.refreshRecord],
         },
       };
     });
     writeSessionCookie(response, payload.token);
+    writeTokenCookies(response, payload.accessToken, payload.refreshToken);
     json(response, 200, {
       session: payload.session,
       state: payload.state,
@@ -313,21 +389,68 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
   if (method === "POST" && url.pathname === "/api/auth/logout") {
     const cookies = parseCookies(request);
     const token = cookies[SESSION_COOKIE];
+    const refreshToken = cookies[REFRESH_TOKEN_COOKIE];
     if (token) {
       const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
       await mutateIncremental(async (client, currentStore) => {
         await logoutMutation(client, currentStore, tokenHash);
+        // Revoke refresh token if present (resolveRefreshToken hashes internally)
+        if (refreshToken) {
+          const rec = resolveRefreshToken(currentStore.refreshTokens, refreshToken);
+          if (rec) await revokeRefreshTokenMutation(client, currentStore, rec.tokenHash);
+        }
         return {
           result: null,
           nextStore: {
             state: currentStore.state,
             sessions: currentStore.sessions.filter((session) => session.tokenHash !== tokenHash),
+            refreshTokens: currentStore.refreshTokens,
           },
         };
       });
     }
-    clearSessionCookie(response);
+    clearAllAuthCookies(response);
     json(response, 200, { ok: true });
+    return;
+  }
+
+  if (method === "POST" && url.pathname === "/api/auth/refresh") {
+    const cookies = parseCookies(request);
+    const refreshToken = cookies[REFRESH_TOKEN_COOKIE];
+    if (!refreshToken) {
+      json(response, 401, { error: "Refresh token no encontrado." });
+      return;
+    }
+    try {
+      const nowIso = new Date().toISOString();
+      // resolveRefreshToken expects the raw token (hashes it internally)
+      const record = resolveRefreshToken(store.refreshTokens, refreshToken);
+      if (!record) {
+        json(response, 401, { error: "Refresh token invalido o expirado." });
+        return;
+      }
+      const oldHash = record.tokenHash;
+      const tokens = createTokenPair(record.username, nowIso);
+      await mutateIncremental(async (client, currentStore) => {
+        await revokeRefreshTokenMutation(client, currentStore, oldHash);
+        await createRefreshTokenMutation(client, currentStore, tokens.refreshRecord);
+        return {
+          result: null,
+          nextStore: {
+            state: currentStore.state,
+            sessions: currentStore.sessions,
+            refreshTokens: [
+              ...currentStore.refreshTokens.filter((t) => t.tokenHash !== oldHash),
+              tokens.refreshRecord,
+            ],
+          },
+        };
+      });
+      writeTokenCookies(response, tokens.accessToken, tokens.refreshToken);
+      json(response, 200, { ok: true });
+    } catch {
+      json(response, 401, { error: "No se pudo renovar la sesion." });
+    }
     return;
   }
 
@@ -382,6 +505,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         nextStore: {
           state: nextState,
           sessions: currentStore.sessions,
+          refreshTokens: currentStore.refreshTokens,
         },
       })),
     );
@@ -410,6 +534,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         store: {
           state: nextState,
           sessions: currentStore.sessions,
+          refreshTokens: currentStore.refreshTokens,
         },
         result: sanitizeState(nextState),
       };
@@ -445,7 +570,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         awardedBy: body.awardedBy ?? session.username.toUpperCase(),
       });
       return {
-        store: { state: nextState, sessions: currentStore.sessions },
+        store: { state: nextState, sessions: currentStore.sessions, refreshTokens: currentStore.refreshTokens },
         result: sanitizeState(nextState),
       };
     });
@@ -480,7 +605,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         issuedBy: body.issuedBy ?? session.username.toUpperCase(),
       });
       return {
-        store: { state: nextState, sessions: currentStore.sessions },
+        store: { state: nextState, sessions: currentStore.sessions, refreshTokens: currentStore.refreshTokens },
         result: sanitizeState(nextState),
       };
     });
@@ -515,6 +640,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         nextStore: {
           state: nextState,
           sessions: currentStore.sessions,
+          refreshTokens: currentStore.refreshTokens,
         },
       })),
     );
@@ -553,6 +679,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         nextStore: {
           state: nextState,
           sessions: currentStore.sessions,
+          refreshTokens: currentStore.refreshTokens,
         },
       })),
     );
@@ -604,6 +731,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         nextStore: {
           state: nextState,
           sessions: currentStore.sessions,
+          refreshTokens: currentStore.refreshTokens,
         },
       })),
     );
@@ -633,7 +761,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     }
     const requestedTokens = Number(body.requestedTokens ?? 0);
     const estimatedCost = Number(body.estimatedCost ?? 0);
-    const state = await mutateIncremental((client, currentStore) =>
+    const state = await mutateIncremental<CommandCenterState>((client, currentStore) =>
       recordProviderAttemptMutation(client, currentStore, {
         providerId: body.providerId!,
         missionId: body.missionId,
@@ -645,6 +773,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         nextStore: {
           state: nextState,
           sessions: currentStore.sessions,
+          refreshTokens: currentStore.refreshTokens,
         },
       })),
     );
@@ -682,6 +811,8 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
 
   // ─── BUDGET LIVE ───────────────────────────────────────────────────────────
   if (method === "GET" && url.pathname === "/api/budget/live") {
+    const session = requireSession(store, request, response);
+    if (!session) return;
     const budget = await readBudget();
     json(response, 200, getBudgetSummary(budget));
     return;
@@ -695,6 +826,7 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     const body = (await readBody(request)) as {
       order?: string;
       provider?: string;
+      agentId?: string;
       projectPath?: string;
       maxTokens?: number;
     };
@@ -707,15 +839,18 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     const input: ExecuteInput = {
       order: body.order.trim(),
       provider: (body.provider as ExecuteInput["provider"]) ?? "auto",
+      agentId: body.agentId?.trim() || undefined,
       projectPath: body.projectPath,
       maxTokens: body.maxTokens,
     };
 
     // Stream execution events via SSE broadcast to all connected clients
+    // Each event carries executionId so clients can filter their own execution
     // The HTTP response returns the final result when done
+    const executionId = crypto.randomUUID();
     try {
-      const result = await execute(input, (event) => {
-        broadcast("execution", event);
+      const result = await execute({ ...input, executionId }, (event) => {
+        broadcast("execution", { ...event, executionId });
       });
       json(response, 200, result);
     } catch (error) {

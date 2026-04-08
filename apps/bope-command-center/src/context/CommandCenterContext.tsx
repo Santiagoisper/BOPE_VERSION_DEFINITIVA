@@ -122,6 +122,7 @@ export interface ExecutionLogEntry {
 
 interface CommandCenterContextValue {
   isReady: boolean;
+  initError: string | null;
   state: CommandCenterState | null;
   agents: Agent[];
   missions: Mission[];
@@ -222,6 +223,7 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<CommandCenterState | null>(null);
   const [session, setSession] = useState<SessionRecord | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
   const [needsBootstrap, setNeedsBootstrap] = useState(false);
   const [executionLog, setExecutionLog] = useState<ExecutionLogEntry[]>([]);
   const [isExecuting, setIsExecuting] = useState(false);
@@ -264,9 +266,10 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
           setSession(null);
           setState(null);
         }
-      } catch {
+      } catch (err) {
         setSession(null);
         setState(null);
+        setInitError(err instanceof Error ? err.message : "No se pudo conectar con el servidor.");
       } finally {
         if (!cancelled) setIsReady(true);
       }
@@ -367,6 +370,8 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
     setIsExecuting(true);
     try {
       const result = await executeOrderRequest(input);
+      // Refresh state so budget and audit log reflect the execution
+      await refreshState().catch(() => {});
       return result;
     } finally {
       setIsExecuting(false);
@@ -377,6 +382,7 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
     <CommandCenterContext.Provider
       value={{
         isReady,
+        initError,
         state,
         agents: view.agents,
         missions: view.missions,

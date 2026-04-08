@@ -30,7 +30,7 @@ function PanelShell({
 }
 
 export function AuthGate({ children }: AuthGateProps) {
-  const { isReady, needsBootstrap, isAuthenticated, bootstrapAuth, login, state } = useCommandCenter();
+  const { isReady, initError, needsBootstrap, isAuthenticated, bootstrapAuth, login, state } = useCommandCenter();
   const [username, setUsername] = useState("operator");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -41,6 +41,9 @@ export function AuthGate({ children }: AuthGateProps) {
     return (
       <PanelShell title="Inicializando" subtitle="Cargando persistencia operativa y auditoria local.">
         <div className="text-xs font-mono text-muted-foreground">Sincronizando Command Center...</div>
+        {initError && (
+          <p className="mt-2 text-xs font-mono text-red-400">Error: {initError}</p>
+        )}
       </PanelShell>
     );
   }
@@ -61,7 +64,7 @@ export function AuthGate({ children }: AuthGateProps) {
       return;
     }
     if (!isStrongPassword(password)) {
-      setError("La contraseña debe tener 10+ caracteres, mayúscula, minúscula y número.");
+      setError("La contraseña debe tener 12+ caracteres, mayúscula, minúscula, número y caracter especial.");
       return;
     }
 

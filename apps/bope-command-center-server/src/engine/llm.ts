@@ -16,8 +16,12 @@ export interface LLMCallResult {
   viaCliTool: boolean;
 }
 
-// Pricing — Claude Haiku 4.5
-const CLAUDE_PRICING = { inputPerMillion: 3.0, outputPerMillion: 15.0, model: "claude-haiku-4-5" };
+// Pricing tables per model
+const CLAUDE_MODEL_PRICING: Record<string, { inputPerMillion: number; outputPerMillion: number }> = {
+  "claude-haiku-4-5-20251001": { inputPerMillion: 0.80, outputPerMillion: 4.00 },
+  "claude-sonnet-4-6": { inputPerMillion: 3.00, outputPerMillion: 15.00 },
+};
+const DEFAULT_CLAUDE_MODEL = "claude-haiku-4-5-20251001";
 // Pricing — Codex (gpt-4o-mini as the Codex API backend)
 const CODEX_PRICING = { inputPerMillion: 0.15, outputPerMillion: 0.60, model: "gpt-4o-mini" };
 
@@ -34,7 +38,6 @@ function estimateCost(
 
 async function isCliAvailable(cliName: string): Promise<boolean> {
   try {
-    // On Windows use 'where', on Unix use 'which'
     const cmd = process.platform === "win32" ? "where" : "which";
     await execFileAsync(cmd, [cliName], { timeout: 2000 });
     return true;
@@ -43,34 +46,88 @@ async function isCliAvailable(cliName: string): Promise<boolean> {
   }
 }
 
+export interface EngineStatus {
+  claude: { mode: "cli" | "api" | "unavailable"; cliAvailable: boolean; apiKeySet: boolean };
+  codex: { mode: "cli" | "api" | "unavailable"; cliAvailable: boolean; apiKeySet: boolean };
+  preferApi: boolean;
+}
+
+export async function getEngineStatus(): Promise<EngineStatus> {
+  const preferApi = process.env.BOPE_PREFER_API === "true";
+  const [claudeCli, codexCli] = await Promise.all([
+    isCliAvailable("claude"),
+    isCliAvailable("codex"),
+  ]);
+  const claudeApiKey = Boolean(process.env.ANTHROPIC_API_KEY);
+  const openaiApiKey = Boolean(process.env.OPENAI_API_KEY);
+
+  const claudeMode = !preferApi && claudeCli ? "cli" : claudeApiKey ? "api" : "unavailable";
+  const codexMode = !preferApi && codexCli ? "cli" : openaiApiKey ? "api" : "unavailable";
+
+  return {
+    claude: { mode: claudeMode, cliAvailable: claudeCli, apiKeySet: claudeApiKey },
+    codex: { mode: codexMode, cliAvailable: codexCli, apiKeySet: openaiApiKey },
+    preferApi,
+  };
+}
+
 // ─── CLAUDE ───────────────────────────────────────────────────────────────────
 
 export async function callClaude(
   systemPrompt: string,
   userMessage: string,
   maxTokens = 2048,
-  onChunk?: (chunk: string) => void
+  onChunk?: (chunk: string) => void,
+  model = DEFAULT_CLAUDE_MODEL
 ): Promise<LLMCallResult> {
-  // Try CLI first — uses subscription, $0 API cost
+  const preferApi = process.env.BOPE_PREFER_API === "true";
   const cliAvailable = await isCliAvailable("claude");
-  if (cliAvailable && process.env.BOPE_PREFER_API !== "true") {
-    return callClaudeCli(systemPrompt, userMessage, maxTokens, onChunk);
+
+  // CLI mode: use subscription exclusively, NO API fallback (avoids unexpected charges)
+  if (!preferApi && cliAvailable) {
+    return callClaudeCli(systemPrompt, userMessage, maxTokens, onChunk, model);
   }
-  return callClaudeApi(systemPrompt, userMessage, maxTokens, onChunk);
+
+  // API mode: either BOPE_PREFER_API=true, or CLI not installed (e.g. Railway)
+  return callClaudeApi(systemPrompt, userMessage, maxTokens, onChunk, model);
 }
 
 async function callClaudeCli(
   systemPrompt: string,
   userMessage: string,
   maxTokens: number,
-  onChunk?: (chunk: string) => void
+  onChunk?: (chunk: string) => void,
+  model = DEFAULT_CLAUDE_MODEL
 ): Promise<LLMCallResult> {
   const fullPrompt = `${systemPrompt}\n\n${userMessage}`;
 
+  // Strip CLAUDECODE (nested session detection) and ANTHROPIC_API_KEY
+  // so the CLI uses the subscription, not the paid API key
+  const STRIP_KEYS = new Set(["CLAUDECODE", "ANTHROPIC_API_KEY"]);
+  const env: Record<string, string> = {};
+  for (const [k, v] of Object.entries(process.env)) {
+    if (!STRIP_KEYS.has(k) && v !== undefined) env[k] = v;
+  }
+
+  const LLM_TIMEOUT_MS = 120_000;
+
   return new Promise((resolve, reject) => {
-    const args = ["--print", "--max-tokens", String(maxTokens), fullPrompt];
-    const proc = spawn("claude", args, { shell: process.platform === "win32" });
+    const args = ["-p", "--model", model];
+    const proc = spawn("claude", args, { shell: process.platform === "win32", env });
     let output = "";
+    let stderrOutput = "";
+    let settled = false;
+
+    const timeout = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        proc.kill("SIGTERM");
+        reject(new Error("Claude CLI: timeout de 120 segundos excedido."));
+      }
+    }, LLM_TIMEOUT_MS);
+
+    proc.stdin.write(fullPrompt);
+    proc.stdin.end();
 
     proc.stdout.on("data", (data: Buffer) => {
       const chunk = data.toString();
@@ -79,28 +136,37 @@ async function callClaudeCli(
     });
 
     proc.stderr.on("data", (data: Buffer) => {
-      onChunk?.(`[stderr] ${data.toString()}`);
+      const chunk = data.toString();
+      stderrOutput += chunk;
+      // Only forward stderr chunks that look like meaningful output, not progress indicators
+      if (!chunk.match(/^\s*[\u2800-\u28FF]/)) onChunk?.(`[stderr] ${chunk}`);
     });
 
     proc.on("close", (code) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
       if (code === 0 && output.trim()) {
         const outputTokens = Math.ceil(output.length / 4);
         const inputTokens = Math.ceil(fullPrompt.length / 4);
         resolve({
           content: output.trim(),
           provider: "claude",
-          model: "claude-cli-subscription",
+          model: `${model}-cli-subscription`,
           inputTokens,
           outputTokens,
-          costUSD: 0, // CLI usa suscripción, no API tokens
+          costUSD: 0,
           viaCliTool: true,
         });
       } else {
-        reject(new Error(`Claude CLI salió con código ${code}`));
+        const detail = stderrOutput.trim() || output.trim() || "sin output";
+        reject(new Error(`Claude CLI falló (código ${code}): ${detail}`));
       }
     });
 
-    proc.on("error", reject);
+    proc.on("error", (err) => {
+      if (!settled) { settled = true; clearTimeout(timeout); reject(err); }
+    });
   });
 }
 
@@ -108,29 +174,40 @@ async function callClaudeApi(
   systemPrompt: string,
   userMessage: string,
   maxTokens: number,
-  onChunk?: (chunk: string) => void
+  onChunk?: (chunk: string) => void,
+  model = DEFAULT_CLAUDE_MODEL
 ): Promise<LLMCallResult> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY no configurada.");
 
+  const pricing = CLAUDE_MODEL_PRICING[model] ?? CLAUDE_MODEL_PRICING[DEFAULT_CLAUDE_MODEL]!;
   const estimatedInput = Math.ceil((systemPrompt.length + userMessage.length) / 4);
-  const estimatedCost = estimateCost(estimatedInput, maxTokens, CLAUDE_PRICING);
+  const estimatedCost = estimateCost(estimatedInput, maxTokens, pricing);
   await checkBudget(estimatedCost);
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_PRICING.model,
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userMessage }],
-    }),
-  });
+  const abortController = new AbortController();
+  const apiTimeout = setTimeout(() => abortController.abort(), 120_000);
+
+  let response: Response;
+  try {
+    response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: maxTokens,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userMessage }],
+      }),
+      signal: abortController.signal,
+    });
+  } finally {
+    clearTimeout(apiTimeout);
+  }
 
   if (!response.ok) {
     const err = (await response.json().catch(() => null)) as { error?: { message?: string } } | null;
@@ -148,7 +225,7 @@ async function callClaudeApi(
     .join("");
 
   const { input_tokens: inputTokens, output_tokens: outputTokens } = data.usage;
-  const costUSD = estimateCost(inputTokens, outputTokens, CLAUDE_PRICING);
+  const costUSD = estimateCost(inputTokens, outputTokens, pricing);
 
   onChunk?.(content);
   await recordSpend("claude", costUSD, inputTokens + outputTokens);
@@ -156,7 +233,7 @@ async function callClaudeApi(
   return {
     content,
     provider: "claude",
-    model: CLAUDE_PRICING.model,
+    model,
     inputTokens,
     outputTokens,
     costUSD,
@@ -166,16 +243,40 @@ async function callClaudeApi(
 
 // ─── CODEX ────────────────────────────────────────────────────────────────────
 
+/**
+ * Tries Codex CLI first. If unavailable or fails, falls back to OpenAI API.
+ * Same pattern as Claude: CLI (cheaper/free) → API (paid per token).
+ */
 export async function runCodex(
   prompt: string,
   onChunk: (chunk: string) => void
 ): Promise<LLMCallResult> {
+  const preferApi = process.env.BOPE_PREFER_API === "true";
+  const cliAvailable = await isCliAvailable("codex");
+
+  // CLI mode: use subscription exclusively, NO API fallback
+  if (!preferApi && cliAvailable) {
+    return runCodexCli(prompt, onChunk);
+  }
+
+  return runCodexApi(prompt, onChunk);
+}
+
+async function runCodexCli(
+  prompt: string,
+  onChunk: (chunk: string) => void
+): Promise<LLMCallResult> {
   return new Promise((resolve, reject) => {
-    // Codex CLI: codex --quiet "<prompt>"
+    // Strip OPENAI_API_KEY so Codex CLI uses subscription, not the paid key
+    const STRIP_KEYS = new Set(["OPENAI_API_KEY"]);
+    const env: Record<string, string> = {};
+    for (const [k, v] of Object.entries(process.env)) {
+      if (!STRIP_KEYS.has(k) && v !== undefined) env[k] = v;
+    }
     const args = ["--quiet", prompt];
     const proc = spawn("codex", args, {
       shell: process.platform === "win32",
-      env: { ...process.env },
+      env,
     });
 
     let output = "";
@@ -192,7 +293,6 @@ export async function runCodex(
 
     proc.on("close", async (code) => {
       if (code === 0) {
-        // Codex CLI usa API tokens de OpenAI — estimamos costo basado en tokens aproximados
         const inputTokens = Math.ceil(prompt.length / 4);
         const outputTokens = Math.ceil(output.length / 4);
         const costUSD = estimateCost(inputTokens, outputTokens, CODEX_PRICING);
@@ -200,7 +300,7 @@ export async function runCodex(
         resolve({
           content: output,
           provider: "codex",
-          model: CODEX_PRICING.model,
+          model: `${CODEX_PRICING.model}-cli`,
           inputTokens,
           outputTokens,
           costUSD,
@@ -212,7 +312,60 @@ export async function runCodex(
     });
 
     proc.on("error", (err) => {
-      reject(new Error(`No se pudo lanzar Codex CLI: ${err.message}. ¿Está instalado?`));
+      reject(new Error(`No se pudo lanzar Codex CLI: ${err.message}`));
     });
   });
+}
+
+async function runCodexApi(
+  prompt: string,
+  onChunk: (chunk: string) => void
+): Promise<LLMCallResult> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("OPENAI_API_KEY no configurada y Codex CLI no disponible.");
+
+  const estimatedInput = Math.ceil(prompt.length / 4);
+  const estimatedCost = estimateCost(estimatedInput, 2048, CODEX_PRICING);
+  await checkBudget(estimatedCost);
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: CODEX_PRICING.model,
+      max_tokens: 2048,
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+
+  if (!response.ok) {
+    const err = (await response.json().catch(() => null)) as { error?: { message?: string } } | null;
+    throw new Error(`OpenAI API error: ${err?.error?.message ?? response.statusText}`);
+  }
+
+  const data = (await response.json()) as {
+    choices: Array<{ message: { content: string } }>;
+    usage: { prompt_tokens: number; completion_tokens: number };
+  };
+
+  const content = data.choices[0]?.message.content ?? "";
+  const inputTokens = data.usage.prompt_tokens;
+  const outputTokens = data.usage.completion_tokens;
+  const costUSD = estimateCost(inputTokens, outputTokens, CODEX_PRICING);
+
+  onChunk(content);
+  await recordSpend("codex", costUSD, inputTokens + outputTokens);
+
+  return {
+    content,
+    provider: "codex",
+    model: CODEX_PRICING.model,
+    inputTokens,
+    outputTokens,
+    costUSD,
+    viaCliTool: false,
+  };
 }
