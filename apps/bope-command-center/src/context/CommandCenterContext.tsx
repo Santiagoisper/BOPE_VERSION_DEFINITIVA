@@ -1,7 +1,9 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -9,14 +11,18 @@ import {
   bootstrapAuth as bootstrapAuthRequest,
   createDirectOrderRequest,
   createMissionRequest,
+  executeOrderRequest,
   getBootstrapStatus,
   getCommandCenterState,
   login as loginRequest,
   logout as logoutRequest,
+  openEventStream,
   recordProviderAttemptRequest,
   updateProviderControlRequest,
   updateBudgetPolicyRequest,
   updateProviderGovernanceRequest,
+  type ExecuteOrderInput,
+  type ExecuteOrderResult,
 } from "@/lib/api";
 import {
   buildGlobalBudget,
@@ -104,6 +110,16 @@ interface AuthResult {
   error?: string;
 }
 
+export interface ExecutionLogEntry {
+  id: string;
+  executionId: string;
+  type: string;
+  provider?: string;
+  message: string;
+  timestamp: string;
+  costUSD?: number;
+}
+
 interface CommandCenterContextValue {
   isReady: boolean;
   state: CommandCenterState | null;
@@ -123,6 +139,8 @@ interface CommandCenterContextValue {
   needsBootstrap: boolean;
   isAuthenticated: boolean;
   budgetPolicy: BudgetPolicySnapshot | null;
+  executionLog: ExecutionLogEntry[];
+  isExecuting: boolean;
   bootstrapAuth: (username: string, password: string) => Promise<AuthResult>;
   login: (username: string, password: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
@@ -133,6 +151,7 @@ interface CommandCenterContextValue {
   updateProviderGovernance: (input: UpdateProviderGovernanceInput) => Promise<AuthResult>;
   updateProviderControl: (input: UpdateProviderControlInput) => Promise<AuthResult>;
   recordProviderAttempt: (input: ProviderAttemptInput) => Promise<AuthResult & { allowed?: boolean }>;
+  executeOrder: (input: ExecuteOrderInput) => Promise<ExecuteOrderResult>;
 }
 
 const CommandCenterContext = createContext<CommandCenterContextValue | null>(null);
@@ -204,6 +223,9 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<SessionRecord | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [needsBootstrap, setNeedsBootstrap] = useState(false);
+  const [executionLog, setExecutionLog] = useState<ExecutionLogEntry[]>([]);
+  const [isExecuting, setIsExecuting] = useState(false);
+  const sseCleanupRef = useRef<(() => void) | null>(null);
 
   async function refreshState() {
     const response = await getCommandCenterState();
@@ -211,24 +233,33 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
     setSession(response.session);
   }
 
+  const addToLog = useCallback((entry: ExecutionLogEntry) => {
+    setExecutionLog((prev) => [...prev.slice(-199), entry]);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
     async function initialize() {
       try {
         const bootstrapStatus = await getBootstrapStatus();
-        if (cancelled) {
-          return;
-        }
+        if (cancelled) return;
 
         setNeedsBootstrap(!bootstrapStatus.bootstrapped);
         if (bootstrapStatus.authenticated) {
           const response = await getCommandCenterState();
-          if (cancelled) {
-            return;
-          }
+          if (cancelled) return;
           setState(response.state);
           setSession(response.session);
+
+          // Abrimos el stream SSE para recibir eventos de ejecución
+          const cleanup = openEventStream((event) => {
+            if (event.type === "execution") {
+              const data = event.data as ExecutionLogEntry;
+              addToLog(data);
+            }
+          });
+          sseCleanupRef.current = cleanup;
         } else {
           setSession(null);
           setState(null);
@@ -237,17 +268,16 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
         setSession(null);
         setState(null);
       } finally {
-        if (!cancelled) {
-          setIsReady(true);
-        }
+        if (!cancelled) setIsReady(true);
       }
     }
 
     void initialize();
     return () => {
       cancelled = true;
+      sseCleanupRef.current?.();
     };
-  }, []);
+  }, [addToLog]);
 
   const view = buildViewModel(state);
 
@@ -333,6 +363,16 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function executeOrder(input: ExecuteOrderInput): Promise<ExecuteOrderResult> {
+    setIsExecuting(true);
+    try {
+      const result = await executeOrderRequest(input);
+      return result;
+    } finally {
+      setIsExecuting(false);
+    }
+  }
+
   return (
     <CommandCenterContext.Provider
       value={{
@@ -364,6 +404,9 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
         updateProviderGovernance,
         updateProviderControl,
         recordProviderAttempt,
+        executionLog,
+        isExecuting,
+        executeOrder,
       }}
     >
       {children}

@@ -34,9 +34,28 @@ import {
   sanitizeState,
   synchronizeState,
 } from "./state.js";
+import { execute, type ExecuteInput } from "./engine/executor.js";
+import { readBudget, getBudgetSummary } from "./engine/budget.js";
 
 const PORT = Number(process.env.PORT ?? process.env.BOPE_COMMAND_CENTER_SERVER_PORT ?? "3100");
 const SESSION_COOKIE = "bope_command_center_session";
+
+// ─── SSE CLIENT REGISTRY ──────────────────────────────────────────────────────
+const sseClients = new Map<string, ServerResponse>();
+
+function sseWrite(res: ServerResponse, event: string, data: unknown): void {
+  res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+}
+
+export function broadcast(event: string, data: unknown): void {
+  for (const [id, res] of sseClients) {
+    try {
+      sseWrite(res, event, data);
+    } catch {
+      sseClients.delete(id);
+    }
+  }
+}
 
 function json(response: ServerResponse, statusCode: number, payload: unknown): void {
   response.writeHead(statusCode, {
@@ -637,6 +656,72 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     );
     const allowed = Boolean((latestAttempt?.metadata as Record<string, unknown> | undefined)?.allowed);
     json(response, 200, { allowed, state: sanitizeState(state) });
+    return;
+  }
+
+  // ─── SSE STREAM ────────────────────────────────────────────────────────────
+  if (method === "GET" && url.pathname === "/api/events") {
+    const clientId = crypto.randomUUID();
+    response.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+      "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : "",
+      "Access-Control-Allow-Credentials": "true",
+    });
+    sseWrite(response, "connected", { clientId, timestamp: new Date().toISOString() });
+    sseClients.set(clientId, response);
+    request.on("close", () => sseClients.delete(clientId));
+    // Keep-alive ping each 20s
+    const ping = setInterval(() => {
+      try { response.write(": ping\n\n"); } catch { clearInterval(ping); sseClients.delete(clientId); }
+    }, 20_000);
+    request.on("close", () => clearInterval(ping));
+    return;
+  }
+
+  // ─── BUDGET LIVE ───────────────────────────────────────────────────────────
+  if (method === "GET" && url.pathname === "/api/budget/live") {
+    const budget = await readBudget();
+    json(response, 200, getBudgetSummary(budget));
+    return;
+  }
+
+  // ─── EXECUTE ORDER ─────────────────────────────────────────────────────────
+  if (method === "POST" && url.pathname === "/api/execute") {
+    const session = requireSession(store, request, response);
+    if (!session) return;
+
+    const body = (await readBody(request)) as {
+      order?: string;
+      provider?: string;
+      projectPath?: string;
+      maxTokens?: number;
+    };
+
+    if (!body.order?.trim()) {
+      json(response, 400, { error: "El campo 'order' es requerido." });
+      return;
+    }
+
+    const input: ExecuteInput = {
+      order: body.order.trim(),
+      provider: (body.provider as ExecuteInput["provider"]) ?? "auto",
+      projectPath: body.projectPath,
+      maxTokens: body.maxTokens,
+    };
+
+    // Stream execution events via SSE broadcast to all connected clients
+    // The HTTP response returns the final result when done
+    try {
+      const result = await execute(input, (event) => {
+        broadcast("execution", event);
+      });
+      json(response, 200, result);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Error desconocido.";
+      json(response, 500, { error: message });
+    }
     return;
   }
 

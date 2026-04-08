@@ -143,3 +143,59 @@ export function recordProviderAttemptRequest(input: {
     body: JSON.stringify(input),
   });
 }
+
+export interface ExecuteOrderInput {
+  order: string;
+  provider: "claude" | "codex" | "auto";
+  projectPath?: string;
+  maxTokens?: number;
+}
+
+export interface ExecuteOrderResult {
+  id: string;
+  output: string;
+  provider: string;
+  model: string;
+  costUSD: number;
+  inputTokens: number;
+  outputTokens: number;
+  durationMs: number;
+  viaCliTool: boolean;
+}
+
+export function executeOrderRequest(input: ExecuteOrderInput) {
+  return requestJson<ExecuteOrderResult>("/api/execute", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export function getBudgetLive() {
+  return requestJson<{
+    annualLimit: number;
+    monthlyLimit: number;
+    annualSpent: number;
+    monthlySpent: number;
+    annualRemaining: number;
+    monthlyRemaining: number;
+    byProvider: Record<string, number>;
+    executionCount: number;
+    status: "ok" | "warning" | "critical";
+  }>("/api/budget/live");
+}
+
+export function openEventStream(onEvent: (event: { type: string; data: unknown }) => void): () => void {
+  const es = new EventSource("/api/events", { withCredentials: true });
+
+  es.addEventListener("execution", (e) => {
+    try {
+      onEvent({ type: "execution", data: JSON.parse(e.data) });
+    } catch {}
+  });
+
+  es.onerror = () => {
+    // Reconnect is handled automatically by EventSource
+  };
+
+  return () => es.close();
+}

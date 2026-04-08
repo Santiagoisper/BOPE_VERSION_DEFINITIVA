@@ -1,37 +1,104 @@
+import { useRef, useState } from "react";
 import { useCommandCenter } from "@/context/CommandCenterContext";
 import { annualUsagePercent, formatCost, monthlyUsagePercent } from "@/lib/budget";
 import { agentStatusColor, agentStatusDotClass, agentStatusLabel, cn } from "@/lib/utils";
 
 function TerminalConsole() {
-  const { auditLog } = useCommandCenter();
+  const { auditLog, executionLog, isExecuting, executeOrder } = useCommandCenter();
+  const [order, setOrder] = useState("");
+  const [provider, setProvider] = useState<"auto" | "claude" | "codex">("auto");
+  const [error, setError] = useState<string | null>(null);
+  const logEndRef = useRef<HTMLDivElement>(null);
+
+  async function handleExecute() {
+    if (!order.trim() || isExecuting) return;
+    setError(null);
+    try {
+      await executeOrder({ order: order.trim(), provider });
+      setOrder("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error al ejecutar.");
+    }
+  }
+
+  // Combinar audit log + execution log y mostrar juntos
+  type LogLine =
+    | { kind: "audit"; id: string; timestamp: string; label: string; message: string }
+    | { kind: "exec"; id: string; timestamp: string; type: string; provider?: string; message: string; costUSD?: number };
+
+  const combined: LogLine[] = [
+    ...auditLog.map((e) => ({ kind: "audit" as const, id: e.id, timestamp: e.timestamp, label: e.actorLabel, message: e.message })),
+    ...executionLog.map((e) => ({ kind: "exec" as const, id: e.id, timestamp: e.timestamp, type: e.type, provider: e.provider, message: e.message, costUSD: e.costUSD })),
+  ].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 
   return (
     <div className="flex-1 bg-[hsl(222_22%_7%)] border border-border rounded-lg flex flex-col overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border flex-shrink-0">
         <span className="text-[10px] font-mono text-muted-foreground tracking-[0.15em]">CONSOLA</span>
         <span className="text-[10px] font-mono text-border">/</span>
-        <span className="text-[10px] font-mono text-amber tracking-wide">AUDITORIA EN VIVO</span>
+        <span className="text-[10px] font-mono text-amber tracking-wide">OPERACIONES EN VIVO</span>
         <div className="flex-1" />
-        <div className="flex items-center gap-1.5">
-          <span className="status-dot status-dot-active" />
-          <span className="text-[9px] font-mono text-muted-foreground">ACTIVO</span>
-        </div>
+        {isExecuting && (
+          <div className="flex items-center gap-1.5">
+            <span className="status-dot status-dot-active animate-pulse" />
+            <span className="text-[9px] font-mono text-amber">EJECUTANDO</span>
+          </div>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 font-mono text-[11px] leading-relaxed space-y-1">
-        {auditLog.map((entry) => (
-          <div key={entry.id} className="flex gap-3 items-start">
-            <span className="text-muted-foreground/60 flex-shrink-0 tabular-nums">
-              {new Date(entry.timestamp).toLocaleTimeString("es-AR", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              })}
-            </span>
-            <span className="text-amber flex-shrink-0 min-w-[90px]">[{entry.actorLabel}]</span>
-            <span className="text-foreground/70">{entry.message}</span>
-          </div>
-        ))}
+        {combined.map((entry) =>
+          entry.kind === "audit" ? (
+            <div key={entry.id} className="flex gap-3 items-start">
+              <span className="text-muted-foreground/60 flex-shrink-0 tabular-nums">
+                {new Date(entry.timestamp).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+              </span>
+              <span className="text-amber flex-shrink-0 min-w-[90px]">[{entry.label}]</span>
+              <span className="text-foreground/70">{entry.message}</span>
+            </div>
+          ) : (
+            <div key={entry.id} className={cn("flex gap-3 items-start", entry.type === "error" && "text-red-400", entry.type === "completed" && "text-green-400")}>
+              <span className="text-muted-foreground/60 flex-shrink-0 tabular-nums">
+                {new Date(entry.timestamp).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+              </span>
+              <span className="text-cyan-400 flex-shrink-0 min-w-[90px]">[{(entry.provider ?? "BOT").toUpperCase()}]</span>
+              <span className="text-foreground/80 whitespace-pre-wrap break-all">{entry.message}</span>
+            </div>
+          )
+        )}
+        <div ref={logEndRef} />
+      </div>
+
+      {/* INPUT DE EJECUCIÓN */}
+      <div className="border-t border-border p-3 flex-shrink-0 space-y-2">
+        {error && <div className="text-[10px] font-mono text-red-400">{error}</div>}
+        <div className="flex gap-2">
+          <select
+            value={provider}
+            onChange={(e) => setProvider(e.target.value as "auto" | "claude" | "codex")}
+            className="bg-muted border border-border rounded px-2 py-1.5 text-[10px] font-mono text-foreground focus:outline-none focus:border-amber"
+          >
+            <option value="auto">AUTO</option>
+            <option value="claude">CLAUDE</option>
+            <option value="codex">CODEX</option>
+          </select>
+          <input
+            type="text"
+            value={order}
+            onChange={(e) => setOrder(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && void handleExecute()}
+            placeholder="Dar orden al batallón... (Enter para ejecutar)"
+            disabled={isExecuting}
+            className="flex-1 bg-muted border border-border rounded px-3 py-1.5 text-[11px] font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-amber disabled:opacity-50"
+          />
+          <button
+            onClick={() => void handleExecute()}
+            disabled={isExecuting || !order.trim()}
+            className="px-3 py-1.5 bg-amber text-background text-[10px] font-mono font-bold rounded hover:bg-amber/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {isExecuting ? "..." : "EJECUTAR"}
+          </button>
+        </div>
       </div>
     </div>
   );
