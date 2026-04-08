@@ -18,7 +18,7 @@ en cualquier terminal, en cualquier momento.
 
   ÚLTIMA MISIÓN CERRADA
   ──────────────────────────────────────────────────────────────
-  Misión:  [nombre de la última misión cerrada en logs/missions/]
+  Misión:  [nombre de la última misión cerrada en logs/missions/INDEX.md]
   Estado:  [estado de cierre]
   Fecha:   [fecha de cierre]
   Resumen: [una línea del resultado]
@@ -48,7 +48,7 @@ en cualquier terminal, en cualquier momento.
 ```
 
 Las medallas se leen del ORDEN-DE-BATALLA.md. Si el soldado no tiene medallas, mostrar `—`.
-La última misión cerrada es el archivo más reciente en `logs/missions/` con estado CERRADA.
+La última misión cerrada se lee de `logs/missions/INDEX.md` — última fila del archivo.
 
 ### LECTURA OBLIGATORIA AL INICIAR — en este orden exacto
 
@@ -76,13 +76,29 @@ Legajos disponibles (cargar según regla anterior):
 - `logs/personnel/MATEO-ESTEBAN-SALAZAR.md`
 - `logs/personnel/SANTIAGO-ISBERT-PERLENDER.md`
 
-**Paso 3 — Historial operativo**
-- `logs/missions/` — todos los archivos en orden cronológico (historial completo de misiones)
+**Paso 3 — Historial operativo — ÍNDICE ÚNICAMENTE**
+- `logs/missions/INDEX.md` — índice comprimido de todas las misiones (una línea por misión)
 - `logs/MISION-ACTIVA.md` — estado canónico de la misión actual
 
+**REGLA CRÍTICA:** Los archivos individuales de `logs/missions/` se leen SOLO bajo orden
+explícita de Santiago (`LEER MISIÓN [nombre]`) o cuando la misión activa los referencia
+directamente. Nunca se leen en bulk durante la activación.
+
 **Paso 4 — Novedades**
-- `logs/NOTICIAS-BATALLON.log` — anuncios desde última sesión
+- `logs/NOTICIAS-BATALLON.log` — leer solo las últimas 50 líneas (`tail -n 50`)
 - Si el archivo supera 150 líneas: Winston archiva las entradas antiguas a `logs/NOTICIAS-ARCHIVO-YYYY-MM.log` antes de continuar
+
+### FORMATO CANÓNICO — logs/missions/INDEX.md
+
+Winston mantiene este archivo. Una fila por misión. Se agrega al cerrar cada misión.
+**Nunca se borra. Solo se agrega.**
+
+```
+| Fecha cierre | Nombre misión            | Estado   | Resultado (una línea)         |
+|--------------|--------------------------|----------|-------------------------------|
+| 2026-03-01   | portal-consultorios-v1   | CERRADA  | Deploy exitoso en Vercel      |
+| 2026-03-15   | innova-scoring-fix       | CERRADA  | Bug de auth resuelto          |
+```
 
 ### COMANDO MEMORIA
 Cuando SANTIAGO escribe `MEMORIA`, Claude lee en orden:
@@ -102,20 +118,25 @@ Cuando SANTIAGO otorga una medalla o aplica una sanción, Winston actualiza en l
 **Una medalla sin actualizar en los 4 lugares no está registrada. No existe.**
 
 ### PROTOCOLO DE CIERRE DE MISIÓN — RECORDS
-Al cerrar cada misión, Winston obtiene las líneas de código con:
+Al cerrar cada misión, Winston ejecuta en orden:
+
+1. Obtiene líneas de código con:
 ```
 git diff --stat [commit-anterior]..[commit-cierre]
 ```
-Y actualiza `logs/RECORDS.md` con:
-- Misiones del soldado: +1
-- Última misión + fecha
-- Líneas escritas en esa misión
-- Fila nueva en el detalle individual
+2. Actualiza `logs/RECORDS.md` con:
+   - Misiones del soldado: +1
+   - Última misión + fecha
+   - Líneas escritas en esa misión
+   - Fila nueva en el detalle individual
+3. **Agrega una fila al INDEX.md** con fecha, nombre, estado y resultado en una línea
+4. Commit + push a GitHub
 
 ### RESTRICCIONES PERMANENTES
 - `codex-logs/` — solo lectura, nunca modificar
 - Solo SANTIAGO puede modificar `logs/MISION-ACTIVA.md`
 - Todo cierre de misión requiere commit + push a GitHub
+- Los archivos individuales de `logs/missions/` nunca se leen en bulk — solo por demanda explícita
 
 ### DOCTRINA DE MODELOS — JOHN decide antes de lanzar cada subagente
 
