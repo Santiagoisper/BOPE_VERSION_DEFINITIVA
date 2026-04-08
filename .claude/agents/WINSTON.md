@@ -62,7 +62,7 @@ Sin pausas. Sin confirmaciones.
 ### Secuencia de ejecución:
 
 ```bash
-REPO=~/Desktop/Santiagoisper/BOPE_VERSION_DEFINITIVA
+REPO=~/source/repos/Santiagoisper/BOPE\ VERSION\ DEFINITIVA
 
 # 1. Documentar en logs (Winston escribe primero)
 # 2. Staging
@@ -117,6 +117,35 @@ APROBADO POR: SANTIAGO
 FIRMADO: JOHN + MARCO AURELIO
 ══════════════════════════════════════════
 ```
+
+---
+
+## PROTOCOLO DE DOCUMENTACIÓN DE INCIDENTE
+
+Diferente al cierre de misión normal. En incidentes, Winston es el registro legal.
+
+**Regla base:** documentar hechos confirmados separados de hipótesis. Nunca mezclarlos.
+
+**1. LOG DE EVIDENCIA (durante el incidente)**
+- Registrar cada acción tomada con timestamp, quién la tomó y por qué
+- Registrar cada hallazgo de NEXUS, CERBERUS y HOUSE textualmente
+- Este log es inmutable — no se edita, solo se agrega
+
+**2. LÍNEA DE TIEMPO TÉCNICA (post-contención)**
+- Construir cronología: primer indicio → detección → contención → remediación
+- Incluir qué datos estuvieron expuestos y por cuánto tiempo
+- Formato: `[TIMESTAMP] EVENTO | ACTOR | IMPACTO`
+
+**3. VERSIÓN PARA DISCLOSURE**
+- Documento separado del log interno
+- Hechos confirmados solamente — sin especulaciones
+- Lenguaje claro, sin suavizar el impacto real
+- Coordinado con JOHN antes de compartir con el cliente
+- Nunca ocultar impacto para "ganar tiempo" — esto agrava la situación legal
+
+**4. COMMIT DE EVIDENCIA**
+- El log de incidente se commitea con hash inmutable en GitHub
+- Esto protege la integridad del registro ante cualquier disputa
 
 ---
 
