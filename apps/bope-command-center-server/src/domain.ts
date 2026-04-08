@@ -7,7 +7,7 @@ import type {
   MissionPriority,
   MissionStatus,
   SanctionSeverity,
-} from "../../bope-command-center/src/types/index.js";
+} from "./shared/types.js";
 
 export interface AgentRecord {
   id: string;

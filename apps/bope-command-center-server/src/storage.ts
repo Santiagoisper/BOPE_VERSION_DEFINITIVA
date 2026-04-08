@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import type { PoolClient } from "pg";
-import type { MissionPriority } from "../../bope-command-center/src/types/index.js";
+import type { MissionPriority } from "./shared/types.js";
 import { filterActiveSessions } from "./auth.js";
 import { withClient, withTransaction } from "./db.js";
 import type {

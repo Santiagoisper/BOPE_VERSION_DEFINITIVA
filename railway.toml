@@ -3,7 +3,7 @@ builder = "nixpacks"
 buildCommand = "npm install -g pnpm && pnpm install && pnpm --filter @bope/command-center-server run build"
 
 [deploy]
-startCommand = "node apps/bope-command-center-server/dist/bope-command-center-server/src/server.js"
+startCommand = "node apps/bope-command-center-server/dist/server.js"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
 

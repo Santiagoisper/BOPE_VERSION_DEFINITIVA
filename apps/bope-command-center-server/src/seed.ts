@@ -1,6 +1,6 @@
-import { AGENTS } from "../../bope-command-center/src/data/agents.js";
-import { MODEL_PROVIDERS, TOOL_CONNECTIONS } from "../../bope-command-center/src/data/arsenal.js";
-import { MISSIONS } from "../../bope-command-center/src/data/missions.js";
+import { AGENTS } from "./shared/agents.js";
+import { MODEL_PROVIDERS, TOOL_CONNECTIONS } from "./shared/arsenal.js";
+import { MISSIONS } from "./shared/missions.js";
 import type {
   AgentPerformanceRecord,
   AgentRecord,

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { MissionPriority } from "../../bope-command-center/src/types/index.js";
+import type { MissionPriority } from "./shared/types.js";
 import type {
   AgentPerformanceRecord,
   AuditLogRecord,
