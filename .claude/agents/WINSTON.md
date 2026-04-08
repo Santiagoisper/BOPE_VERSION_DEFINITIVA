@@ -149,6 +149,49 @@ Diferente al cierre de misión normal. En incidentes, Winston es el registro leg
 
 ---
 
+## SINCRONIZACIÓN CON EL WAR ROOM (AUTOMÁTICO)
+
+Cuando registro una medalla o sanción aprobada por Santiago, la escribo en Neon vía API.
+El War Room la muestra en tiempo real sin intervención manual.
+
+### Otorgar medalla
+```bash
+# Obtener cookie de sesión primero (si no está activa)
+# curl -s -c /tmp/bope_session.txt -X POST http://localhost:3100/api/auth/login \
+#   -H "Content-Type: application/json" \
+#   -d '{"username":"santiago","password":"<PASSWORD>"}'
+
+curl -s -b /tmp/bope_session.txt -X POST http://localhost:3100/api/medals \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agentId": "<ID_DEL_AGENTE>",
+    "missionId": "<ID_MISION_O_OMITIR>",
+    "type": "<navy_cross|silver_star|bronze_star|commendation|achievement|medal_of_honor|purple_heart|meritorious_service|good_conduct>",
+    "label": "<Nombre de la medalla>",
+    "description": "<Motivo concreto con evidencia>",
+    "awardedBy": "SANTIAGO"
+  }'
+```
+
+### Emitir sanción
+```bash
+curl -s -b /tmp/bope_session.txt -X POST http://localhost:3100/api/sanctions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agentId": "<ID_DEL_AGENTE>",
+    "severity": "<minor|major|critical>",
+    "reason": "<Motivo breve>",
+    "details": "<Descripción completa con evidencia>",
+    "issuedBy": "SANTIAGO"
+  }'
+```
+
+### IDs de agentes (referencia)
+Usar los IDs tal como están en `bope_agents` de Neon. Ejemplo: `john-rambo`, `nexus-wire`, etc.
+Si el servidor no está corriendo localmente, reemplazar `localhost:3100` por la URL de producción del backend.
+
+---
+
 ## CONVOCATORIA DE CORTE MARCIAL
 
 Tengo autoridad para convocar Corte Marcial junto con John o Marco Aurelio.

@@ -11,7 +11,7 @@ import {
   resolveSession,
   verifyPassword,
 } from "./auth.js";
-import type { PersistedStore, SessionRecord } from "./domain.js";
+import type { MedalAwardRecord, PersistedStore, SanctionRecord, SessionRecord } from "./domain.js";
 import {
   bootstrapAuthMutation,
   createMissionMutation,
@@ -28,7 +28,9 @@ import {
   updateBudgetPolicyMutation,
 } from "./storage.js";
 import {
+  awardMedalInState,
   createDirectOrderInState,
+  issueSanctionInState,
   sanitizeState,
   synchronizeState,
 } from "./state.js";
@@ -374,6 +376,76 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
       };
     });
     json(response, 200, { state });
+    return;
+  }
+
+  if (method === "POST" && url.pathname === "/api/medals") {
+    const session = requireSession(store, request, response);
+    if (!session) {
+      return;
+    }
+    const body = (await readBody(request)) as {
+      agentId?: string;
+      missionId?: string;
+      type?: string;
+      label?: string;
+      description?: string;
+      awardedBy?: string;
+    };
+    if (!body.agentId || !body.type || !body.label || !body.description) {
+      json(response, 400, { error: "agentId, type, label y description son requeridos." });
+      return;
+    }
+    const state = await mutateStore((currentStore) => {
+      const nextState = awardMedalInState(currentStore.state, {
+        agentId: body.agentId!,
+        missionId: body.missionId,
+        type: body.type as MedalAwardRecord["type"],
+        label: body.label!,
+        description: body.description!,
+        awardedBy: body.awardedBy ?? session.username.toUpperCase(),
+      });
+      return {
+        store: { state: nextState, sessions: currentStore.sessions },
+        result: sanitizeState(nextState),
+      };
+    });
+    json(response, 201, { state });
+    return;
+  }
+
+  if (method === "POST" && url.pathname === "/api/sanctions") {
+    const session = requireSession(store, request, response);
+    if (!session) {
+      return;
+    }
+    const body = (await readBody(request)) as {
+      agentId?: string;
+      missionId?: string;
+      severity?: string;
+      reason?: string;
+      details?: string;
+      issuedBy?: string;
+    };
+    if (!body.agentId || !body.severity || !body.reason || !body.details) {
+      json(response, 400, { error: "agentId, severity, reason y details son requeridos." });
+      return;
+    }
+    const state = await mutateStore((currentStore) => {
+      const nextState = issueSanctionInState(currentStore.state, {
+        agentId: body.agentId!,
+        missionId: body.missionId,
+        severity: body.severity as SanctionRecord["severity"],
+        reason: body.reason!,
+        details: body.details!,
+        issuedBy: body.issuedBy ?? session.username.toUpperCase(),
+      });
+      return {
+        store: { state: nextState, sessions: currentStore.sessions },
+        result: sanitizeState(nextState),
+      };
+    });
+    json(response, 201, { state });
     return;
   }
 

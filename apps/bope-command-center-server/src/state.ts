@@ -6,9 +6,11 @@ import type {
   BudgetAlertRecord,
   BudgetPolicyUpdateInput,
   CommandCenterState,
+  MedalAwardRecord,
   MissionEventRecord,
   MissionRecord,
   ProviderRecord,
+  SanctionRecord,
 } from "./domain.js";
 
 function makeId(prefix: string): string {
@@ -389,6 +391,70 @@ export function updateBudgetPolicyInState(
           providerBudgets: input.providerBudgets,
         },
       }),
+    ],
+  });
+}
+
+export function awardMedalInState(
+  state: CommandCenterState,
+  input: {
+    agentId: string;
+    missionId?: string;
+    type: MedalAwardRecord["type"];
+    label: string;
+    description: string;
+    awardedBy: string;
+  },
+): CommandCenterState {
+  const medal: MedalAwardRecord = {
+    id: makeId("medal"),
+    agentId: input.agentId,
+    missionId: input.missionId,
+    type: input.type,
+    label: input.label,
+    description: input.description,
+    awardedAt: nowIso(),
+    awardedBy: input.awardedBy,
+    status: "active",
+  };
+  return synchronizeState({
+    ...state,
+    medals: [medal, ...state.medals],
+    auditLog: [
+      ...state.auditLog,
+      createAuditLog("system", input.awardedBy, `Medalla otorgada: ${input.label} a agente ${input.agentId}.`, "info", "medal", input.agentId),
+    ],
+  });
+}
+
+export function issueSanctionInState(
+  state: CommandCenterState,
+  input: {
+    agentId: string;
+    missionId?: string;
+    severity: SanctionRecord["severity"];
+    reason: string;
+    details: string;
+    issuedBy: string;
+  },
+): CommandCenterState {
+  const sanction: SanctionRecord = {
+    id: makeId("sanction"),
+    agentId: input.agentId,
+    missionId: input.missionId,
+    severity: input.severity,
+    reason: input.reason,
+    details: input.details,
+    issuedAt: nowIso(),
+    issuedBy: input.issuedBy,
+    resolved: false,
+  };
+  return synchronizeState({
+    ...state,
+    sanctions: [sanction, ...state.sanctions],
+    auditLog: [
+      ...state.auditLog,
+      createAuditLog("system", input.issuedBy, `Sanción emitida (${input.severity}): ${input.reason} a agente ${input.agentId}.`, "warning", "sanction", input.agentId),
     ],
   });
 }
