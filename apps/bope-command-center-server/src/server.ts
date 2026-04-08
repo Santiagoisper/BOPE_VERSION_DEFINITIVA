@@ -35,7 +35,7 @@ import {
   synchronizeState,
 } from "./state.js";
 
-const PORT = Number(process.env.BOPE_COMMAND_CENTER_SERVER_PORT ?? "3100");
+const PORT = Number(process.env.PORT ?? process.env.BOPE_COMMAND_CENTER_SERVER_PORT ?? "3100");
 const SESSION_COOKIE = "bope_command_center_session";
 
 function json(response: ServerResponse, statusCode: number, payload: unknown): void {
@@ -104,9 +104,29 @@ function requireSession(store: PersistedStore, request: IncomingMessage, respons
   return session;
 }
 
+const ALLOWED_ORIGINS = [
+  "http://localhost:3000",
+  "https://bope-visual-code.vercel.app",
+  ...(process.env.BOPE_ALLOWED_ORIGIN ? [process.env.BOPE_ALLOWED_ORIGIN] : []),
+];
+
 async function handler(request: IncomingMessage, response: ServerResponse): Promise<void> {
   const method = request.method ?? "GET";
+  const origin = request.headers.origin ?? "";
   const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
+
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    response.setHeader("Access-Control-Allow-Origin", origin);
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+    response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+    response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  }
+
+  if (method === "OPTIONS") {
+    response.writeHead(204);
+    response.end();
+    return;
+  }
 
   if (method === "GET" && url.pathname === "/api/healthz") {
     json(response, 200, { ok: true, service: "bope-command-center-server" });
