@@ -135,7 +135,18 @@ export interface ProviderConfigRecord {
   annualHardLimit: number;
   maxTokensPerRequest: number;
   maxRequestsPerMinute: number;
+  maxRequestsPerMission: number;
+  maxMissionBudget: number;
   traceLevel: "standard" | "verbose";
+  notes: string;
+  updatedAt: string;
+}
+
+export interface ProviderGovernanceRecord {
+  globalKillSwitchActive: boolean;
+  defaultMissionBudgetLimit: number;
+  defaultRequestsPerMission: number;
+  periodLabel: "minute";
   notes: string;
   updatedAt: string;
 }
@@ -178,7 +189,7 @@ export interface BudgetAlertRecord {
 export interface AuditLogRecord {
   id: string;
   timestamp: string;
-  category: "auth" | "mission" | "budget" | "system" | "order";
+  category: "auth" | "mission" | "budget" | "system" | "order" | "provider";
   level: "info" | "warning" | "critical";
   actorId?: string;
   actorLabel: string;
@@ -223,6 +234,7 @@ export interface CommandCenterState {
   sanctions: SanctionRecord[];
   providers: ProviderRecord[];
   providerConfigs: ProviderConfigRecord[];
+  providerGovernance: ProviderGovernanceRecord;
   tools: ToolRecord[];
   directOrders: DirectOrderRecord[];
   budgetPolicy: BudgetPolicyRecord;
@@ -254,6 +266,31 @@ export interface BudgetPolicyUpdateInput {
     annualBudget: number;
     monthlyBudget: number;
   }>;
+  reason: string;
+  actorLabel: string;
+}
+
+export interface ProviderControlUpdateInput {
+  providerId: string;
+  enabled: boolean;
+  mode: "disabled" | "shadow" | "armed";
+  killSwitchActive: boolean;
+  monthlyHardLimit: number;
+  annualHardLimit: number;
+  maxTokensPerRequest: number;
+  maxRequestsPerMinute: number;
+  maxRequestsPerMission: number;
+  maxMissionBudget: number;
+  notes: string;
+  reason: string;
+  actorLabel: string;
+}
+
+export interface ProviderGovernanceUpdateInput {
+  globalKillSwitchActive: boolean;
+  defaultMissionBudgetLimit: number;
+  defaultRequestsPerMission: number;
+  notes: string;
   reason: string;
   actorLabel: string;
 }

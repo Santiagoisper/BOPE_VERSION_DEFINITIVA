@@ -10,6 +10,7 @@ import type {
   MissionEventRecord,
   MissionRecord,
   ProviderConfigRecord,
+  ProviderGovernanceRecord,
   ProviderRecord,
   SanctionRecord,
   ToolRecord,
@@ -189,10 +190,21 @@ export function createBootstrapState(): CommandCenterState {
     annualHardLimit: provider.annualBudget,
     maxTokensPerRequest: provider.id === "codex" ? 120_000 : 90_000,
     maxRequestsPerMinute: provider.id === "codex" ? 12 : 10,
+    maxRequestsPerMission: provider.id === "codex" ? 8 : 6,
+    maxMissionBudget: provider.id === "codex" ? 180 : 140,
     traceLevel: "verbose",
     notes: `Proveedor ${provider.shortName} preparado para activacion futura bajo control operativo.`,
     updatedAt: BOOTSTRAP_TIMESTAMP,
   }));
+
+  const providerGovernance: ProviderGovernanceRecord = {
+    globalKillSwitchActive: true,
+    defaultMissionBudgetLimit: 180,
+    defaultRequestsPerMission: 8,
+    periodLabel: "minute",
+    notes: "Gobernanza central activa. Providers bloqueados hasta orden expresa.",
+    updatedAt: BOOTSTRAP_TIMESTAMP,
+  };
 
   const tools: ToolRecord[] = TOOL_CONNECTIONS.map((tool) => ({
     ...tool,
@@ -266,6 +278,7 @@ export function createBootstrapState(): CommandCenterState {
     sanctions,
     providers,
     providerConfigs,
+    providerGovernance,
     tools,
     directOrders: [],
     budgetPolicy: {

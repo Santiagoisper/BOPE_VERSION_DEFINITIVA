@@ -98,3 +98,48 @@ export function updateBudgetPolicyRequest(input: {
     body: JSON.stringify(input),
   });
 }
+
+export function updateProviderGovernanceRequest(input: {
+  globalKillSwitchActive: boolean;
+  defaultMissionBudgetLimit: number;
+  defaultRequestsPerMission: number;
+  notes: string;
+  reason: string;
+}) {
+  return requestJson<{ state: CommandCenterState }>("/api/providers/governance", {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
+export function updateProviderControlRequest(input: {
+  providerId: string;
+  enabled: boolean;
+  mode: "disabled" | "shadow" | "armed";
+  killSwitchActive: boolean;
+  monthlyHardLimit: number;
+  annualHardLimit: number;
+  maxTokensPerRequest: number;
+  maxRequestsPerMinute: number;
+  maxRequestsPerMission: number;
+  maxMissionBudget: number;
+  notes: string;
+  reason: string;
+}) {
+  return requestJson<{ state: CommandCenterState }>("/api/providers/control", {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
+export function recordProviderAttemptRequest(input: {
+  providerId: string;
+  missionId?: string;
+  requestedTokens: number;
+  estimatedCost: number;
+}) {
+  return requestJson<{ allowed: boolean; state: CommandCenterState }>("/api/providers/attempt", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}

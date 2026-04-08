@@ -5,7 +5,6 @@ import {
   clearFailedAttempts,
   createAuthConfig,
   createSession,
-  filterActiveSessions,
   isLocked,
   isStrongPassword,
   registerFailedAttempt,
@@ -13,13 +12,25 @@ import {
   verifyPassword,
 } from "./auth.js";
 import type { PersistedStore, SessionRecord } from "./domain.js";
-import { initializePersistence, loadStore, mutateStore } from "./storage.js";
+import {
+  bootstrapAuthMutation,
+  createMissionMutation,
+  initializePersistence,
+  loadStore,
+  loginFailureMutation,
+  loginSuccessMutation,
+  logoutMutation,
+  mutateIncremental,
+  mutateStore,
+  recordProviderAttemptMutation,
+  updateProviderControlMutation,
+  updateProviderGovernanceMutation,
+  updateBudgetPolicyMutation,
+} from "./storage.js";
 import {
   createDirectOrderInState,
-  createMissionInState,
   sanitizeState,
   synchronizeState,
-  updateBudgetPolicyInState,
 } from "./state.js";
 
 const PORT = Number(process.env.BOPE_COMMAND_CENTER_SERVER_PORT ?? "3100");
@@ -129,31 +140,21 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     }
 
     const nowIso = new Date().toISOString();
-    const payload = await mutateStore((currentStore) => {
-      const nextState = synchronizeState({
-        ...currentStore.state,
-        authConfig: createAuthConfig(username, password, nowIso),
-        auditLog: [
-          ...currentStore.state.auditLog,
-          {
-            id: `audit-${crypto.randomUUID()}`,
-            timestamp: nowIso,
-            category: "auth",
-            level: "info",
-            actorLabel: username.toUpperCase(),
-            message: "Autenticacion central inicializada.",
-            context: "bootstrap",
-          },
-        ],
-      });
+    const payload = await mutateIncremental(async (client, currentStore) => {
+      const authConfig = createAuthConfig(username, password, nowIso);
       const created = createSession(username, nowIso);
-      const nextStore: PersistedStore = {
-        state: nextState,
-        sessions: filterActiveSessions([...currentStore.sessions, created.session]),
+      const auditEntry = {
+        id: `audit-${crypto.randomUUID()}`,
+        timestamp: nowIso,
+        category: "auth" as const,
+        level: "info" as const,
+        actorLabel: username.toUpperCase(),
+        message: "Autenticacion central inicializada.",
+        context: "bootstrap",
       };
+      const nextState = await bootstrapAuthMutation(client, currentStore, authConfig, created.session, auditEntry);
 
       return {
-        store: nextStore,
         result: {
           token: created.token,
           session: {
@@ -162,6 +163,10 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
             expiresAt: created.session.expiresAt,
           },
           state: sanitizeState(nextState),
+        },
+        nextStore: {
+          state: nextState,
+          sessions: [...currentStore.sessions, created.session],
         },
       };
     });
@@ -191,58 +196,56 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     const validPassword = validUser ? verifyPassword(password, config) : false;
 
     if (!validUser || !validPassword) {
-      await mutateStore((currentStore) => ({
-        store: {
-          state: synchronizeState({
-            ...currentStore.state,
-            authConfig: registerFailedAttempt(config),
-            auditLog: [
-              ...currentStore.state.auditLog,
-              {
-                id: `audit-${crypto.randomUUID()}`,
-                timestamp: new Date().toISOString(),
-                category: "auth",
-                level: "warning",
-                actorLabel: username.toUpperCase() || "UNKNOWN",
-                message: "Intento de acceso rechazado.",
-                context: "login",
-              },
-            ],
-          }),
-          sessions: currentStore.sessions,
-        },
-        result: null,
-      }));
+      await mutateIncremental(async (client, currentStore) => {
+        const failedConfig = registerFailedAttempt(config);
+        const auditEntry = {
+          id: `audit-${crypto.randomUUID()}`,
+          timestamp: new Date().toISOString(),
+          category: "auth",
+          level: "warning",
+          actorLabel: username.toUpperCase() || "UNKNOWN",
+          message: "Intento de acceso rechazado.",
+          context: "login",
+        } as const;
+        await loginFailureMutation(client, currentStore, failedConfig, auditEntry);
+        return {
+          result: null,
+          nextStore: {
+            state: synchronizeState({
+              ...currentStore.state,
+              authConfig: failedConfig,
+              auditLog: [...currentStore.state.auditLog, auditEntry],
+            }),
+            sessions: currentStore.sessions,
+          },
+        };
+      });
       json(response, 401, { error: "Credenciales invalidas." });
       return;
     }
 
     const nowIso = new Date().toISOString();
-    const payload = await mutateStore((currentStore) => {
-      const nextState = synchronizeState({
-        ...currentStore.state,
-        authConfig: clearFailedAttempts(config),
-        auditLog: [
-          ...currentStore.state.auditLog,
-          {
-            id: `audit-${crypto.randomUUID()}`,
-            timestamp: nowIso,
-            category: "auth",
-            level: "info",
-            actorLabel: username.toUpperCase(),
-            message: "Sesion central autorizada.",
-            context: "login",
-          },
-        ],
-      });
+    const payload = await mutateIncremental(async (client, currentStore) => {
       const created = createSession(username, nowIso);
-      const nextStore: PersistedStore = {
-        state: nextState,
-        sessions: filterActiveSessions([...currentStore.sessions, created.session]),
+      const clearedConfig = clearFailedAttempts(config);
+      const auditEntry = {
+        id: `audit-${crypto.randomUUID()}`,
+        timestamp: nowIso,
+        category: "auth" as const,
+        level: "info" as const,
+        actorLabel: username.toUpperCase(),
+        message: "Sesion central autorizada.",
+        context: "login",
       };
+      const nextState = await loginSuccessMutation(
+        client,
+        currentStore,
+        clearedConfig,
+        created.session,
+        auditEntry,
+      );
 
       return {
-        store: nextStore,
         result: {
           token: created.token,
           session: {
@@ -251,6 +254,10 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
             expiresAt: created.session.expiresAt,
           },
           state: sanitizeState(nextState),
+        },
+        nextStore: {
+          state: nextState,
+          sessions: [...currentStore.sessions, created.session],
         },
       };
     });
@@ -267,13 +274,16 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     const token = cookies[SESSION_COOKIE];
     if (token) {
       const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-      await mutateStore((currentStore) => ({
-        store: {
-          state: currentStore.state,
-          sessions: currentStore.sessions.filter((session) => session.tokenHash !== tokenHash),
-        },
-        result: null,
-      }));
+      await mutateIncremental(async (client, currentStore) => {
+        await logoutMutation(client, currentStore, tokenHash);
+        return {
+          result: null,
+          nextStore: {
+            state: currentStore.state,
+            sessions: currentStore.sessions.filter((session) => session.tokenHash !== tokenHash),
+          },
+        };
+      });
     }
     clearSessionCookie(response);
     json(response, 200, { ok: true });
@@ -316,8 +326,8 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
       assignedAgents?: string[];
       estimatedBudget?: number;
     };
-    const state = await mutateStore((currentStore) => {
-      const nextState = createMissionInState(currentStore.state, {
+    const state = await mutateIncremental((client, currentStore) =>
+      createMissionMutation(client, currentStore, {
         codename: (body.codename ?? "").trim().toUpperCase(),
         title: (body.title ?? "").trim(),
         objective: (body.objective ?? "").trim(),
@@ -326,16 +336,15 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         assignedAgents: body.assignedAgents ?? [],
         estimatedBudget: Number(body.estimatedBudget ?? 0),
         actorLabel: session.username.toUpperCase(),
-      });
-      return {
-        store: {
+      }).then((nextState) => ({
+        result: nextState,
+        nextStore: {
           state: nextState,
           sessions: currentStore.sessions,
         },
-        result: sanitizeState(nextState),
-      };
-    });
-    json(response, 200, { state });
+      })),
+    );
+    json(response, 200, { state: sanitizeState(state) });
     return;
   }
 
@@ -379,8 +388,8 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
       providerBudgets?: Array<{ id: string; annualBudget: number; monthlyBudget: number }>;
       reason?: string;
     };
-    const state = await mutateStore((currentStore) => {
-      const nextState = updateBudgetPolicyInState(currentStore.state, {
+    const state = await mutateIncremental((client, currentStore) =>
+      updateBudgetPolicyMutation(client, currentStore, {
         annualBudget: Number(body.annualBudget ?? currentStore.state.budgetPolicy.annualBudget),
         monthlyTarget: Number(body.monthlyTarget ?? currentStore.state.budgetPolicy.monthlyTarget),
         providerBudgets: body.providerBudgets ?? currentStore.state.providers.map((provider) => ({
@@ -390,16 +399,152 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
         })),
         reason: (body.reason ?? "").trim() || "Sin motivo especificado.",
         actorLabel: session.username.toUpperCase(),
-      });
-      return {
-        store: {
+      }).then((nextState) => ({
+        result: nextState,
+        nextStore: {
           state: nextState,
           sessions: currentStore.sessions,
         },
-        result: sanitizeState(nextState),
-      };
-    });
-    json(response, 200, { state });
+      })),
+    );
+    json(response, 200, { state: sanitizeState(state) });
+    return;
+  }
+
+  if (method === "PATCH" && url.pathname === "/api/providers/governance") {
+    const session = requireSession(store, request, response);
+    if (!session) {
+      return;
+    }
+    const body = (await readBody(request)) as {
+      globalKillSwitchActive?: boolean;
+      defaultMissionBudgetLimit?: number;
+      defaultRequestsPerMission?: number;
+      notes?: string;
+      reason?: string;
+    };
+    const state = await mutateIncremental((client, currentStore) =>
+      updateProviderGovernanceMutation(client, currentStore, {
+        globalKillSwitchActive: Boolean(
+          body.globalKillSwitchActive ?? currentStore.state.providerGovernance.globalKillSwitchActive,
+        ),
+        defaultMissionBudgetLimit: Number(
+          body.defaultMissionBudgetLimit ?? currentStore.state.providerGovernance.defaultMissionBudgetLimit,
+        ),
+        defaultRequestsPerMission: Number(
+          body.defaultRequestsPerMission ?? currentStore.state.providerGovernance.defaultRequestsPerMission,
+        ),
+        notes: (body.notes ?? currentStore.state.providerGovernance.notes).trim(),
+        reason: (body.reason ?? "").trim() || "Actualizacion de gobernanza de providers.",
+        actorLabel: session.username.toUpperCase(),
+      }).then((nextState) => ({
+        result: nextState,
+        nextStore: {
+          state: nextState,
+          sessions: currentStore.sessions,
+        },
+      })),
+    );
+    json(response, 200, { state: sanitizeState(state) });
+    return;
+  }
+
+  if (method === "PATCH" && url.pathname === "/api/providers/control") {
+    const session = requireSession(store, request, response);
+    if (!session) {
+      return;
+    }
+    const body = (await readBody(request)) as {
+      providerId?: string;
+      enabled?: boolean;
+      mode?: "disabled" | "shadow" | "armed";
+      killSwitchActive?: boolean;
+      monthlyHardLimit?: number;
+      annualHardLimit?: number;
+      maxTokensPerRequest?: number;
+      maxRequestsPerMinute?: number;
+      maxRequestsPerMission?: number;
+      maxMissionBudget?: number;
+      notes?: string;
+      reason?: string;
+    };
+    const existing = store.state.providerConfigs.find((config) => config.providerId === body.providerId);
+    if (!existing || !body.providerId) {
+      json(response, 404, { error: "Provider no encontrado." });
+      return;
+    }
+    const state = await mutateIncremental((client, currentStore) =>
+      updateProviderControlMutation(client, currentStore, {
+        providerId: existing.providerId,
+        enabled: Boolean(body.enabled ?? existing.enabled),
+        mode: body.mode ?? existing.mode,
+        killSwitchActive: Boolean(body.killSwitchActive ?? existing.killSwitchActive),
+        monthlyHardLimit: Number(body.monthlyHardLimit ?? existing.monthlyHardLimit),
+        annualHardLimit: Number(body.annualHardLimit ?? existing.annualHardLimit),
+        maxTokensPerRequest: Number(body.maxTokensPerRequest ?? existing.maxTokensPerRequest),
+        maxRequestsPerMinute: Number(body.maxRequestsPerMinute ?? existing.maxRequestsPerMinute),
+        maxRequestsPerMission: Number(body.maxRequestsPerMission ?? existing.maxRequestsPerMission),
+        maxMissionBudget: Number(body.maxMissionBudget ?? existing.maxMissionBudget),
+        notes: (body.notes ?? existing.notes).trim(),
+        reason: (body.reason ?? "").trim() || "Actualizacion de control de provider.",
+        actorLabel: session.username.toUpperCase(),
+      }).then((nextState) => ({
+        result: nextState,
+        nextStore: {
+          state: nextState,
+          sessions: currentStore.sessions,
+        },
+      })),
+    );
+    json(response, 200, { state: sanitizeState(state) });
+    return;
+  }
+
+  if (method === "POST" && url.pathname === "/api/providers/attempt") {
+    const session = requireSession(store, request, response);
+    if (!session) {
+      return;
+    }
+    const body = (await readBody(request)) as {
+      providerId?: string;
+      missionId?: string;
+      requestedTokens?: number;
+      estimatedCost?: number;
+    };
+    if (!body.providerId) {
+      json(response, 400, { error: "providerId es requerido." });
+      return;
+    }
+    const control = store.state.providerConfigs.find((config) => config.providerId === body.providerId);
+    if (!control) {
+      json(response, 404, { error: "Provider no encontrado." });
+      return;
+    }
+    const requestedTokens = Number(body.requestedTokens ?? 0);
+    const estimatedCost = Number(body.estimatedCost ?? 0);
+    const state = await mutateIncremental((client, currentStore) =>
+      recordProviderAttemptMutation(client, currentStore, {
+        providerId: body.providerId!,
+        missionId: body.missionId,
+        requestedTokens,
+        estimatedCost,
+        actorLabel: session.username.toUpperCase(),
+      }).then((nextState) => ({
+        result: nextState,
+        nextStore: {
+          state: nextState,
+          sessions: currentStore.sessions,
+        },
+      })),
+    );
+    const latestAttempt = state.auditLog.find(
+      (entry) =>
+        entry.category === "provider" &&
+        entry.context === body.providerId &&
+        (entry.metadata as Record<string, unknown> | undefined)?.action === "attempt",
+    );
+    const allowed = Boolean((latestAttempt?.metadata as Record<string, unknown> | undefined)?.allowed);
+    json(response, 200, { allowed, state: sanitizeState(state) });
     return;
   }
 

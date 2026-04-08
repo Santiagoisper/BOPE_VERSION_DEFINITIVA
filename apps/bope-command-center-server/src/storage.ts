@@ -1,4 +1,6 @@
+import crypto from "node:crypto";
 import type { PoolClient } from "pg";
+import type { MissionPriority } from "../../bope-command-center/src/types/index.js";
 import { filterActiveSessions } from "./auth.js";
 import { withClient, withTransaction } from "./db.js";
 import type {
@@ -15,18 +17,22 @@ import type {
   MissionRecord,
   PersistedStore,
   ProviderConfigRecord,
+  ProviderGovernanceRecord,
   ProviderRecord,
+  ProviderControlUpdateInput,
+  ProviderGovernanceUpdateInput,
   SanctionRecord,
   StoredSessionRecord,
   ToolRecord,
 } from "./domain.js";
 import { migrateDatabase } from "./migrations.js";
 import { createBootstrapState } from "./seed.js";
-import { synchronizeState } from "./state.js";
+import { createMissionInState, synchronizeState, updateBudgetPolicyInState } from "./state.js";
 
 const STORE_LOCK_ID = 812_260_401;
 
 let initialized = false;
+let cachedStore: PersistedStore | null = null;
 
 function parseJson<T>(value: unknown, fallback: T): T {
   if (value === null || value === undefined) {
@@ -195,10 +201,23 @@ function mapProviderConfigs(rows: Array<Record<string, unknown>>): ProviderConfi
     annualHardLimit: Number(row.annual_hard_limit),
     maxTokensPerRequest: Number(row.max_tokens_per_request),
     maxRequestsPerMinute: Number(row.max_requests_per_minute),
+    maxRequestsPerMission: Number(row.max_requests_per_mission),
+    maxMissionBudget: Number(row.max_mission_budget),
     traceLevel: row.trace_level as ProviderConfigRecord["traceLevel"],
     notes: String(row.notes),
     updatedAt: toIso(row.updated_at),
   }));
+}
+
+function mapProviderGovernance(row?: Record<string, unknown>): ProviderGovernanceRecord {
+  return {
+    globalKillSwitchActive: row ? Boolean(row.global_kill_switch_active) : true,
+    defaultMissionBudgetLimit: row ? Number(row.default_mission_budget_limit) : 180,
+    defaultRequestsPerMission: row ? Number(row.default_requests_per_mission) : 8,
+    periodLabel: (row?.period_label as "minute") ?? "minute",
+    notes: row ? String(row.notes) : "Gobernanza central activa. Providers bloqueados hasta orden expresa.",
+    updatedAt: row ? toIso(row.updated_at) : new Date().toISOString(),
+  };
 }
 
 function mapTools(rows: Array<Record<string, unknown>>): ToolRecord[] {
@@ -289,39 +308,22 @@ async function readStoreFromClient(client: PoolClient): Promise<PersistedStore |
     return null;
   }
 
-  const [
-    authResult,
-    agentRows,
-    performanceRows,
-    missionRows,
-    eventRows,
-    medalRows,
-    sanctionRows,
-    budgetPolicyRows,
-    providerRows,
-    providerConfigRows,
-    toolRows,
-    directOrderRows,
-    budgetAlertRows,
-    auditRows,
-    sessionRows,
-  ] = await Promise.all([
-    client.query("SELECT * FROM bope_auth_config WHERE singleton_key = 'auth'"),
-    client.query("SELECT * FROM bope_agents ORDER BY codename ASC"),
-    client.query("SELECT * FROM bope_agent_performance ORDER BY agent_id ASC"),
-    client.query("SELECT * FROM bope_missions ORDER BY created_at DESC"),
-    client.query("SELECT * FROM bope_mission_events ORDER BY event_timestamp DESC"),
-    client.query("SELECT * FROM bope_medals ORDER BY awarded_at DESC"),
-    client.query("SELECT * FROM bope_sanctions ORDER BY issued_at DESC"),
-    client.query("SELECT * FROM bope_budget_policy WHERE singleton_key = 'budget-policy'"),
-    client.query("SELECT * FROM bope_providers ORDER BY id ASC"),
-    client.query("SELECT * FROM bope_provider_configs ORDER BY provider_id ASC"),
-    client.query("SELECT * FROM bope_tools ORDER BY name ASC"),
-    client.query("SELECT * FROM bope_direct_orders ORDER BY issued_at DESC"),
-    client.query("SELECT * FROM bope_budget_alerts ORDER BY created_at DESC"),
-    client.query("SELECT * FROM bope_audit_logs ORDER BY event_timestamp DESC"),
-    client.query("SELECT * FROM bope_sessions ORDER BY login_at DESC"),
-  ]);
+  const authResult = await client.query("SELECT * FROM bope_auth_config WHERE singleton_key = 'auth'");
+  const agentRows = await client.query("SELECT * FROM bope_agents ORDER BY codename ASC");
+  const performanceRows = await client.query("SELECT * FROM bope_agent_performance ORDER BY agent_id ASC");
+  const missionRows = await client.query("SELECT * FROM bope_missions ORDER BY created_at DESC");
+  const eventRows = await client.query("SELECT * FROM bope_mission_events ORDER BY event_timestamp DESC");
+  const medalRows = await client.query("SELECT * FROM bope_medals ORDER BY awarded_at DESC");
+  const sanctionRows = await client.query("SELECT * FROM bope_sanctions ORDER BY issued_at DESC");
+  const budgetPolicyRows = await client.query("SELECT * FROM bope_budget_policy WHERE singleton_key = 'budget-policy'");
+  const providerRows = await client.query("SELECT * FROM bope_providers ORDER BY id ASC");
+  const providerConfigRows = await client.query("SELECT * FROM bope_provider_configs ORDER BY provider_id ASC");
+  const providerGovernanceRows = await client.query("SELECT * FROM bope_provider_governance WHERE singleton_key = 'governance'");
+  const toolRows = await client.query("SELECT * FROM bope_tools ORDER BY name ASC");
+  const directOrderRows = await client.query("SELECT * FROM bope_direct_orders ORDER BY issued_at DESC");
+  const budgetAlertRows = await client.query("SELECT * FROM bope_budget_alerts ORDER BY created_at DESC");
+  const auditRows = await client.query("SELECT * FROM bope_audit_logs ORDER BY event_timestamp DESC");
+  const sessionRows = await client.query("SELECT * FROM bope_sessions ORDER BY login_at DESC");
 
   const state: CommandCenterState = synchronizeState({
     schemaVersion: Number(metaResult.rows[0].schema_version),
@@ -333,6 +335,7 @@ async function readStoreFromClient(client: PoolClient): Promise<PersistedStore |
     sanctions: mapSanctions(sanctionRows.rows),
     providers: mapProviders(providerRows.rows),
     providerConfigs: mapProviderConfigs(providerConfigRows.rows),
+    providerGovernance: mapProviderGovernance(providerGovernanceRows.rows[0]),
     tools: mapTools(toolRows.rows),
     directOrders: mapDirectOrders(directOrderRows.rows),
     budgetPolicy: mapBudgetPolicy(budgetPolicyRows.rows[0]),
@@ -352,6 +355,592 @@ async function readStoreFromClient(client: PoolClient): Promise<PersistedStore |
   };
 }
 
+async function upsertMeta(client: PoolClient, state: CommandCenterState): Promise<void> {
+  await client.query(
+    `INSERT INTO bope_meta (singleton_key, schema_version, seeded_at, updated_at, active_budget_alert_keys)
+     VALUES ('meta', $1, $2, $3, $4::jsonb)
+     ON CONFLICT (singleton_key) DO UPDATE SET
+       schema_version = EXCLUDED.schema_version,
+       seeded_at = EXCLUDED.seeded_at,
+       updated_at = EXCLUDED.updated_at,
+       active_budget_alert_keys = EXCLUDED.active_budget_alert_keys`,
+    [
+      state.schemaVersion,
+      state.meta.seededAt,
+      state.meta.updatedAt,
+      JSON.stringify(state.meta.activeBudgetAlertKeys),
+    ],
+  );
+}
+
+async function upsertProviderGovernance(client: PoolClient, governance: ProviderGovernanceRecord): Promise<void> {
+  await client.query(
+    `INSERT INTO bope_provider_governance
+     (singleton_key, global_kill_switch_active, default_mission_budget_limit, default_requests_per_mission, period_label, notes, updated_at)
+     VALUES ('governance', $1, $2, $3, $4, $5, $6)
+     ON CONFLICT (singleton_key) DO UPDATE SET
+       global_kill_switch_active = EXCLUDED.global_kill_switch_active,
+       default_mission_budget_limit = EXCLUDED.default_mission_budget_limit,
+       default_requests_per_mission = EXCLUDED.default_requests_per_mission,
+       period_label = EXCLUDED.period_label,
+       notes = EXCLUDED.notes,
+       updated_at = EXCLUDED.updated_at`,
+    [
+      governance.globalKillSwitchActive,
+      governance.defaultMissionBudgetLimit,
+      governance.defaultRequestsPerMission,
+      governance.periodLabel,
+      governance.notes,
+      governance.updatedAt,
+    ],
+  );
+}
+
+async function replaceBudgetAlerts(client: PoolClient, alerts: BudgetAlertRecord[]): Promise<void> {
+  await client.query("DELETE FROM bope_budget_alerts");
+  for (const alert of alerts) {
+    await client.query(
+      `INSERT INTO bope_budget_alerts
+       (id, alert_key, scope, scope_id, metric, level, message, current_value, threshold_value, created_at, active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+      [
+        alert.id,
+        alert.key,
+        alert.scope,
+        alert.scopeId,
+        alert.metric,
+        alert.level,
+        alert.message,
+        alert.currentValue,
+        alert.thresholdValue,
+        alert.createdAt,
+        alert.active,
+      ],
+    );
+  }
+}
+
+async function insertAuditLogs(client: PoolClient, entries: AuditLogRecord[]): Promise<void> {
+  for (const entry of entries) {
+    await client.query(
+      `INSERT INTO bope_audit_logs
+       (id, event_timestamp, category, level, actor_id, actor_label, message, context, metadata)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb)
+       ON CONFLICT (id) DO NOTHING`,
+      [
+        entry.id,
+        entry.timestamp,
+        entry.category,
+        entry.level,
+        entry.actorId ?? null,
+        entry.actorLabel,
+        entry.message,
+        entry.context ?? null,
+        entry.metadata ? JSON.stringify(entry.metadata) : null,
+      ],
+    );
+  }
+}
+
+async function upsertSession(client: PoolClient, session: StoredSessionRecord): Promise<void> {
+  await client.query(
+    `INSERT INTO bope_sessions
+     (id, username, login_at, expires_at, token_hash)
+     VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (id) DO UPDATE SET
+       username = EXCLUDED.username,
+       login_at = EXCLUDED.login_at,
+       expires_at = EXCLUDED.expires_at,
+       token_hash = EXCLUDED.token_hash`,
+    [session.id, session.username, session.loginAt, session.expiresAt, session.tokenHash],
+  );
+}
+
+async function deleteSessionByTokenHash(client: PoolClient, tokenHash: string): Promise<void> {
+  await client.query("DELETE FROM bope_sessions WHERE token_hash = $1", [tokenHash]);
+}
+
+async function deleteExpiredSessions(client: PoolClient): Promise<void> {
+  await client.query("DELETE FROM bope_sessions WHERE expires_at <= now()");
+}
+
+async function upsertAuthConfig(client: PoolClient, authConfig: AuthConfigRecord | null): Promise<void> {
+  if (!authConfig) {
+    await client.query("DELETE FROM bope_auth_config WHERE singleton_key = 'auth'");
+    return;
+  }
+  await client.query(
+    `INSERT INTO bope_auth_config
+     (singleton_key, username, password_hash, salt, iterations, created_at, last_password_change_at, failed_attempts, lock_until)
+     VALUES ('auth', $1, $2, $3, $4, $5, $6, $7, $8)
+     ON CONFLICT (singleton_key) DO UPDATE SET
+       username = EXCLUDED.username,
+       password_hash = EXCLUDED.password_hash,
+       salt = EXCLUDED.salt,
+       iterations = EXCLUDED.iterations,
+       created_at = EXCLUDED.created_at,
+       last_password_change_at = EXCLUDED.last_password_change_at,
+       failed_attempts = EXCLUDED.failed_attempts,
+       lock_until = EXCLUDED.lock_until`,
+    [
+      authConfig.username,
+      authConfig.passwordHash,
+      authConfig.salt,
+      authConfig.iterations,
+      authConfig.createdAt,
+      authConfig.lastPasswordChangeAt,
+      authConfig.failedAttempts,
+      authConfig.lockUntil ?? null,
+    ],
+  );
+}
+
+async function persistDerivedState(
+  client: PoolClient,
+  previousState: CommandCenterState,
+  nextState: CommandCenterState,
+): Promise<void> {
+  await upsertMeta(client, nextState);
+  await replaceBudgetAlerts(client, nextState.budgetAlerts);
+  const previousAuditIds = new Set(previousState.auditLog.map((entry) => entry.id));
+  await insertAuditLogs(
+    client,
+    nextState.auditLog.filter((entry) => !previousAuditIds.has(entry.id)),
+  );
+}
+
+function withUpdatedMeta(state: CommandCenterState, updatedAt: string): CommandCenterState {
+  return {
+    ...state,
+    meta: {
+      ...state.meta,
+      updatedAt,
+    },
+  };
+}
+
+async function createMissionMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  input: {
+    codename: string;
+    title: string;
+    objective: string;
+    priority: MissionPriority;
+    leadAgent: string;
+    assignedAgents: string[];
+    estimatedBudget: number;
+    actorLabel: string;
+  },
+): Promise<CommandCenterState> {
+  const synchronized = createMissionInState(store.state, input);
+  const nextState = withUpdatedMeta(
+    {
+      ...synchronized,
+      budgetAlerts: store.state.budgetAlerts,
+      meta: {
+        ...synchronized.meta,
+        activeBudgetAlertKeys: store.state.meta.activeBudgetAlertKeys,
+      },
+    },
+    synchronized.meta.updatedAt,
+  );
+  const mission = nextState.missions[0];
+  const missionEvent = nextState.missionEvents[0];
+  const previousAuditIds = new Set(store.state.auditLog.map((entry: AuditLogRecord) => entry.id));
+  const missionAudit = nextState.auditLog.find(
+    (entry: AuditLogRecord) => !previousAuditIds.has(entry.id) && entry.category === "mission",
+  );
+  const updatedPerformance = nextState.agentPerformance.find((entry) => entry.agentId === input.leadAgent);
+
+  await client.query(
+    `INSERT INTO bope_missions
+     (id, codename, title, objective, status, priority, lead_agent, assigned_agents, started_at, completed_at, estimated_duration, budget_estimated, budget_approved, budget_actual, budget_currency, budget_by_provider, outcome, tags, progress_percent, created_at, updated_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, $10, $11, $12, $13, $14, $15, $16::jsonb, $17, $18::jsonb, $19, $20, $21)`,
+    [
+      mission.id,
+      mission.codename,
+      mission.title,
+      mission.objective,
+      mission.status,
+      mission.priority,
+      mission.leadAgent,
+      JSON.stringify(mission.assignedAgents),
+      mission.startedAt ?? null,
+      mission.completedAt ?? null,
+      mission.estimatedDuration,
+      mission.budget.estimated,
+      mission.budget.approved,
+      mission.budget.actual,
+      mission.budget.currency,
+      JSON.stringify(mission.budget.byProvider),
+      mission.outcome ?? null,
+      JSON.stringify(mission.tags),
+      mission.progressPercent,
+      mission.createdAt,
+      mission.updatedAt,
+    ],
+  );
+
+  await client.query(
+    `INSERT INTO bope_mission_events
+     (id, mission_id, event_timestamp, type, agent_id, provider_id, tool_id, engine_id, severity, message, cost_impact, source, created_by, metadata)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14::jsonb)`,
+    [
+      missionEvent.id,
+      missionEvent.missionId,
+      missionEvent.timestamp,
+      missionEvent.type,
+      missionEvent.agentId ?? null,
+      missionEvent.providerId ?? null,
+      missionEvent.toolId ?? null,
+      missionEvent.engineId ?? null,
+      missionEvent.severity,
+      missionEvent.message,
+      missionEvent.costImpact,
+      missionEvent.source,
+      missionEvent.createdBy,
+      missionEvent.metadata ? JSON.stringify(missionEvent.metadata) : null,
+    ],
+  );
+
+  if (updatedPerformance) {
+    await client.query(
+      `UPDATE bope_agent_performance
+       SET trust_score = $2, historical_cost = $3, missions_completed = $4, missions_failed = $5, updated_at = $6
+       WHERE agent_id = $1`,
+      [
+        updatedPerformance.agentId,
+        updatedPerformance.trustScore,
+        updatedPerformance.historicalCost,
+        updatedPerformance.missionsCompleted,
+        updatedPerformance.missionsFailed,
+        updatedPerformance.updatedAt,
+      ],
+    );
+  }
+
+  if (missionAudit) {
+    await insertAuditLogs(client, [missionAudit]);
+  }
+  await upsertMeta(client, nextState);
+  return nextState;
+}
+
+async function updateBudgetPolicyMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  input: {
+    annualBudget: number;
+    monthlyTarget: number;
+    providerBudgets: Array<{ id: string; annualBudget: number; monthlyBudget: number }>;
+    reason: string;
+    actorLabel: string;
+  },
+): Promise<CommandCenterState> {
+  const nextState = updateBudgetPolicyInState(store.state, input);
+
+  await client.query(
+    `UPDATE bope_budget_policy
+     SET annual_budget = $1, monthly_target = $2, currency = $3, warning_threshold = $4, critical_threshold = $5
+     WHERE singleton_key = 'budget-policy'`,
+    [
+      nextState.budgetPolicy.annualBudget,
+      nextState.budgetPolicy.monthlyTarget,
+      nextState.budgetPolicy.currency,
+      nextState.budgetPolicy.warningThreshold,
+      nextState.budgetPolicy.criticalThreshold,
+    ],
+  );
+
+  for (const provider of nextState.providers) {
+    await client.query(
+      `UPDATE bope_providers
+       SET annual_budget = $2, monthly_budget = $3, updated_at = $4
+       WHERE id = $1`,
+      [provider.id, provider.annualBudget, provider.monthlyBudget, provider.updatedAt],
+    );
+  }
+
+  for (const config of nextState.providerConfigs) {
+    await client.query(
+      `UPDATE bope_provider_configs
+       SET monthly_hard_limit = $2, annual_hard_limit = $3, updated_at = $4
+       WHERE provider_id = $1`,
+      [config.providerId, config.monthlyHardLimit, config.annualHardLimit, config.updatedAt],
+    );
+  }
+
+  await persistDerivedState(client, store.state, nextState);
+  return nextState;
+}
+
+async function bootstrapAuthMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  authConfig: AuthConfigRecord,
+  session: StoredSessionRecord,
+  auditEntry: AuditLogRecord,
+): Promise<CommandCenterState> {
+  const nextState = withUpdatedMeta({
+    ...store.state,
+    authConfig,
+    auditLog: [...store.state.auditLog, auditEntry],
+  }, auditEntry.timestamp);
+  await upsertAuthConfig(client, nextState.authConfig);
+  await deleteExpiredSessions(client);
+  await upsertSession(client, session);
+  await upsertMeta(client, nextState);
+  await insertAuditLogs(client, [auditEntry]);
+  return nextState;
+}
+
+async function loginSuccessMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  authConfig: AuthConfigRecord,
+  session: StoredSessionRecord,
+  auditEntry: AuditLogRecord,
+): Promise<CommandCenterState> {
+  const nextState = withUpdatedMeta({
+    ...store.state,
+    authConfig,
+    auditLog: [...store.state.auditLog, auditEntry],
+  }, auditEntry.timestamp);
+  await upsertAuthConfig(client, nextState.authConfig);
+  await deleteExpiredSessions(client);
+  await upsertSession(client, session);
+  await upsertMeta(client, nextState);
+  await insertAuditLogs(client, [auditEntry]);
+  return nextState;
+}
+
+async function loginFailureMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  authConfig: AuthConfigRecord,
+  auditEntry: AuditLogRecord,
+): Promise<void> {
+  const nextState = withUpdatedMeta({
+    ...store.state,
+    authConfig,
+    auditLog: [...store.state.auditLog, auditEntry],
+  }, auditEntry.timestamp);
+  await upsertAuthConfig(client, nextState.authConfig);
+  await upsertMeta(client, nextState);
+  await insertAuditLogs(client, [auditEntry]);
+}
+
+async function logoutMutation(client: PoolClient, store: PersistedStore, tokenHash: string): Promise<void> {
+  void store;
+  await deleteSessionByTokenHash(client, tokenHash);
+}
+
+async function updateProviderControlMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  input: ProviderControlUpdateInput,
+): Promise<CommandCenterState> {
+  const updatedAt = new Date().toISOString();
+  const nextConfigs = store.state.providerConfigs.map((config) =>
+    config.providerId === input.providerId
+      ? {
+          ...config,
+          enabled: input.enabled,
+          mode: input.mode,
+          killSwitchActive: input.killSwitchActive,
+          monthlyHardLimit: input.monthlyHardLimit,
+          annualHardLimit: input.annualHardLimit,
+          maxTokensPerRequest: input.maxTokensPerRequest,
+          maxRequestsPerMinute: input.maxRequestsPerMinute,
+          maxRequestsPerMission: input.maxRequestsPerMission,
+          maxMissionBudget: input.maxMissionBudget,
+          notes: input.notes,
+          updatedAt,
+        }
+      : config,
+  );
+  const auditEntry: AuditLogRecord = {
+    id: `audit-provider-${crypto.randomUUID()}`,
+    timestamp: updatedAt,
+    category: "provider",
+    level: input.enabled ? "warning" : "info",
+    actorLabel: input.actorLabel,
+    message: `Control del provider ${input.providerId} actualizado.`,
+    context: input.providerId,
+    metadata: { action: "control-update", providerId: input.providerId, reason: input.reason, mode: input.mode, enabled: input.enabled },
+  };
+  const nextState = withUpdatedMeta(
+    { ...store.state, providerConfigs: nextConfigs, auditLog: [auditEntry, ...store.state.auditLog] },
+    updatedAt,
+  );
+  const config = nextConfigs.find((item) => item.providerId === input.providerId);
+  if (!config) {
+    return store.state;
+  }
+  await client.query(
+    `UPDATE bope_provider_configs
+     SET mode = $2, enabled = $3, kill_switch_active = $4, monthly_hard_limit = $5, annual_hard_limit = $6,
+         max_tokens_per_request = $7, max_requests_per_minute = $8, max_requests_per_mission = $9, max_mission_budget = $10,
+         trace_level = $11, notes = $12, updated_at = $13
+     WHERE provider_id = $1`,
+    [
+      config.providerId,
+      config.mode,
+      config.enabled,
+      config.killSwitchActive,
+      config.monthlyHardLimit,
+      config.annualHardLimit,
+      config.maxTokensPerRequest,
+      config.maxRequestsPerMinute,
+      config.maxRequestsPerMission,
+      config.maxMissionBudget,
+      config.traceLevel,
+      config.notes,
+      config.updatedAt,
+    ],
+  );
+  await upsertMeta(client, nextState);
+  await insertAuditLogs(client, [auditEntry]);
+  return nextState;
+}
+
+async function updateProviderGovernanceMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  input: ProviderGovernanceUpdateInput,
+): Promise<CommandCenterState> {
+  const updatedAt = new Date().toISOString();
+  const governance: ProviderGovernanceRecord = {
+    ...store.state.providerGovernance,
+    globalKillSwitchActive: input.globalKillSwitchActive,
+    defaultMissionBudgetLimit: input.defaultMissionBudgetLimit,
+    defaultRequestsPerMission: input.defaultRequestsPerMission,
+    notes: input.notes,
+    updatedAt,
+  };
+  const auditEntry: AuditLogRecord = {
+    id: `audit-provider-governance-${crypto.randomUUID()}`,
+    timestamp: updatedAt,
+    category: "provider",
+    level: "warning",
+    actorLabel: input.actorLabel,
+    message: "Gobernanza global de providers actualizada.",
+    context: "provider-governance",
+    metadata: { action: "governance-update", reason: input.reason, globalKillSwitchActive: input.globalKillSwitchActive },
+  };
+  const nextState = withUpdatedMeta(
+    { ...store.state, providerGovernance: governance, auditLog: [auditEntry, ...store.state.auditLog] },
+    updatedAt,
+  );
+  await upsertProviderGovernance(client, governance);
+  await upsertMeta(client, nextState);
+  await insertAuditLogs(client, [auditEntry]);
+  return nextState;
+}
+
+async function recordProviderAttemptMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  input: { providerId: string; missionId?: string; requestedTokens: number; estimatedCost: number; actorLabel: string },
+): Promise<CommandCenterState> {
+  const updatedAt = new Date().toISOString();
+  const control = store.state.providerConfigs.find((item) => item.providerId === input.providerId);
+  const effectiveMissionLimit =
+    control && control.maxRequestsPerMission > 0
+      ? control.maxRequestsPerMission
+      : store.state.providerGovernance.defaultRequestsPerMission;
+  const effectiveMissionBudget =
+    control && control.maxMissionBudget > 0
+      ? control.maxMissionBudget
+      : store.state.providerGovernance.defaultMissionBudgetLimit;
+  const periodStart = Date.now() - 60_000;
+  const requestsThisMinute = store.state.auditLog.filter((entry) => {
+    const metadata = entry.metadata as Record<string, unknown> | undefined;
+    return (
+      entry.category === "provider" &&
+      metadata?.action === "attempt" &&
+      metadata?.providerId === input.providerId &&
+      new Date(entry.timestamp).getTime() >= periodStart
+    );
+  }).length;
+  const requestsThisMission = input.missionId
+    ? store.state.auditLog.filter((entry) => {
+        const metadata = entry.metadata as Record<string, unknown> | undefined;
+        return entry.category === "provider" && metadata?.action === "attempt" && metadata?.providerId === input.providerId && metadata?.missionId === input.missionId;
+      }).length
+    : 0;
+  const allowed = Boolean(
+    control &&
+      !store.state.providerGovernance.globalKillSwitchActive &&
+      control.enabled &&
+      !control.killSwitchActive &&
+      input.requestedTokens <= control.maxTokensPerRequest &&
+      input.estimatedCost <= effectiveMissionBudget &&
+      requestsThisMinute < control.maxRequestsPerMinute &&
+      (!input.missionId || requestsThisMission < effectiveMissionLimit),
+  );
+  const auditEntry: AuditLogRecord = {
+    id: `audit-provider-attempt-${crypto.randomUUID()}`,
+    timestamp: updatedAt,
+    category: "provider",
+    level: allowed ? "info" : "warning",
+    actorLabel: input.actorLabel,
+    message: allowed ? `Intento de uso de ${input.providerId} admitido en modo seco.` : `Intento de uso de ${input.providerId} bloqueado por gobernanza.`,
+    context: input.providerId,
+    metadata: {
+      action: "attempt",
+      providerId: input.providerId,
+      missionId: input.missionId,
+      requestedTokens: input.requestedTokens,
+      estimatedCost: input.estimatedCost,
+      allowed,
+      requestsThisMinute,
+      requestsThisMission,
+      effectiveMissionLimit,
+      effectiveMissionBudget,
+    },
+  };
+  const nextState = withUpdatedMeta({ ...store.state, auditLog: [auditEntry, ...store.state.auditLog] }, updatedAt);
+  await upsertMeta(client, nextState);
+  await insertAuditLogs(client, [auditEntry]);
+  return nextState;
+}
+
+export async function mutateIncremental<T>(
+  mutator: (client: PoolClient, store: PersistedStore) => Promise<{ result: T; nextStore?: PersistedStore }>,
+): Promise<T> {
+  await initializePersistence();
+  return withTransaction(async (client) => {
+    await lockStore(client);
+    const current = await readStoreFromClient(client);
+    const store = current ?? {
+      state: synchronizeState(createBootstrapState()),
+      sessions: [],
+    };
+    const { result, nextStore } = await mutator(client, store);
+    cachedStore = nextStore
+      ? {
+          state: synchronizeState(nextStore.state),
+          sessions: filterActiveSessions(nextStore.sessions),
+        }
+      : store;
+    return result;
+  });
+}
+
+export {
+  bootstrapAuthMutation,
+  createMissionMutation,
+  loginFailureMutation,
+  loginSuccessMutation,
+  logoutMutation,
+  recordProviderAttemptMutation,
+  updateProviderControlMutation,
+  updateProviderGovernanceMutation,
+  updateBudgetPolicyMutation,
+};
+
 async function writeStoreToClient(client: PoolClient, store: PersistedStore): Promise<void> {
   const normalized: PersistedStore = {
     state: synchronizeState(store.state),
@@ -364,6 +953,7 @@ async function writeStoreToClient(client: PoolClient, store: PersistedStore): Pr
   await client.query("DELETE FROM bope_tools");
   await client.query("DELETE FROM bope_provider_configs");
   await client.query("DELETE FROM bope_providers");
+  await client.query("DELETE FROM bope_provider_governance");
   await client.query("DELETE FROM bope_budget_policy");
   await client.query("DELETE FROM bope_sanctions");
   await client.query("DELETE FROM bope_medals");
@@ -582,8 +1172,8 @@ async function writeStoreToClient(client: PoolClient, store: PersistedStore): Pr
   for (const config of normalized.state.providerConfigs) {
     await client.query(
       `INSERT INTO bope_provider_configs
-       (provider_id, mode, enabled, kill_switch_active, monthly_hard_limit, annual_hard_limit, max_tokens_per_request, max_requests_per_minute, trace_level, notes, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+       (provider_id, mode, enabled, kill_switch_active, monthly_hard_limit, annual_hard_limit, max_tokens_per_request, max_requests_per_minute, max_requests_per_mission, max_mission_budget, trace_level, notes, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
       [
         config.providerId,
         config.mode,
@@ -593,12 +1183,16 @@ async function writeStoreToClient(client: PoolClient, store: PersistedStore): Pr
         config.annualHardLimit,
         config.maxTokensPerRequest,
         config.maxRequestsPerMinute,
+        config.maxRequestsPerMission,
+        config.maxMissionBudget,
         config.traceLevel,
         config.notes,
         config.updatedAt,
       ],
     );
   }
+
+  await upsertProviderGovernance(client, normalized.state.providerGovernance);
 
   for (const tool of normalized.state.tools) {
     await client.query(
@@ -689,6 +1283,10 @@ async function writeStoreToClient(client: PoolClient, store: PersistedStore): Pr
 async function ensureSeededStore(client: PoolClient): Promise<void> {
   const existing = await readStoreFromClient(client);
   if (existing) {
+    cachedStore = {
+      state: synchronizeState(existing.state),
+      sessions: filterActiveSessions(existing.sessions),
+    };
     return;
   }
 
@@ -698,6 +1296,7 @@ async function ensureSeededStore(client: PoolClient): Promise<void> {
   };
 
   await writeStoreToClient(client, initialStore);
+  cachedStore = initialStore;
 }
 
 export async function initializePersistence(): Promise<void> {
@@ -715,11 +1314,21 @@ export async function initializePersistence(): Promise<void> {
 
 export async function loadStore(): Promise<PersistedStore> {
   await initializePersistence();
+  if (cachedStore) {
+    return {
+      state: synchronizeState(cachedStore.state),
+      sessions: filterActiveSessions(cachedStore.sessions),
+    };
+  }
   return withClient(async (client) => {
     const store = await readStoreFromClient(client);
     if (!store) {
       throw new Error("Command Center store is not initialized.");
     }
+    cachedStore = {
+      state: synchronizeState(store.state),
+      sessions: filterActiveSessions(store.sessions),
+    };
     return {
       state: synchronizeState(store.state),
       sessions: filterActiveSessions(store.sessions),
@@ -732,6 +1341,10 @@ export async function saveStore(store: PersistedStore): Promise<void> {
   await withTransaction(async (client) => {
     await lockStore(client);
     await writeStoreToClient(client, store);
+    cachedStore = {
+      state: synchronizeState(store.state),
+      sessions: filterActiveSessions(store.sessions),
+    };
   });
 }
 
@@ -748,6 +1361,10 @@ export async function mutateStore<T>(
     };
     const { store: nextStore, result } = await mutator(store);
     await writeStoreToClient(client, nextStore);
+    cachedStore = {
+      state: synchronizeState(nextStore.state),
+      sessions: filterActiveSessions(nextStore.sessions),
+    };
     return result;
   });
 }

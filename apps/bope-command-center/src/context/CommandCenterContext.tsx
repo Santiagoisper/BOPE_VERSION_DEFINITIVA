@@ -13,7 +13,10 @@ import {
   getCommandCenterState,
   login as loginRequest,
   logout as logoutRequest,
+  recordProviderAttemptRequest,
+  updateProviderControlRequest,
   updateBudgetPolicyRequest,
+  updateProviderGovernanceRequest,
 } from "@/lib/api";
 import {
   buildGlobalBudget,
@@ -40,6 +43,7 @@ import type {
   ProviderBudgetInput,
   SystemStatus,
   ToolConnection,
+  ProviderGovernance,
 } from "@/types";
 
 interface CreateMissionInput {
@@ -65,6 +69,36 @@ interface UpdateBudgetPolicyInput {
   reason: string;
 }
 
+interface UpdateProviderGovernanceInput {
+  globalKillSwitchActive: boolean;
+  defaultMissionBudgetLimit: number;
+  defaultRequestsPerMission: number;
+  notes: string;
+  reason: string;
+}
+
+interface UpdateProviderControlInput {
+  providerId: string;
+  enabled: boolean;
+  mode: "disabled" | "shadow" | "armed";
+  killSwitchActive: boolean;
+  monthlyHardLimit: number;
+  annualHardLimit: number;
+  maxTokensPerRequest: number;
+  maxRequestsPerMinute: number;
+  maxRequestsPerMission: number;
+  maxMissionBudget: number;
+  notes: string;
+  reason: string;
+}
+
+interface ProviderAttemptInput {
+  providerId: string;
+  missionId?: string;
+  requestedTokens: number;
+  estimatedCost: number;
+}
+
 interface AuthResult {
   ok: boolean;
   error?: string;
@@ -77,6 +111,7 @@ interface CommandCenterContextValue {
   missions: Mission[];
   providers: ModelProvider[];
   providerControls: ProviderControl[];
+  providerGovernance: ProviderGovernance | null;
   tools: ToolConnection[];
   directOrders: DirectOrder[];
   globalBudget: Budget | null;
@@ -95,6 +130,9 @@ interface CommandCenterContextValue {
   createMission: (input: CreateMissionInput) => Promise<void>;
   createDirectOrder: (input: CreateDirectOrderInput) => Promise<void>;
   updateBudgetPolicy: (input: UpdateBudgetPolicyInput) => Promise<AuthResult>;
+  updateProviderGovernance: (input: UpdateProviderGovernanceInput) => Promise<AuthResult>;
+  updateProviderControl: (input: UpdateProviderControlInput) => Promise<AuthResult>;
+  recordProviderAttempt: (input: ProviderAttemptInput) => Promise<AuthResult & { allowed?: boolean }>;
 }
 
 const CommandCenterContext = createContext<CommandCenterContextValue | null>(null);
@@ -124,6 +162,7 @@ function buildViewModel(state: CommandCenterState | null) {
       systemStatus: null as SystemStatus | null,
       activeMission: null as Mission | null,
       budgetPolicy: null as BudgetPolicySnapshot | null,
+      providerGovernance: null as ProviderGovernance | null,
     };
   }
 
@@ -133,19 +172,22 @@ function buildViewModel(state: CommandCenterState | null) {
     agents: mapAgents(state),
     missions,
     providers: mapProviders(state),
-    providerControls: state.providerConfigs.map((config) => ({
-      providerId: config.providerId,
-      mode: config.mode,
-      enabled: config.enabled,
-      killSwitchActive: config.killSwitchActive,
-      monthlyHardLimit: config.monthlyHardLimit,
-      annualHardLimit: config.annualHardLimit,
-      maxTokensPerRequest: config.maxTokensPerRequest,
-      maxRequestsPerMinute: config.maxRequestsPerMinute,
-      traceLevel: config.traceLevel,
-      notes: config.notes,
-      updatedAt: config.updatedAt,
-    })),
+      providerControls: state.providerConfigs.map((config) => ({
+        providerId: config.providerId,
+        mode: config.mode,
+        enabled: config.enabled,
+        killSwitchActive: config.killSwitchActive,
+        monthlyHardLimit: config.monthlyHardLimit,
+        annualHardLimit: config.annualHardLimit,
+        maxTokensPerRequest: config.maxTokensPerRequest,
+        maxRequestsPerMinute: config.maxRequestsPerMinute,
+        maxRequestsPerMission: config.maxRequestsPerMission,
+        maxMissionBudget: config.maxMissionBudget,
+        traceLevel: config.traceLevel,
+        notes: config.notes,
+        updatedAt: config.updatedAt,
+      })),
+    providerGovernance: state.providerGovernance,
     tools: mapTools(state),
     directOrders: mapDirectOrders(state),
     globalBudget: buildGlobalBudget(state),
@@ -261,6 +303,36 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function updateProviderGovernance(input: UpdateProviderGovernanceInput): Promise<AuthResult> {
+    try {
+      const response = await updateProviderGovernanceRequest(input);
+      setState(response.state);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : "No se pudo actualizar la gobernanza global." };
+    }
+  }
+
+  async function updateProviderControl(input: UpdateProviderControlInput): Promise<AuthResult> {
+    try {
+      const response = await updateProviderControlRequest(input);
+      setState(response.state);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : "No se pudo actualizar el control del provider." };
+    }
+  }
+
+  async function recordProviderAttempt(input: ProviderAttemptInput): Promise<AuthResult & { allowed?: boolean }> {
+    try {
+      const response = await recordProviderAttemptRequest(input);
+      setState(response.state);
+      return { ok: true, allowed: response.allowed };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : "No se pudo registrar el intento de uso." };
+    }
+  }
+
   return (
     <CommandCenterContext.Provider
       value={{
@@ -270,6 +342,7 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
         missions: view.missions,
         providers: view.providers,
         providerControls: view.providerControls,
+        providerGovernance: view.providerGovernance,
         tools: view.tools,
         directOrders: view.directOrders,
         globalBudget: view.globalBudget,
@@ -288,6 +361,9 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
         createMission,
         createDirectOrder,
         updateBudgetPolicy,
+        updateProviderGovernance,
+        updateProviderControl,
+        recordProviderAttempt,
       }}
     >
       {children}

@@ -131,7 +131,18 @@ export interface ProviderControl {
   annualHardLimit: number;
   maxTokensPerRequest: number;
   maxRequestsPerMinute: number;
+  maxRequestsPerMission: number;
+  maxMissionBudget: number;
   traceLevel: "standard" | "verbose";
+  notes: string;
+  updatedAt: string;
+}
+
+export interface ProviderGovernance {
+  globalKillSwitchActive: boolean;
+  defaultMissionBudgetLimit: number;
+  defaultRequestsPerMission: number;
+  periodLabel: "minute";
   notes: string;
   updatedAt: string;
 }
@@ -188,7 +199,7 @@ export interface BudgetAlert {
 export interface AuditLogEntry {
   id: string;
   timestamp: string;
-  category: "auth" | "mission" | "budget" | "system" | "order";
+  category: "auth" | "mission" | "budget" | "system" | "order" | "provider";
   level: "info" | "warning" | "critical";
   actorLabel: string;
   message: string;
