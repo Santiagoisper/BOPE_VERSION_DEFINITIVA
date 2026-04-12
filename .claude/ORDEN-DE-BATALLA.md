@@ -10,15 +10,15 @@
 |-------|-------|--------|-------|----------|
 | Comandante Supremo | 🟡 | SANTIAGO | — | *el Comandante no lleva medallas — las otorga* |
 | Sargento Mayor | 🔴 | JOHN | RAMBO | [NC] |
-| Teniente Frontend | 🔵 | PIXEL | FRONT | [ ] |
-| Teniente Backend | 🟤 | FORGE | BACK | [BS] |
-| Especialista QA | 🟢 | HOUSE | DOCTOR | [GC] |
+| Teniente Frontend | 🔵 | PIXEL | FRONT | [BS] |
+| Teniente Backend | 🟤 | FORGE | BACK | [BS][CM] |
+| Especialista QA | 🟢 | HOUSE | DOCTOR | [GC][CA] |
 | Capellán | 🟠 | MARCO AURELIO | HERALD | [ ] |
 | Cronista | 🟣 | WINSTON | SCRIBE | [CM] |
 | Guardián | 🩶 | CERBERUS | GUARDIAN | [CA] |
 | Integrador | 🩵 | NEXUS | WIRE | [MS] |
 | Reserva Especial | ⚫ | BLADE | KILLER | [ ] |
-| Operativo Especial | 🔥 | SICARIO | LOCO | [PH] |
+| Operativo Especial | 🔥 | SICARIO | LOCO | [PH][CM] |
 
 ---
 
@@ -67,6 +67,10 @@
 | NEXUS | Meritorious Service | `[MS]` | innova-scoring — integración de estados, flujo y coherencia entre capas |
 | HOUSE | Good Conduct Medal | `[GC]` | innova-scoring — verificación final, detección de fallas y validación limpia |
 | SICARIO | Purple Heart | `[PH]` | innova-scoring — entrada de fuerza total en fase crítica por orden de mando |
+| PIXEL | Bronze Star | `[BS]` | cuentas-personales-v1 — múltiples mejoras UI en 2 waves sin errores |
+| FORGE | Commendation Medal | `[CM]` | cuentas-personales-v1 — consolidación backend, fix patrimonio, constants.ts |
+| HOUSE | Combat Action Ribbon | `[CA]` | cuentas-personales-v1 — auditoría completa en producción, 2 críticos + 8 hallazgos |
+| SICARIO | Commendation Medal | `[CM]` | cuentas-personales-v1 — eliminación 11 componentes muertos, limpieza naming, Wave 2 |
 
 ---
 
@@ -82,4 +86,4 @@
 
 ---
 
-*Última actualización: 2026-03-30 | Firmado: WINSTON + JOHN*
+*Última actualización: 2026-04-11 | Firmado: WINSTON + JOHN*

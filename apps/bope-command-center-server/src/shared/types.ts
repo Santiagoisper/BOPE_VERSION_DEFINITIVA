@@ -66,6 +66,8 @@ export interface Agent {
   lastActive: string;
   bio: string;
   skills: string[];
+  systemPrompt?: string;
+  modelPreference?: "haiku" | "sonnet";
 }
 
 export interface MissionEvent {

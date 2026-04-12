@@ -1,9 +1,10 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { OrdersPanel } from "@/components/orders/OrdersPanel";
 import { useCommandCenter } from "@/context/CommandCenterContext";
 import { formatCost } from "@/lib/budget";
 import { cn } from "@/lib/utils";
+import { getEngineStatusRequest, type EngineStatus } from "@/lib/api";
 
 interface NavItem {
   path: string;
@@ -20,8 +21,44 @@ const NAV_ITEMS: NavItem[] = [
   { path: "/records", label: "Registros", icon: "◇", shortLabel: "Records" },
 ];
 
+const MODE_DOT: Record<string, string> = {
+  cli: "bg-green-500",
+  api: "bg-amber-400",
+  unavailable: "bg-red-500",
+};
+
+const MODE_LABEL: Record<string, string> = {
+  cli: "CLI",
+  api: "API",
+  unavailable: "OFF",
+};
+
+const MODE_TEXT: Record<string, string> = {
+  cli: "text-green-400",
+  api: "text-amber",
+  unavailable: "text-red-400",
+};
+
+function EngineIndicator({ label, mode }: { label: string; mode: "cli" | "api" | "unavailable" }) {
+  return (
+    <div className="flex items-center gap-1.5" title={mode === "cli" ? "Suscripción (gratis)" : mode === "api" ? "API paga (tokens)" : "No disponible"}>
+      <span className="text-muted-foreground">{label}</span>
+      <span className={cn("w-1.5 h-1.5 rounded-full inline-block flex-shrink-0", MODE_DOT[mode])} />
+      <span className={cn("font-semibold", MODE_TEXT[mode])}>{MODE_LABEL[mode]}</span>
+    </div>
+  );
+}
+
 function StatusBar() {
   const { globalBudget, systemStatus, budgetAlerts, session, logout } = useCommandCenter();
+  const [engineStatus, setEngineStatus] = useState<EngineStatus | null>(null);
+
+  useEffect(() => {
+    getEngineStatusRequest()
+      .then(setEngineStatus)
+      .catch(() => {});
+  }, []);
+
   const now = new Date();
   const budgetUsedPct = globalBudget
     ? ((globalBudget.accumulatedSpend / globalBudget.annual) * 100).toFixed(1)
@@ -51,6 +88,15 @@ function StatusBar() {
             {systemStatus?.operational ? "OPERATIVOS" : "DEGRADADOS"}
           </span>
         </div>
+
+        {engineStatus && (
+          <>
+            <div className="h-3 w-px bg-border" />
+            <EngineIndicator label="CLAUDE" mode={engineStatus.claude.mode} />
+            <div className="h-3 w-px bg-border" />
+            <EngineIndicator label="CODEX" mode={engineStatus.codex.mode} />
+          </>
+        )}
 
         <div className="h-3 w-px bg-border" />
 

@@ -1,0 +1,17 @@
+{
+  "annualLimit": 1500,
+  "monthlyLimit": 125,
+  "annualSpent": 0.08496020000000001,
+  "monthlySpent": 0.08496020000000001,
+  "currentMonthKey": "2026-04",
+  "byProvider": {
+    "claude": 0.08494460000000002,
+    "codex": 0.0000156
+  },
+  "tokensByProvider": {
+    "claude": 7939,
+    "codex": 44
+  },
+  "executionCount": 12,
+  "lastUpdated": "2026-04-08T23:12:27.064Z"
+}

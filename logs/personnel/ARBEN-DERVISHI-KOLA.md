@@ -9,7 +9,7 @@ RANGO: Teniente Backend | First Lieutenant
 FUNCION: Arquitectura, reconstruccion y endurecimiento de sistemas bajo presion
 FECHA DE NACIMIENTO: 11/10/1983
 LUGAR DE NACIMIENTO: Albania
-CONDECORACIONES: [BS] Bronze Star
+CONDECORACIONES: [BS] Bronze Star, [CM] Commendation Medal
 
 ## AMPLIACION
 
@@ -61,10 +61,11 @@ No combate destruyendo primero. Combate haciendo que lo nuestro siga en pie.
 | Medalla | Código | Misión | Fecha | Propuesto por |
 |---------|--------|--------|-------|---------------|
 | Bronze Star | [BS] | innova-scoring | 2026-03-30 | Marco Aurelio |
+| Commendation Medal | [CM] | cuentas-personales-v1 | 2026-04-11 | John |
 
 ## Historial de sanciones
 *Sin sanciones registradas*
 
 ---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
-*Última actualización de historial: 2026-04-01*
+*Última actualización de historial: 2026-04-11*

@@ -32,6 +32,16 @@ export function getBootstrapStatus() {
   return requestJson<{ bootstrapped: boolean; authenticated: boolean }>("/api/bootstrap-status");
 }
 
+export interface EngineStatus {
+  claude: { mode: "cli" | "api" | "unavailable"; cliAvailable: boolean; apiKeySet: boolean };
+  codex: { mode: "cli" | "api" | "unavailable"; cliAvailable: boolean; apiKeySet: boolean };
+  preferApi: boolean;
+}
+
+export function getEngineStatusRequest() {
+  return requestJson<EngineStatus>("/api/engine-status");
+}
+
 export function bootstrapAuth(username: string, password: string) {
   return requestJson<CommandCenterStateResponse>("/api/auth/bootstrap", {
     method: "POST",
@@ -147,6 +157,7 @@ export function recordProviderAttemptRequest(input: {
 export interface ExecuteOrderInput {
   order: string;
   provider: "claude" | "codex" | "auto";
+  agentId?: string;
   projectPath?: string;
   maxTokens?: number;
 }
@@ -156,6 +167,7 @@ export interface ExecuteOrderResult {
   output: string;
   provider: string;
   model: string;
+  agentId: string;
   costUSD: number;
   inputTokens: number;
   outputTokens: number;

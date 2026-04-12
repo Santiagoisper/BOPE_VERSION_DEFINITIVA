@@ -490,9 +490,14 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
       assignedAgents?: string[];
       estimatedBudget?: number;
     };
+    const codename = (body.codename ?? "").trim().toUpperCase();
+    if (!codename) {
+      json(response, 400, { error: "El campo 'codename' es requerido." });
+      return;
+    }
     const state = await mutateIncremental((client, currentStore) =>
       createMissionMutation(client, currentStore, {
-        codename: (body.codename ?? "").trim().toUpperCase(),
+        codename,
         title: (body.title ?? "").trim(),
         objective: (body.objective ?? "").trim(),
         priority: body.priority ?? "medium",

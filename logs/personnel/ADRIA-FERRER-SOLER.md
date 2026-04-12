@@ -9,7 +9,7 @@ RANGO: Teniente Frontend | First Lieutenant
 FUNCION: Diseño, proteccion y depuracion de la primera linea del sistema
 FECHA DE NACIMIENTO: 17/03/1997
 LUGAR DE NACIMIENTO: Barcelona, España
-CONDECORACIONES: sin condecoraciones
+CONDECORACIONES: [BS] Bronze Star
 
 ## AMPLIACION
 
@@ -65,4 +65,4 @@ Si el usuario tiene que adivinar, ya estamos perdiendo.
 
 ---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
-*Última actualización de historial: 2026-04-01*
+*Última actualización de historial: 2026-04-11*

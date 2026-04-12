@@ -9,7 +9,7 @@ RANGO: Operativo Especial | Special Operations Tier 1
 FUNCION: Ejecucion total sin friccion
 FECHA DE NACIMIENTO: 13/02/1991
 LUGAR DE NACIMIENTO: Colombia
-CONDECORACIONES: [PH] Purple Heart
+CONDECORACIONES: [PH] Purple Heart, [CM] Commendation Medal
 
 ## AMPLIACION
 
@@ -65,10 +65,11 @@ No es un soldado para todas las campañas. Es un arma de guerra contenida por ma
 | Medalla | Código | Misión | Fecha | Propuesto por |
 |---------|--------|--------|-------|---------------|
 | Purple Heart | [PH] | innova-scoring | 2026-03-30 | El propio soldado |
+| Commendation Medal | [CM] | cuentas-personales-v1 | 2026-04-11 | John |
 
 ## Historial de sanciones
 *Sin sanciones registradas*
 
 ---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
-*Última actualización de historial: 2026-04-01*
+*Última actualización de historial: 2026-04-11*

@@ -1,7 +1,7 @@
 # TABLERO DE RECORDS — BOPE
 **Cronista:** Winston Alastair MacLeod
 **Actualización:** automática al cerrar cada misión
-**Última actualización:** 2026-04-01
+**Última actualización:** 2026-04-11
 
 ---
 
@@ -11,15 +11,15 @@
 |---------|----------|---------------|-------|---------------|----------|-----------|
 | 🟡 SANTIAGO | — | — | — | — | ★★★★★ | — |
 | 🔴 JOHN | 1 | innova-scoring | 2026-03-30 | pendiente | [NC] | — |
-| 🔵 PIXEL | 1 | EDC-MODEL-SELECTOR | 2026-04-01 | pendiente | — | — |
-| 🟤 FORGE | 3 | AUTH-ROLES | 2026-04-01 | pendiente | [BS] | — |
-| 🟢 HOUSE | 1 | innova-scoring | 2026-03-30 | pendiente | [GC] | — |
+| 🔵 PIXEL | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [BS] | — |
+| 🟤 FORGE | 4 | cuentas-personales-v1 | 2026-04-11 | pendiente | [BS][CM] | — |
+| 🟢 HOUSE | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [GC][CA] | — |
 | 🟠 MARCO AURELIO | — | — | — | — | — | — |
 | 🟣 WINSTON | 1 | innova-scoring | 2026-03-30 | pendiente | [CM] | — |
 | 🩶 CERBERUS | 2 | AUTH-ROLES | 2026-04-01 | pendiente | [CA] | — |
 | 🩵 NEXUS | 1 | innova-scoring | 2026-03-30 | pendiente | [MS] | — |
 | ⚫ BLADE | — | — | — | — | — | — |
-| 🔥 SICARIO | 1 | innova-scoring | 2026-03-30 | pendiente | [PH] | — |
+| 🔥 SICARIO | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [PH][CM] | — |
 
 > **Nota:** Líneas de código pendientes de registro retroactivo. A partir de la próxima misión se registran desde el diff del commit de cierre.
 
@@ -38,6 +38,7 @@
 | # | Misión | Fecha | Rol | Líneas | Resultado |
 |---|--------|-------|-----|--------|-----------|
 | 1 | BOPE-CLAUDE-2026-EDC-MODEL-SELECTOR | 2026-04-01 | Selector dinámico frontend | pendiente | VICTORIA |
+| 2 | cuentas-personales-v1 | 2026-04-11 | UI dashboard Wave 1+2 | pendiente | VICTORIA — [BS] |
 
 ---
 
@@ -47,6 +48,7 @@
 | 1 | innova-scoring | 2026-03-30 | Backend, parser y transacciones | pendiente | VICTORIA — [BS] |
 | 2 | BOPE-CLAUDE-2026-EDC-MODEL-SELECTOR | 2026-04-01 | Derivación EDC desde protocolo | pendiente | VICTORIA |
 | 3 | BOPE-CLAUDE-2026-AUTH-ROLES | 2026-04-01 | Roles y auth backend | pendiente | VICTORIA |
+| 4 | cuentas-personales-v1 | 2026-04-11 | Backend consolidation, patrimonio fix | pendiente | VICTORIA — [CM] |
 
 ---
 
@@ -54,6 +56,7 @@
 | # | Misión | Fecha | Rol | Líneas | Resultado |
 |---|--------|-------|-----|--------|-----------|
 | 1 | innova-scoring | 2026-03-30 | QA, verificación final, validación | pendiente | VICTORIA — [GC] |
+| 2 | cuentas-personales-v1 | 2026-04-11 | Auditoría producción, 2 críticos + 8 hallazgos | pendiente | VICTORIA — [CA] |
 
 ---
 
@@ -93,6 +96,7 @@
 | # | Misión | Fecha | Rol | Líneas | Resultado |
 |---|--------|-------|-----|--------|-----------|
 | 1 | innova-scoring | 2026-03-30 | Entrada fuerza total — fase crítica | pendiente | VICTORIA — [PH] |
+| 2 | cuentas-personales-v1 | 2026-04-11 | Limpieza 11 componentes muertos, naming | pendiente | VICTORIA — [CM] |
 
 ---
 

@@ -21,6 +21,7 @@ import type {
   ProviderRecord,
   ProviderControlUpdateInput,
   ProviderGovernanceUpdateInput,
+  RefreshTokenRecord,
   SanctionRecord,
   StoredSessionRecord,
   ToolRecord,
@@ -302,6 +303,22 @@ function mapSessions(rows: Array<Record<string, unknown>>): StoredSessionRecord[
   }));
 }
 
+function mapRefreshTokens(rows: Array<Record<string, unknown>>): RefreshTokenRecord[] {
+  return rows.map((row) => ({
+    id: String(row.id),
+    username: String(row.username),
+    tokenHash: String(row.token_hash),
+    createdAt: toIso(row.created_at),
+    expiresAt: toIso(row.expires_at),
+    revokedAt: row.revoked_at ? toIso(row.revoked_at) : undefined,
+  }));
+}
+
+function filterActiveRefreshTokens(tokens: RefreshTokenRecord[]): RefreshTokenRecord[] {
+  const now = Date.now();
+  return tokens.filter((t) => !t.revokedAt && new Date(t.expiresAt).getTime() > now);
+}
+
 async function readStoreFromClient(client: PoolClient): Promise<PersistedStore | null> {
   const metaResult = await client.query("SELECT * FROM bope_meta WHERE singleton_key = 'meta'");
   if (!metaResult.rowCount) {
@@ -324,6 +341,9 @@ async function readStoreFromClient(client: PoolClient): Promise<PersistedStore |
   const budgetAlertRows = await client.query("SELECT * FROM bope_budget_alerts ORDER BY created_at DESC");
   const auditRows = await client.query("SELECT * FROM bope_audit_logs ORDER BY event_timestamp DESC");
   const sessionRows = await client.query("SELECT * FROM bope_sessions ORDER BY login_at DESC");
+  const refreshTokenRows = await client.query(
+    "SELECT * FROM bope_refresh_tokens WHERE revoked_at IS NULL AND expires_at > now() ORDER BY created_at DESC",
+  );
 
   const state: CommandCenterState = synchronizeState({
     schemaVersion: Number(metaResult.rows[0].schema_version),
@@ -352,6 +372,7 @@ async function readStoreFromClient(client: PoolClient): Promise<PersistedStore |
   return {
     state,
     sessions: filterActiveSessions(mapSessions(sessionRows.rows)),
+    refreshTokens: mapRefreshTokens(refreshTokenRows.rows),
   };
 }
 
@@ -462,6 +483,26 @@ async function deleteSessionByTokenHash(client: PoolClient, tokenHash: string): 
 
 async function deleteExpiredSessions(client: PoolClient): Promise<void> {
   await client.query("DELETE FROM bope_sessions WHERE expires_at <= now()");
+}
+
+async function insertRefreshToken(client: PoolClient, record: RefreshTokenRecord): Promise<void> {
+  await client.query(
+    `INSERT INTO bope_refresh_tokens (id, username, token_hash, created_at, expires_at)
+     VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (id) DO NOTHING`,
+    [record.id, record.username, record.tokenHash, record.createdAt, record.expiresAt],
+  );
+}
+
+async function revokeRefreshTokenByHash(client: PoolClient, tokenHash: string): Promise<void> {
+  await client.query(
+    "UPDATE bope_refresh_tokens SET revoked_at = now() WHERE token_hash = $1",
+    [tokenHash],
+  );
+}
+
+async function deleteExpiredRefreshTokens(client: PoolClient): Promise<void> {
+  await client.query("DELETE FROM bope_refresh_tokens WHERE expires_at <= now()");
 }
 
 async function upsertAuthConfig(client: PoolClient, authConfig: AuthConfigRecord | null): Promise<void> {
@@ -917,25 +958,47 @@ export async function mutateIncremental<T>(
     const store = current ?? {
       state: synchronizeState(createBootstrapState()),
       sessions: [],
+      refreshTokens: [],
     };
     const { result, nextStore } = await mutator(client, store);
     cachedStore = nextStore
       ? {
           state: synchronizeState(nextStore.state),
           sessions: filterActiveSessions(nextStore.sessions),
+          refreshTokens: filterActiveRefreshTokens(nextStore.refreshTokens),
         }
       : store;
     return result;
   });
 }
 
+async function createRefreshTokenMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  record: RefreshTokenRecord,
+): Promise<void> {
+  await deleteExpiredRefreshTokens(client);
+  await insertRefreshToken(client, record);
+}
+
+async function revokeRefreshTokenMutation(
+  client: PoolClient,
+  store: PersistedStore,
+  tokenHash: string,
+): Promise<void> {
+  void store;
+  await revokeRefreshTokenByHash(client, tokenHash);
+}
+
 export {
   bootstrapAuthMutation,
   createMissionMutation,
+  createRefreshTokenMutation,
   loginFailureMutation,
   loginSuccessMutation,
   logoutMutation,
   recordProviderAttemptMutation,
+  revokeRefreshTokenMutation,
   updateProviderControlMutation,
   updateProviderGovernanceMutation,
   updateBudgetPolicyMutation,
@@ -945,6 +1008,7 @@ async function writeStoreToClient(client: PoolClient, store: PersistedStore): Pr
   const normalized: PersistedStore = {
     state: synchronizeState(store.state),
     sessions: filterActiveSessions(store.sessions),
+    refreshTokens: filterActiveRefreshTokens(store.refreshTokens),
   };
 
   await client.query("DELETE FROM bope_sessions");
@@ -1286,6 +1350,7 @@ async function ensureSeededStore(client: PoolClient): Promise<void> {
     cachedStore = {
       state: synchronizeState(existing.state),
       sessions: filterActiveSessions(existing.sessions),
+      refreshTokens: filterActiveRefreshTokens(existing.refreshTokens ?? []),
     };
     return;
   }
@@ -1293,6 +1358,7 @@ async function ensureSeededStore(client: PoolClient): Promise<void> {
   const initialStore: PersistedStore = {
     state: synchronizeState(createBootstrapState()),
     sessions: [],
+    refreshTokens: [],
   };
 
   await writeStoreToClient(client, initialStore);
@@ -1318,6 +1384,7 @@ export async function loadStore(): Promise<PersistedStore> {
     return {
       state: synchronizeState(cachedStore.state),
       sessions: filterActiveSessions(cachedStore.sessions),
+      refreshTokens: filterActiveRefreshTokens(cachedStore.refreshTokens ?? []),
     };
   }
   return withClient(async (client) => {
@@ -1328,10 +1395,12 @@ export async function loadStore(): Promise<PersistedStore> {
     cachedStore = {
       state: synchronizeState(store.state),
       sessions: filterActiveSessions(store.sessions),
+      refreshTokens: filterActiveRefreshTokens(store.refreshTokens),
     };
     return {
       state: synchronizeState(store.state),
       sessions: filterActiveSessions(store.sessions),
+      refreshTokens: filterActiveRefreshTokens(store.refreshTokens),
     };
   });
 }
@@ -1344,6 +1413,7 @@ export async function saveStore(store: PersistedStore): Promise<void> {
     cachedStore = {
       state: synchronizeState(store.state),
       sessions: filterActiveSessions(store.sessions),
+      refreshTokens: filterActiveRefreshTokens(store.refreshTokens ?? []),
     };
   });
 }
@@ -1358,12 +1428,14 @@ export async function mutateStore<T>(
     const store = current ?? {
       state: synchronizeState(createBootstrapState()),
       sessions: [],
+      refreshTokens: [],
     };
     const { store: nextStore, result } = await mutator(store);
     await writeStoreToClient(client, nextStore);
     cachedStore = {
       state: synchronizeState(nextStore.state),
       sessions: filterActiveSessions(nextStore.sessions),
+      refreshTokens: filterActiveRefreshTokens(nextStore.refreshTokens ?? []),
     };
     return result;
   });

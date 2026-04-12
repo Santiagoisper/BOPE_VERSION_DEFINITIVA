@@ -253,9 +253,19 @@ export interface StoredSessionRecord extends SessionRecord {
   tokenHash: string;
 }
 
+export interface RefreshTokenRecord {
+  id: string;
+  username: string;
+  tokenHash: string;
+  createdAt: string;
+  expiresAt: string;
+  revokedAt?: string;
+}
+
 export interface PersistedStore {
   state: CommandCenterState;
   sessions: StoredSessionRecord[];
+  refreshTokens: RefreshTokenRecord[];
 }
 
 export interface BudgetPolicyUpdateInput {

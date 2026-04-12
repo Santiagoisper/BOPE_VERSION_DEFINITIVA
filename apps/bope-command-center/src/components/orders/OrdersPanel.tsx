@@ -2,12 +2,13 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { NewMissionForm } from "./NewMissionForm";
 import { DirectOrderForm } from "./DirectOrderForm";
+import { ExecuteForm } from "./ExecuteForm";
 
-type Tab = "mission" | "order";
+type Tab = "execute" | "mission" | "order";
 
 export function OrdersPanel() {
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState<Tab>("mission");
+  const [tab, setTab] = useState<Tab>("execute");
   const [success, setSuccess] = useState<string | null>(null);
 
   function handleSuccess(msg: string) {
@@ -61,6 +62,17 @@ export function OrdersPanel() {
 
             <div className="flex border-b border-[hsl(222_22%_14%)]">
               <button
+                onClick={() => setTab("execute")}
+                className={cn(
+                  "flex-1 py-2.5 text-[10px] font-mono font-semibold tracking-[0.12em] transition-colors border-b-2 -mb-px",
+                  tab === "execute"
+                    ? "text-amber border-amber"
+                    : "text-muted-foreground border-transparent hover:text-foreground"
+                )}
+              >
+                EJECUTAR
+              </button>
+              <button
                 onClick={() => setTab("mission")}
                 className={cn(
                   "flex-1 py-2.5 text-[10px] font-mono font-semibold tracking-[0.12em] transition-colors border-b-2 -mb-px",
@@ -69,7 +81,7 @@ export function OrdersPanel() {
                     : "text-muted-foreground border-transparent hover:text-foreground"
                 )}
               >
-                NUEVA MISIÓN
+                MISIÓN
               </button>
               <button
                 onClick={() => setTab("order")}
@@ -80,7 +92,7 @@ export function OrdersPanel() {
                     : "text-muted-foreground border-transparent hover:text-foreground"
                 )}
               >
-                ORDEN DIRECTA
+                ORDEN
               </button>
             </div>
 
@@ -90,6 +102,8 @@ export function OrdersPanel() {
                   <span className="text-green-400 text-2xl">✓</span>
                   <p className="text-[11px] font-mono text-green-400 text-center">{success}</p>
                 </div>
+              ) : tab === "execute" ? (
+                <ExecuteForm onSuccess={() => handleSuccess("Orden ejecutada.")} />
               ) : tab === "mission" ? (
                 <NewMissionForm onSuccess={() => handleSuccess("Misión registrada. Operación en planificación.")} />
               ) : (

@@ -273,7 +273,7 @@ async function runCodexCli(
     for (const [k, v] of Object.entries(process.env)) {
       if (!STRIP_KEYS.has(k) && v !== undefined) env[k] = v;
     }
-    const args = ["--quiet", prompt];
+    const args = [prompt];
     const proc = spawn("codex", args, {
       shell: process.platform === "win32",
       env,

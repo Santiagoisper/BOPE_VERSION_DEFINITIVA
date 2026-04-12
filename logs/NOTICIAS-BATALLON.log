@@ -60,3 +60,37 @@ PUNTO 5 — Lazy loading de legajos implementado
 
 FIRMADO: JOHN + WINSTON
 ══════════════════════════════════════════
+
+══════════════════════════════════════════
+📣 NOTIFICACIÓN DE BATALLÓN — 2026-04-11
+══════════════════════════════════════════
+TIPO: CONDECORACIONES — MISIÓN cuentas-personales-v1
+ORIGEN: Aprobación de SANTIAGO · Artículo 11 · Firmado por WINSTON
+
+🥈 BRONZE STAR → PIXEL (Adrià Ferrer Soler)
+   Motivo: Entrega de 10+ mejoras UI en 2 waves sin un solo error.
+   Dashboard hero, KPI 6th card, pie label, patrimonio estimado condicional,
+   renombrado Valor Neto en USD, sidebar links, footer KpiSection.
+   Primera medalla del soldado.
+
+⭐ COMMENDATION MEDAL → FORGE (Arben Dervishi Kola)
+   Motivo: Consolidación backend en cuentas-personales-v1.
+   Fix patrimonio.ts (inclusión total dólares), constants.ts centralizados,
+   eliminación doble upsert, campo duplicado removido de API.
+   Se suma a [BS] ya portado. Soldado ahora porta: [BS][CM].
+
+🎯 COMBAT ACTION RIBBON → HOUSE (William Arthur Hargreaves)
+   Motivo: Auditoría completa sobre producción en vivo.
+   Detectó 2 críticos, 5 importantes, 3 menores — todos resueltos en la misma misión.
+   Links rotos, valores hardcodeados, duplicaciones, dead code.
+   Se suma a [GC] ya portado. Soldado ahora porta: [GC][CA].
+
+⭐ COMMENDATION MEDAL → SICARIO (Mateo Esteban Salazar)
+   Motivo: Mención honorable — Wave 2 de limpieza.
+   Eliminación de 11 componentes muertos confirmados sin importaciones activas.
+   Naming cleanup, seguridad de migrations verificada.
+   Se suma a [PH] ya portado. Soldado ahora porta: [PH][CM].
+
+FIRMADO: WINSTON + JOHN
+Testigo: SANTIAGO ISBERT PERLENDER — Comandante Supremo
+══════════════════════════════════════════

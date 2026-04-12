@@ -9,7 +9,7 @@ RANGO: Especialista QA | Staff Sergeant
 FUNCION: Diagnostico, validacion extrema y aseguramiento de estabilidad operativa
 FECHA DE NACIMIENTO: 02/11/1987
 LUGAR DE NACIMIENTO: Manchester, Inglaterra
-CONDECORACIONES: [GC] Good Conduct Medal
+CONDECORACIONES: [GC] Good Conduct Medal, [CA] Combat Action Ribbon
 
 ## AMPLIACION
 
@@ -62,10 +62,11 @@ No le importa si se ve estable. Le importa si sobrevive cuando lo tocamos de ver
 | Medalla | Código | Misión | Fecha | Propuesto por |
 |---------|--------|--------|-------|---------------|
 | Good Conduct Medal | [GC] | innova-scoring | 2026-03-30 | Winston |
+| Combat Action Ribbon | [CA] | cuentas-personales-v1 | 2026-04-11 | John |
 
 ## Historial de sanciones
 *Sin sanciones registradas*
 
 ---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
-*Última actualización de historial: 2026-04-01*
+*Última actualización de historial: 2026-04-11*
