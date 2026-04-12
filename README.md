@@ -53,6 +53,12 @@ Toda mision cerrada debe quedar registrada en codex-logs, versionada en git y su
 Mi orden inicial va dirigida a JOHN RAMBO.
 ```
 
+Arranque liviano recomendado:
+
+- `powershell -ExecutionPolicy Bypass -File scripts/start-bope.ps1 -PrintOnly`
+- usa `docs/setup/template-sesion-codex-lite.md` por defecto
+- agrega `-Full` solo cuando la mision requiera arquitectura completa, memoria expandida o varios frentes
+
 ## Compatibilidad de invocacion
 
 - la carpeta canonica de arranque es `BOPE VERSION DEFINITIVA`

@@ -1,5 +1,6 @@
 Param(
-    [switch]$PrintOnly
+    [switch]$PrintOnly,
+    [switch]$Full
 )
 
 $ErrorActionPreference = "Stop"
@@ -7,7 +8,8 @@ $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $runtimePath = Join-Path $repoRoot "runtime"
 $missionPath = Join-Path $repoRoot "logs\MISION-ACTIVA.md"
-$templatePath = Join-Path $repoRoot "docs\setup\template-sesion-codex.md"
+$templateName = if ($Full) { "template-sesion-codex.md" } else { "template-sesion-codex-lite.md" }
+$templatePath = Join-Path $repoRoot ("docs\setup\" + $templateName)
 
 if (-not (Test-Path $missionPath)) {
     throw "No existe logs\MISION-ACTIVA.md. Sin mision activa no arranca BOPE."
@@ -20,6 +22,7 @@ if (-not (Test-Path $templatePath)) {
 Write-Host "BOPE ONLINE" -ForegroundColor Red
 Write-Host "SANTIAGO EN AUTORIDAD SUPREMA" -ForegroundColor Yellow
 Write-Host "JOHN RAMBO EN MANDO OPERATIVO" -ForegroundColor Yellow
+Write-Host ("Perfil de arranque: " + $(if ($Full) { "FULL" } else { "LITE" })) -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Mision activa: $missionPath"
 Write-Host "Template Codex: $templatePath"

@@ -68,3 +68,17 @@ Entregables:
 - Registro en `logs/SQUAD-COMMS.log`
 - Registro de adopcion en `docs/COMMS.log`
 Observacion: version 3.0 declarada ACTIVA por orden de Santiago.
+
+---
+
+## ORDEN 007/2026
+Fecha: 2026-04-12
+Destinatario: JOHN RAMBO
+Estado: CERRADA
+Tarea: Verificar necesidad de deploy y reducir costo de arranque BOPE
+Entregables:
+- Verificacion de que el cambio doctrinal no requiere deploy
+- `docs/setup/template-sesion-codex-lite.md` como perfil minimo
+- `scripts/start-bope.ps1` con arranque `LITE` por defecto y `-Full` opcional
+- `README.md` actualizado con instruccion de arranque liviano
+Observacion: runtime actual ya opera sobre `logs/MISION-ACTIVA.md`; el ajuste reduce costo de contexto humano, no costo de infraestructura.
