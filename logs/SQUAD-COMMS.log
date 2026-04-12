@@ -231,3 +231,4 @@ Formato: [YYYY-MM-DD HH:MM] [REMITENTE → DESTINATARIO] mensaje
 ## FIN DEL LOG — ORDEN-00 — 2026-03-29
 ──────────────────────────────────────────────
 [2026-04-08 20:23] [NEXUS ? JOHN] Reporte de integraciones completado. Puentes rotos identificados: api/ Python legacy sin uso. Docs/ desactualizados. Configs OK.
+[2026-04-12 18:40] [SANTIAGO -> JOHN] Se establece como canon el prompt de sistema `logs/JOHN-RAMBO-ORCHESTRATOR-v3.md`. Aplicacion inmediata para mando operativo y orquestacion BOPE.

@@ -55,3 +55,16 @@ Entregables:
 - Doctrina minima cargada desde `docs/AGENT-BOOTSTRAP.md`, `docs/BOPE-RULES.md`, `docs/MISION-ACTIVA.md`, `docs/COMMS.log`, `docs/ORDEN-DE-BATALLA.md`, `docs/agents/agent-registry.md`, `docs/agents/john-rambo.md` y `prompts/COMMANDER.md`
 - Registro operativo asentado en `docs/COMMS.log`
 Observacion: ruta `BOPE` no resoluble en workspace actual; se toma `BOPE VERSION DEFINITIVA` como base canonica efectiva para esta orden.
+
+---
+
+## ORDEN 006/2026
+Fecha: 2026-04-12
+Destinatario: JOHN RAMBO
+Estado: CERRADA
+Tarea: Canonizar prompt de sistema del orquestador BOPE para JOHN RAMBO
+Entregables:
+- Archivo canonico en `logs/JOHN-RAMBO-ORCHESTRATOR-v3.md`
+- Registro en `logs/SQUAD-COMMS.log`
+- Registro de adopcion en `docs/COMMS.log`
+Observacion: version 3.0 declarada ACTIVA por orden de Santiago.

@@ -3,3 +3,4 @@
 [COMMANDER] ESTADO: mision BOPE reorientada a plataforma multiagente seria | Next: redactar docs/PLATAFORMA-BOPE-vNEXT.md sobre la carpeta BOPE | Evidencia: docs/MISION-ACTIVA.md y docs/SIGUIENTE-PASO.md actualizados.
 [JOHN RAMBO] ACCION: bootstrap completado sobre `BOPE VERSION DEFINITIVA` | orden `BOPE ONLINE. CORONEL RAMBO EN MANDO.` absorbida sin conflicto | estado canonico confirmado en `docs/MISION-ACTIVA.md`
 [JOHN RAMBO] ACCION: doctrina cargada desde `BOPE VERSION DEFINITIVA` ante ruta original no resoluble | equivalencias activas: `BOPE-RULES`, `ORDEN-DE-BATALLA`, `agent-registry`, `john-rambo`, `COMMANDER` | estado: listo para recibir orden inicial de Santiago
+[JOHN RAMBO] ACCION: adoptado como canon operativo el prompt `logs/JOHN-RAMBO-ORCHESTRATOR-v3.md` | vigencia inmediata | impacto: severidad, activacion, desempates, excepciones y cierre quedan regidos por version 3.0
