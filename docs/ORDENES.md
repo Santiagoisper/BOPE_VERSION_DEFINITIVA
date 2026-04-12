@@ -42,3 +42,16 @@ Destinatario: CX
 Estado: EN EJECUCION
 Tarea: Commit documentacion operacional completa en /docs/
 Entregable esperado: hash de commit confirmado
+
+---
+
+## ORDEN 005/2026
+Fecha: 2026-04-12
+Destinatario: JOHN RAMBO
+Estado: CERRADA
+Tarea: Activacion doctrinal BOPE con Coronel Rambo en mando
+Entregables:
+- Bootstrap ejecutado sobre `BOPE VERSION DEFINITIVA`
+- Doctrina minima cargada desde `docs/AGENT-BOOTSTRAP.md`, `docs/BOPE-RULES.md`, `docs/MISION-ACTIVA.md`, `docs/COMMS.log`, `docs/ORDEN-DE-BATALLA.md`, `docs/agents/agent-registry.md`, `docs/agents/john-rambo.md` y `prompts/COMMANDER.md`
+- Registro operativo asentado en `docs/COMMS.log`
+Observacion: ruta `BOPE` no resoluble en workspace actual; se toma `BOPE VERSION DEFINITIVA` como base canonica efectiva para esta orden.
