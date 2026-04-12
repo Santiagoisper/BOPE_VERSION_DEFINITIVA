@@ -131,3 +131,9 @@
 [JOHN RAMBO] INTEL: orden de activacion pura | sin frente tecnico ni productivo abierto | documentacion solicitada parcialmente ausente y resuelta por equivalentes canonicos locales (`AGENT-BOOTSTRAP`, `BOPE-RULES`, `MISION-ACTIVA`, `COMMS`, `COMMANDER`, skills de batallon y JOHN)
 [JOHN RAMBO] REPORTE: bootstrap obligatorio leido | mision canonica `BOPE-PLATFORM-001` confirmada en progreso y sin alteracion | alias `CORONEL RAMBO` absorbido como `JOHN RAMBO` | economia operativa aplicada: no se activaron otros soldados
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-022 completada | batallon cargado doctrinalmente y listo para recibir orden operativa | evidencia asentada en `docs/COMMS.log` y `codex-logs/missions/BOPE-CODEX-2026-022.md` | listo para git y GitHub
+[SANTIAGO] ORDEN: sanear divergencias del batallon BOPE y dejar un cierre unico para la capa Codex
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-023 | saneamiento canonico del batallon y cierre asistido | objetivo: corregir persistencia derivada, normalizar legajos y automatizar sincronizacion minima de cierre
+[JOHN RAMBO] INTEL: mision doctrinal y de trazabilidad | sin riesgo productivo | activos reales: JOHN + WINSTON | foco en `codex-logs/`, `README.md` y tooling local
+[WINSTON] REPORTE: divergencias confirmadas en ultima mision visible, records, cuadro de honor y link de `PIXEL FRONT` | causa raiz: cierre manual incompleto sobre multiples artefactos derivados
+[JOHN RAMBO] ACCION: agregado `scripts/close-codex-mission.js` y comando `npm run codex:close-mission` | objetivo: sincronizar `MISIONES`, `MISION-ACTIVA`, `RECORDS`, `CUADRO-DE-HONOR`, `FICHAS`, `DOSSIER` y legajos desde una sola ejecucion
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-023 completada | capa Codex saneada y rutina unica de cierre disponible | evidencia en `codex-logs/` y script local listo para git y GitHub

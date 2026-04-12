@@ -87,6 +87,26 @@ Una mision no esta cerrada hasta que:
 
 Si no esta en GitHub, no esta cerrado.
 
+## Cierre asistido Codex
+
+Para evitar cierres parciales en `codex-logs/`, toda nueva mision de la capa Codex debe terminar con:
+
+```bash
+npm run codex:close-mission -- <MISSION_ID> <YYYY-MM-DD>
+```
+
+El comando sincroniza desde una sola ejecucion:
+
+- `codex-logs/MISIONES.md`
+- `codex-logs/MISION-ACTIVA.md`
+- `codex-logs/RECORDS.md` en su tabla maestra
+- `codex-logs/CUADRO-DE-HONOR.md` en operaciones visibles
+- `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
+- `codex-logs/DOSSIER-GENERAL-BOPE.md`
+- contadores y posicion visible en `codex-logs/personnel/*.md`
+
+Si detecta que falta detallar la mision en el bloque individual de `RECORDS.md`, lo informa para que no quede una divergencia silenciosa.
+
 ## Topologia canonica al 3 de abril de 2026
 
 El frente operativo unico de BOPE queda fijado asi:

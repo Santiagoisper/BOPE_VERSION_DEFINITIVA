@@ -7,6 +7,7 @@
     "dev:ui": "pnpm --dir apps/bope-command-center dev",
     "build:server": "pnpm --dir apps/bope-command-center-server build",
     "db:migrate": "pnpm --dir apps/bope-command-center-server db:migrate",
-    "typecheck": "pnpm --dir apps/bope-command-center-server typecheck && pnpm --dir apps/bope-command-center typecheck"
+    "typecheck": "pnpm --dir apps/bope-command-center-server typecheck && pnpm --dir apps/bope-command-center typecheck",
+    "codex:close-mission": "node scripts/close-codex-mission.js"
   }
 }

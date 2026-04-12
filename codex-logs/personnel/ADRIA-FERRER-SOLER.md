@@ -24,7 +24,7 @@
 - Operaciones acumuladas en capa Codex: `1`
 
 ## Estado de honor y record
-- Posicion actual en `RECORDS.md`: `#9`
+- Posicion actual en `RECORDS.md`: `#8`
 - Estado de record: `presencia activa`
 - Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`

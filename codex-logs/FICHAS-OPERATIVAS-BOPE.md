@@ -3,14 +3,14 @@
 ```text
 ════════════════════════════════════════════════════════════════
   BOPE — BATALLÓN EN POSICIÓN
-    Capa: CODEX  |  Fecha: 2026-04-01  |  Sync: UP TO DATE
+    Capa: CODEX  |  Fecha:   2026-04-12  |  Sync: UP TO DATE
 ════════════════════════════════════════════════════════════════
 
   ÚLTIMA MISIÓN CERRADA
-  Misión:  BOPE-CODEX-2026-018
+  Misión:  BOPE-CODEX-2026-023
   Estado:  cerrada
-  Fecha:   2026-04-01
-  Resumen: réplica fiel desde Claude de mejoras estructurales
+  Fecha:   2026-04-12
+  Resumen: La capa Codex queda saneada contra sus fuentes canonicas. Las misiones `021` y `022` pasan a reflejarse en los derivados correctos, el legajo de `PIXEL FRONT` vuelve a coincidir con el dossier y queda disponible un cierre asistido por script para sincronizar mision indice, ultima mision visible, records y cuadro de honor desde una sola ejecucion.
 
 ════════════════════════════════════════════════════════════════
 
