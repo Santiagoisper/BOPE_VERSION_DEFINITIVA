@@ -11,7 +11,7 @@ Esta matriz define como se conectan las herramientas externas al control plane d
 | OpenAI | Codex y jobs del nucleo caliente | `OPENAI_API_KEY` | `john`, `forge`, `pixel`, `nexus`, `sicario`, `blade` | modelo, costo estimado, artefacto |
 | Anthropic | QA, seguridad, arquitectura y retros | `ANTHROPIC_API_KEY` | `house`, `cerberus`, `px`, `gemini`, `marco`, `winston` | modelo, findings o resumen |
 | Perplexity | research puntual | `PERPLEXITY_API_KEY` | `scout` | fuente, fecha, impacto |
-| OpenHands | CLI o plataforma hospedada de agentes como apoyo externo y simulacros de entrenamiento | `OPENHANDS_API_KEY` | `john`, `nexus` | run URL, tarea ejecutada, impacto, aprendizaje extraido |
+| OpenHands | CLI, SDK o plataforma hospedada de agentes como apoyo externo, simulacros y ejecucion controlada sobre repos | `OPENHANDS_API_KEY`, `OPENHANDS_BASE_URL` | `john`, `nexus`, `oh-openhands` | run URL o session ID, repo o rama afectada, tarea ejecutada, diff o artefacto, impacto, aprendizaje extraido |
 | Open WebUI | soporte local y costo cero | `OPENWEBUI_API_KEY`, `BOPE_OPENWEBUI_BASE_URL`, `BOPE_OPENWEBUI_MODEL` | `blade`, `nexus` | modelo, evidencia local |
 | Groq | fallback gratuito para triage | `GROQ_API_KEY` | `nexus`, `scout` | modelo, costo cero, salida |
 | GitHub Copilot | apoyo dentro de VS Code, no como fuente de verdad del job | licencia/extension del IDE | `santiago` humano + nucleo caliente | artefacto final en repo, no sugerencia aislada |
@@ -25,10 +25,11 @@ Esta matriz define como se conectan las herramientas externas al control plane d
 5. Anthropic
 6. n8n
 7. Perplexity
-8. OpenHands como apoyo externo si agrega valor real
+8. OpenHands como apoyo externo si agrega valor real o si `OH OPENHANDS` fue activado por JOHN en modo prospect
 9. Open WebUI y Groq como optimizacion de costo
 
 ## Regla
 
 - Si una tool no deja evidencia, no cuenta.
 - Si una credencial no existe, el agente debe degradar con elegancia y registrar el gap.
+- `OH OPENHANDS` nunca sustituye la cadena de mando: OpenHands es motor de ejecucion, no autoridad doctrinal.

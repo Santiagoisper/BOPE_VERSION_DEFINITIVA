@@ -19,3 +19,4 @@
 [WINSTON SCRIBE] THEATER ARCHIVE: mission_id=BOPE-TRAIN-RAMBO-001 | inputs_y_outputs_archivados=si | teatro=docs/training/theaters/BOPE-TRAIN-RAMBO-001
 [JOHN RAMBO] JOB: job_id=BOPE-VC-JOB-001 | frente=mixto | agente=john | evidencia=Registro de JOB/HANDOFF/CIERRE en COMMS.log
 [JOHN RAMBO] CIERRE: job_id=BOPE-VC-JOB-001 | decision=JOHN resuelve solo por falta de un frente especializado explicito. | siguiente=Registrar decision de mando y ejecutar frente minimo.
+[JOHN RAMBO] ACTIVACION: `OH OPENHANDS` dado de alta como prospect experimental | alcance=ejecucion autonoma controlada sobre repos y sandbox | restricciones=no escribe estado canonico, no cierra misiones, solo entra por JOHN con evidencia verificable

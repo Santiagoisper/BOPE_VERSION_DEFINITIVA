@@ -17,12 +17,14 @@ Este indice centraliza los legajos clasificados del batallon activo en BOPE Visu
 | `MARCO AURELIO HERALD` | [marco-aurelio-de-almeida.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/agents/dossiers/marco-aurelio-de-almeida.md) |
 | `BLADE KILLER` | [nikola-vukovic.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/agents/dossiers/nikola-vukovic.md) |
 | `SICARIO LOCO` | [mateo-esteban-salazar.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/agents/dossiers/mateo-esteban-salazar.md) |
+| `OH OPENHANDS` | [oh-openhands.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VERSION%20DEFINITIVA/docs/agents/dossiers/oh-openhands.md) |
 
 ## Regla de uso
 
 - Los dossiers sirven para entender perfil, limites y doctrina de empleo.
 - No reemplazan `logs/MISION-ACTIVA.md`, `docs/architecture/john-flow.md` ni la cadena de mando.
 - Toda activacion real sigue entrando por JOHN y toda autoridad final sigue en SANTIAGO.
+- `OH OPENHANDS` figura como prospect: su lectura es obligatoria antes de cualquier activacion experimental.
 
 ## Juramento fundacional
 

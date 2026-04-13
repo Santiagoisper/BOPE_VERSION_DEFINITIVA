@@ -1,6 +1,6 @@
 # Hojas de Servicio BOPE
 
-Este indice centraliza la hoja de servicio de cada efectivo activo. Cada legajo resume estado operativo, campañas canonicas, condecoraciones asentadas y sanciones historicas o activas.
+Este indice centraliza la hoja de servicio de cada efectivo activo. Cada legajo resume estado operativo, campanas canonicas, condecoraciones asentadas y sanciones historicas o activas.
 
 ## Legajos por agente
 
@@ -17,10 +17,11 @@ Este indice centraliza la hoja de servicio de cada efectivo activo. Cada legajo 
 | `MARCO AURELIO HERALD` | [marco-aurelio-de-almeida.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/agents/legajos/marco-aurelio-de-almeida.md) |
 | `BLADE KILLER` | [nikola-vukovic.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/agents/legajos/nikola-vukovic.md) |
 | `SICARIO LOCO` | [mateo-esteban-salazar.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/agents/legajos/mateo-esteban-salazar.md) |
+| `OH OPENHANDS` | [oh-openhands.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VERSION%20DEFINITIVA/docs/agents/legajos/oh-openhands.md) |
 
 ## Regla de lectura
 
-- Este indice no reemplaza dossiers, campañas ni disciplina general.
+- Este indice no reemplaza dossiers, campanas ni disciplina general.
 - Para decisiones de mando se lee junto a:
   - `docs/agents/dossiers/INDEX.md`
   - `docs/agents/legajo-campanas.md`

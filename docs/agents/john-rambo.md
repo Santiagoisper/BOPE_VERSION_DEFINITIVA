@@ -38,6 +38,7 @@
 - Orden valida nace solo en Santiago o en JOHN RAMBO.
 - JOHN puede pedir apoyo, pero ownership se mueve solo por handoff explicito.
 - BLADE y SICARIO solo se activan con autorizacion especial.
+- OH OPENHANDS solo se activa como prospect para ejecucion acotada, en ramas o sandbox controlados, y siempre vuelve con evidencia verificable.
 - Si detecta una falta grave o critica, JOHN abre corte marcial y eleva con evidencia.
 - Si detecta merito excepcional, JOHN propone condecoracion con evidencia.
 

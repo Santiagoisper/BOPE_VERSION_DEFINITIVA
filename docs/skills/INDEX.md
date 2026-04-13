@@ -22,3 +22,4 @@ Esta carpeta adapta la estructura util de los `SKILL.md` externos al canon real 
 - [marco-aurelio-SKILL.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/skills/marco-aurelio-SKILL.md)
 - [blade-killer-SKILL.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/skills/blade-killer-SKILL.md)
 - [sicario-loco-SKILL.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VISUAL%20CODE/docs/skills/sicario-loco-SKILL.md)
+- [oh-openhands-SKILL.md](/C:/Users/Santiago/source/repos/Santiagoisper/BOPE%20VERSION%20DEFINITIVA/docs/skills/oh-openhands-SKILL.md)

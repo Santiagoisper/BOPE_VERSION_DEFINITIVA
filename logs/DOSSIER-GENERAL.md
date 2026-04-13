@@ -26,6 +26,7 @@ Fuente consolidada de identidades, funciones y legajos personales del batallon e
 | `NEXUS WIRE` | Darius Wei Tan | `Gunnery Sergeant` | Integrador | `22/04/1992` | Activo | [DARIUS-WEI-TAN.md](personnel/DARIUS-WEI-TAN.md) |
 | `BLADE KILLER` | Nikola Vukovic | `Force Recon` | Reserva Especial | `05/06/1989` | Activo | [NIKOLA-VUKOVIC.md](personnel/NIKOLA-VUKOVIC.md) |
 | `SICARIO LOCO` | Mateo Esteban Salazar | `Special Operations Tier 1` | Operativo Especial | `13/02/1991` | Activo | [MATEO-ESTEBAN-SALAZAR.md](personnel/MATEO-ESTEBAN-SALAZAR.md) |
+| `OH OPENHANDS` | OpenHands Runtime Unit | `Prospect` | Ejecutor autonomo externo en prueba controlada | `n/a` | Prospect | [OH-OPENHANDS.md](personnel/OH-OPENHANDS.md) |
 
 ## Actualizacion por defecto
 
