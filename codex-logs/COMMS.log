@@ -137,3 +137,8 @@
 [WINSTON] REPORTE: divergencias confirmadas en ultima mision visible, records, cuadro de honor y link de `PIXEL FRONT` | causa raiz: cierre manual incompleto sobre multiples artefactos derivados
 [JOHN RAMBO] ACCION: agregado `scripts/close-codex-mission.js` y comando `npm run codex:close-mission` | objetivo: sincronizar `MISIONES`, `MISION-ACTIVA`, `RECORDS`, `CUADRO-DE-HONOR`, `FICHAS`, `DOSSIER` y legajos desde una sola ejecucion
 [JOHN RAMBO] CIERRE: BOPE-CODEX-2026-023 completada | capa Codex saneada y rutina unica de cierre disponible | evidencia en `codex-logs/` y script local listo para git y GitHub
+[SANTIAGO] ORDEN: BOPE ONLINE. CORONEL RAMBO EN MANDO. Activar el grupo BOPE, cargar doctrina desde ruta indicada y operar con economia operativa; todo cierre debe quedar subido a GitHub
+[JOHN RAMBO] MISION: BOPE-CODEX-2026-024 | activacion BOPE bajo CORONEL RAMBO con carga doctrinal dirigida | objetivo: absorber la orden, validar fuentes locales reales y dejar al batallon en posicion con cierre versionable
+[JOHN RAMBO] INTEL: orden de activacion y encuadre doctrinal | ruta pedida `C:\Users\Santiago\source\repos\Santiagoisper\BOPE` no existe en este workspace | equivalencias canonicas verificadas en `BOPE VERSION DEFINITIVA` | activos reales: JOHN + WINSTON
+[WINSTON] REPORTE: activacion asentada con evidencia verificable | bootstrap obligatorio y estado canonico leidos | la base efectiva queda fijada en `BOPE VERSION DEFINITIVA` y el cierre en `codex-logs/missions/BOPE-CODEX-2026-024.md`
+[JOHN RAMBO] CIERRE: BOPE-CODEX-2026-024 completada | doctrina cargada con economia operativa y sin refuerzos innecesarios | listo para git y GitHub

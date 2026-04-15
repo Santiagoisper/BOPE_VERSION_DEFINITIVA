@@ -3,14 +3,14 @@
 ```text
 ════════════════════════════════════════════════════════════════
   BOPE — BATALLÓN EN POSICIÓN
-    Capa: CODEX  |  Fecha:   2026-04-12  |  Sync: UP TO DATE
+    Capa: CODEX  |  Fecha:   2026-04-15  |  Sync: UP TO DATE
 ════════════════════════════════════════════════════════════════
 
   ÚLTIMA MISIÓN CERRADA
-  Misión:  BOPE-CODEX-2026-023
+  Misión:  BOPE-CODEX-2026-024
   Estado:  cerrada
-  Fecha:   2026-04-12
-  Resumen: La capa Codex queda saneada contra sus fuentes canonicas. Las misiones `021` y `022` pasan a reflejarse en los derivados correctos, el legajo de `PIXEL FRONT` vuelve a coincidir con el dossier y queda disponible un cierre asistido por script para sincronizar mision indice, ultima mision visible, records y cuadro de honor desde una sola ejecucion.
+  Fecha:   2026-04-15
+  Resumen: La activacion quedo absorbida sin conflicto por `JOHN RAMBO`. La ruta pedida a `BOPE` no resolvio en este workspace y se sustituyo por la base canonica `BOPE VERSION DEFINITIVA`, usando `AGENT-BOOTSTRAP`, `BOPE-RULES`, `ORDEN-DE-BATALLA`, `agent-registry`, `john-rambo`, `COMMS.log` y `COMMANDER` como equivalencias operativas verificables. El batallon queda en `STANDBY`, con doctrina cargada y sin despliegues extra por no existir frente tecnico abierto.
 
 ════════════════════════════════════════════════════════════════
 

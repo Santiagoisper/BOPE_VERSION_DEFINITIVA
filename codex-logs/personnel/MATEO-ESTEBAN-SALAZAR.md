@@ -23,10 +23,10 @@
   - rastreo humano
   - combate cercano
   - obtencion coercitiva de informacion bajo mando
-- Operaciones acumuladas en capa Codex: `2`
+- Operaciones acumuladas en capa Codex: `0`
 
 ## Estado de honor y record
-- Posicion actual en `RECORDS.md`: `#8`
+- Posicion actual en `RECORDS.md`: `#10`
 - Estado de record: `empate tecnico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[PH] Purple Heart`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`

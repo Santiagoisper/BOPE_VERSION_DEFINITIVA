@@ -10,10 +10,10 @@ Fuente canonica de estado para operaciones BOPE bajo Codex.
 
 ## Ultima mision cerrada
 
-- Mision: `BOPE-CODEX-2026-023`
+- Mision: `BOPE-CODEX-2026-024`
 - Estado: `cerrada`
-- Fecha: `2026-04-12`
-- Resumen: `La capa Codex queda saneada contra sus fuentes canonicas. Las misiones `021` y `022` pasan a reflejarse en los derivados correctos, el legajo de `PIXEL FRONT` vuelve a coincidir con el dossier y queda disponible un cierre asistido por script para sincronizar mision indice, ultima mision visible, records y cuadro de honor desde una sola ejecucion.`021` y `022` pasan a reflejarse en los derivados correctos, el legajo de `PIXEL FRONT` vuelve a coincidir con el dossier y queda disponible un cierre asistido por script para sincronizar mision indice, ultima mision visible, records y cuadro de honor desde una sola ejecucion.`021` y `022` pasan a reflejarse en los derivados correctos, el legajo de `PIXEL FRONT` vuelve a coincidir con el dossier y queda disponible un cierre asistido por script para sincronizar mision indice, ultima mision visible, records y cuadro de honor desde una sola ejecucion.`
+- Fecha: `2026-04-15`
+- Resumen: `Activacion absorbida por JOHN RAMBO con doctrina cargada desde BOPE VERSION DEFINITIVA y batallon en STANDBY sin refuerzos innecesarios.`
 
 ## Aprendizaje clave
 
