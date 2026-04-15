@@ -5,3 +5,4 @@
 [JOHN RAMBO] ACCION: doctrina cargada desde `BOPE VERSION DEFINITIVA` ante ruta original no resoluble | equivalencias activas: `BOPE-RULES`, `ORDEN-DE-BATALLA`, `agent-registry`, `john-rambo`, `COMMANDER` | estado: listo para recibir orden inicial de Santiago
 [JOHN RAMBO] ACCION: adoptado como canon operativo el prompt `logs/JOHN-RAMBO-ORCHESTRATOR-v3.md` | vigencia inmediata | impacto: severidad, activacion, desempates, excepciones y cierre quedan regidos por version 3.0
 [JOHN RAMBO] ACCION: arranque LITE habilitado para Codex | `scripts/start-bope.ps1` usa `template-sesion-codex-lite.md` por defecto y conserva `-Full` para contexto expandido | objetivo: reducir costo de contexto al iniciar sin tocar runtime ni deploy
+[JOHN RAMBO] CIERRE: `BOPE-CLAUDE-2026-ACTIVACION-RAMBO` completada | activacion doctrinal confirmada sobre `BOPE VERSION DEFINITIVA` | evidencia en `logs/missions/BOPE-CLAUDE-2026-ACTIVACION-RAMBO.md` | listo para git y GitHub

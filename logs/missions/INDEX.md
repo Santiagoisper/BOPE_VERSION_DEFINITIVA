@@ -5,3 +5,4 @@
 
 | Fecha cierre | Nombre misión | Estado | Resultado (una línea) |
 |--------------|---------------|--------|-----------------------|
+| 2026-04-15 | BOPE-CLAUDE-2026-ACTIVACION-RAMBO | cerrada | BOPE activado con JOHN RAMBO en mando, doctrina cargada desde `BOPE VERSION DEFINITIVA` y sesion lista para orden inicial |
