@@ -3,14 +3,14 @@
 ```text
 ════════════════════════════════════════════════════════════════
   BOPE — BATALLÓN EN POSICIÓN
-    Capa: CODEX  |  Fecha:   2026-04-15  |  Sync: UP TO DATE
+    Capa: CODEX  |  Fecha:   2026-04-17  |  Sync: UP TO DATE
 ════════════════════════════════════════════════════════════════
 
   ÚLTIMA MISIÓN CERRADA
-  Misión:  BOPE-CODEX-2026-024
+  Misión:  BOPE-CODEX-2026-025
   Estado:  cerrada
-  Fecha:   2026-04-15
-  Resumen: La activacion quedo absorbida sin conflicto por `JOHN RAMBO`. La ruta pedida a `BOPE` no resolvio en este workspace y se sustituyo por la base canonica `BOPE VERSION DEFINITIVA`, usando `AGENT-BOOTSTRAP`, `BOPE-RULES`, `ORDEN-DE-BATALLA`, `agent-registry`, `john-rambo`, `COMMS.log` y `COMMANDER` como equivalencias operativas verificables. El batallon queda en `STANDBY`, con doctrina cargada y sin despliegues extra por no existir frente tecnico abierto.
+  Fecha:   2026-04-17
+  Resumen: La activacion queda absorbida por `JOHN RAMBO` sin conflicto ni refuerzos. La ruta solicitada `C:\Users\Santiago\source\repos\Santiagoisper\BOPE` no existe en este workspace y se normaliza contra la base canonica `BOPE VERSION DEFINITIVA`. Se aplican equivalencias operativas verificables para la doctrina requerida: `docs/BOPE-DOCTRINA.md -> docs/BOPE-RULES.md`, `docs/BOPE-BATALLON.md -> docs/ORDEN-DE-BATALLA.md`, `docs/BOPE-ECONOMIA-OPERATIVA.md -> README.md (seccion economia operativa)`, `docs/BOPE-IDENTIDADES.md -> docs/agents/agent-registry.md`, `docs/BOPE-PROTOCOLO-COMUNICACIONES.md -> docs/COMMS.log + codex-logs/PROTOCOLO-INTERCAPAS.md`, `docs/BOPE-PERSISTENCIA-GITHUB.md -> codex-logs/PROTOCOLO-INTERCAPAS.md + flujo git`, `prompts/BOPE-LEADER.md -> prompts/COMMANDER.md`.
 
 ════════════════════════════════════════════════════════════════
 

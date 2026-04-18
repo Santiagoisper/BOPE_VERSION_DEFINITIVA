@@ -14,7 +14,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | Soldado | Misiones | Ultima mision | Fecha | Lineas aprox. | Medallas | Sanciones |
 |---|---:|---|---|---:|---|---|
 | `SANTIAGO` | 0 | `-` | `-` | 0 | `sin condecoraciones` | `ninguna` |
-| `JOHN RAMBO` | 14 | `BOPE-CODEX-2026-024` | `2026-04-15` | 249 | `Navy Cross` | `ninguna` |
+| `JOHN RAMBO` | 15 | `BOPE-CODEX-2026-025` | `2026-04-17` | 249 | `Navy Cross` | `ninguna` |
 | `PIXEL` | 1 | `BOPE-CODEX-2026-001` | `2026-02-17` | 14 | `sin condecoraciones` | `ninguna` |
 | `FORGE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 65 | `Bronze Star` | `ninguna` |
 | `HOUSE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 18 | `Good Conduct Medal` | `ninguna` |
@@ -45,6 +45,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | `BOPE-CODEX-2026-022` | mando doctrinal | 12 | activacion doctrinal absorbida por la capa Codex sin refuerzos innecesarios |
 | `BOPE-CODEX-2026-023` | mando doctrinal | 16 | saneamiento canonico y cierre asistido del batallon asentados |
 | `BOPE-CODEX-2026-024` | mando doctrinal | 12 | activacion dirigida absorbida con ruta real corregida y doctrina local verificada |
+| `BOPE-CODEX-2026-025` | mando doctrinal | 12 | activacion absorbida con equivalencias doctrinales y economia operativa estricta |
 
 ### PIXEL
 
@@ -115,5 +116,3 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 |---|---|---:|---|
 | `BOPE-CODEX-2026-002` | alta operativa | 4 | incorporacion visible al roster |
 | `BOPE-CODEX-2026-009` | fase critica bajo mando | 6 | Purple Heart asentada |
-
-

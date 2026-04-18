@@ -10,10 +10,10 @@ Fuente canonica de estado para operaciones BOPE bajo Codex.
 
 ## Ultima mision cerrada
 
-- Mision: `BOPE-CODEX-2026-024`
+- Mision: `BOPE-CODEX-2026-025`
 - Estado: `cerrada`
-- Fecha: `2026-04-15`
-- Resumen: `Activacion absorbida por JOHN RAMBO con doctrina cargada desde BOPE VERSION DEFINITIVA y batallon en STANDBY sin refuerzos innecesarios.`
+- Fecha: `2026-04-17`
+- Resumen: `Activacion absorbida por JOHN RAMBO con bootstrap doctrinal dirigido, equivalencias canonicas verificadas y batallon en STANDBY con economia operativa estricta.`
 
 ## Aprendizaje clave
 

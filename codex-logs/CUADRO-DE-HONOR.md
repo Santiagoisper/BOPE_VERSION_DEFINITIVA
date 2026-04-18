@@ -20,7 +20,7 @@ Estado visible del medallero BOPE para Codex.
 | Integrante | Operaciones |
 |---|---:|
 | `SANTIAGO` | 0 |
-| `JOHN RAMBO` | 14 |
+| `JOHN RAMBO` | 15 |
 | `PIXEL` | 1 |
 | `FORGE` | 2 |
 | `HOUSE` | 2 |
@@ -52,7 +52,7 @@ CUADRO DE HONOR BOPE
 ========================================
 1. [## ##] NAVY CROSS
    Ganador: JOHN RAMBO
-   Operaciones: 14
+   Operaciones: 15
 
 2. [# == #] BRONZE STAR
    Ganador: FORGE

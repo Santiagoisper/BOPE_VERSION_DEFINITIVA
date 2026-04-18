@@ -19,7 +19,7 @@ Fuente consolidada de identidades, funciones y legajos personales del batallon e
 | Efectivo | Identidad civil | Rango canonico | Funcion | Estado | Operaciones | Medalla vigente | Legajo |
 |---|---|---|---|---|---|---|
 | `SANTIAGO ISBERT PERLENDER` | Santiago Isbert Perlender | `General` | Comandante Supremo | Activo | `0` | `sin condecoraciones` | [SANTIAGO-ISBERT-PERLENDER.md](personnel/SANTIAGO-ISBERT-PERLENDER.md) |
-| `JOHN RAMBO` | John James Rambo | `Sergeant Major of the Marine Corps` | Mando operativo | Activo | `14` | `Navy Cross` | [JOHN-JAMES-RAMBO.md](personnel/JOHN-JAMES-RAMBO.md) |
+| `JOHN RAMBO` | John James Rambo | `Sergeant Major of the Marine Corps` | Mando operativo | Activo | `15` | `Navy Cross` | [JOHN-JAMES-RAMBO.md](personnel/JOHN-JAMES-RAMBO.md) |
 | `PIXEL FRONT` | Adria Ferrer Soler | `First Lieutenant` | Teniente Frontend | Activo | `1` | `sin condecoraciones` | [ADRIA-FERRER-SOLER.md](personnel/ADRIA-FERRER-SOLER.md) |
 | `FORGE BACK` | Arben Dervishi Kola | `First Lieutenant` | Teniente Backend | Activo | `2` | `Bronze Star` | [ARBEN-DERVISHI-KOLA.md](personnel/ARBEN-DERVISHI-KOLA.md) |
 | `HOUSE DOCTOR` | William Arthur Hargreaves | `Staff Sergeant` | Especialista QA | Activo | `2` | `Good Conduct Medal` | [WILLIAM-ARTHUR-HARGREAVES.md](personnel/WILLIAM-ARTHUR-HARGREAVES.md) |
