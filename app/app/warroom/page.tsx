@@ -592,6 +592,8 @@ export default function WarRoom() {
   const [commsLog, setCommsLog] = useState<string[]>(['[BOPE COMMS] · Monitoreo pasivo iniciado — sin costo API']);
   const [expandedSoldier, setExpandedSoldier] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [monitoredMission, setMonitoredMission] = useState<string | null>(null);
+  const commsRef = useRef<HTMLDivElement | null>(null);
   const evtRef = useRef<EventSource | null>(null);
 
   function copyOrchestratorCmd(missionId: string) {
@@ -600,6 +602,69 @@ export default function WarRoom() {
     setCopiedId(missionId);
     setTimeout(() => setCopiedId(null), 2000);
   }
+
+  function connectSSE(slug: string) {
+    if (evtRef.current) evtRef.current.close();
+    setCommsLog([`[BOPE COMMS] · Conectando a misión ${slug}…`]);
+    const es = new EventSource(`/api/mission/${slug}/sse`);
+
+    // Format a log line from an SSE event data object
+    const fmt = (data: Record<string, unknown>) => {
+      const ts = new Date().toLocaleTimeString();
+      const agent = data.agent ? `[${data.agent}→${data.to ?? '?'}] ` : '';
+      const kind = data.kind ? `${data.kind} ` : '';
+      const summary = (data.summary as string) ?? data.message ?? JSON.stringify(data).slice(0, 100);
+      const status = data.status ? ` (${data.status})` : '';
+      return `[${ts}] ${agent}${kind}${summary}${status}`;
+    };
+
+    // Handle each named event type the SSE route sends
+    const handleNamed = (e: MessageEvent) => {
+      try {
+        const d = JSON.parse(e.data) as Record<string, unknown>;
+        setCommsLog(prev => {
+          const updated = [...prev.slice(-199), fmt(d)];
+          // Auto-scroll
+          setTimeout(() => {
+            if (commsRef.current) commsRef.current.scrollTop = commsRef.current.scrollHeight;
+          }, 0);
+          return updated;
+        });
+      } catch { /* ignore malformed */ }
+    };
+
+    // IMPORTANT: the SSE route sends NAMED events (event: AGENT_REPLIED, etc.).
+    // EventSource.onmessage only fires for UNNAMED events (no `event:` field in the stream).
+    // Named events require explicit addEventListener calls — otherwise they are silently dropped.
+    es.addEventListener('AGENT_REPLIED', handleNamed);
+    es.addEventListener('HANDOFF_INITIATED', handleNamed);
+    es.addEventListener('MISSION_UPDATED', handleNamed);
+    es.addEventListener('system_log', (e: MessageEvent) => {
+      try {
+        const d = JSON.parse(e.data) as Record<string, unknown>;
+        const msg = (d.message as string) ?? '';
+        if (msg === '·') return; // skip heartbeats
+        const ts = new Date().toLocaleTimeString();
+        setCommsLog(prev => [...prev.slice(-199), `[${ts}] ${msg}`]);
+      } catch { /* ignore */ }
+    });
+
+    // Fallback for any unnamed messages
+    es.onmessage = (e: MessageEvent) => {
+      try {
+        const d = JSON.parse(e.data) as Record<string, unknown>;
+        setCommsLog(prev => [...prev.slice(-199), fmt(d)]);
+      } catch { /* ignore */ }
+    };
+
+    es.onerror = () => {
+      const ts = new Date().toLocaleTimeString();
+      setCommsLog(prev => [...prev.slice(-199), `[${ts}] [SSE] Reconectando…`]);
+    };
+
+    evtRef.current = es;
+  }
+
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -651,24 +716,22 @@ export default function WarRoom() {
     load();
   }
 
-  // SSE
+  // SSE — connect when monitoredMission changes
+  useEffect(() => {
+    if (!monitoredMission) return;
+    connectSSE(monitoredMission);
+    return () => { if (evtRef.current) evtRef.current.close(); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [monitoredMission]);
+
+  // Auto-connect SSE to active mission when switching to APROBACIONES (if no mission already selected)
   useEffect(() => {
     if (tab !== 'aprobaciones') return;
+    if (monitoredMission) return; // already connected
     const activeMission = missions.find(m => m.status === 'active');
     if (!activeMission) return;
-    const slug = activeMission.mission_id;
-    if (evtRef.current) evtRef.current.close();
-    const es = new EventSource(`/api/mission/${slug}/sse`);
-    es.onmessage = (e) => {
-      try {
-        const d = JSON.parse(e.data);
-        const line = `[${new Date().toLocaleTimeString()}] ${d.type ?? 'event'}: ${JSON.stringify(d.payload ?? d).slice(0, 120)}`;
-        setCommsLog(prev => [...prev.slice(-199), line]);
-      } catch {}
-    };
-    evtRef.current = es;
-    return () => es.close();
-  }, [tab, missions]);
+    setMonitoredMission(activeMission.mission_id);
+  }, [tab, missions, monitoredMission]);
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'mando', label: 'MANDO' },
@@ -1020,6 +1083,20 @@ export default function WarRoom() {
                               }}>▶ ADVANCE RAMBO</button>
                             )}
                             <button
+                              onClick={() => {
+                                setMonitoredMission(m.mission_id);
+                              }}
+                              title={`Monitorear misión ${m.mission_id} vía SSE`}
+                              style={{
+                                background: monitoredMission === m.mission_id ? '#4169E1' : '#111',
+                                color: monitoredMission === m.mission_id ? '#fff' : '#4169E1',
+                                border: `1px solid ${monitoredMission === m.mission_id ? '#4169E1' : '#4169E130'}`,
+                                borderRadius: 7, padding: '10px 14px', cursor: 'pointer',
+                                fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: 1,
+                                transition: 'all 0.2s',
+                              }}
+                            >{monitoredMission === m.mission_id ? '📡 LIVE' : '📡 MONITOR'}</button>
+                            <button
                               onClick={() => copyOrchestratorCmd(m.mission_id)}
                               title={`bun run bope:orchestrator --mission ${m.mission_id} --base-url http://localhost:3000`}
                               style={{
@@ -1036,6 +1113,43 @@ export default function WarRoom() {
                       </div>
                     );
                   })}
+                </div>
+              )}
+
+              {/* COMMS live panel — visible in MISIONES tab when monitoring */}
+              {monitoredMission && (
+                <div style={{ marginTop: 32 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+                    <SectionTitle>COMMS LIVE — {monitoredMission}</SectionTitle>
+                    <button
+                      onClick={() => { if (evtRef.current) evtRef.current.close(); setMonitoredMission(null); }}
+                      style={{
+                        background: 'none', border: '1px solid #333', borderRadius: 6,
+                        color: '#666', fontSize: 12, fontFamily: 'var(--font-mono)',
+                        cursor: 'pointer', padding: '4px 10px', marginBottom: 10,
+                      }}
+                    >✕ desconectar</button>
+                  </div>
+                  <div style={{ fontSize: 12, color: '#555', fontFamily: 'var(--font-mono)', marginBottom: 10 }}>
+                    SSE stream en vivo · bope_messages · sin costo API
+                  </div>
+                  <div
+                    ref={commsRef}
+                    style={{
+                      background: '#050505', border: '1px solid #1a1a1a', borderRadius: 10,
+                      padding: '16px 20px', height: 320, overflowY: 'auto', fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    {commsLog.map((line, i) => {
+                      const isOrder = line.includes('ORDER');
+                      const isBlocked = line.includes('BLOCKED') || line.includes('failed');
+                      const isCompleted = line.includes('COMPLETED');
+                      const color = isBlocked ? '#EF4444' : isCompleted ? '#22C55E' : isOrder ? '#FFD700' : '#4169E1';
+                      return (
+                        <div key={i} style={{ fontSize: 13, color, marginBottom: 4, lineHeight: 1.6 }}>{line}</div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
@@ -1183,17 +1297,40 @@ export default function WarRoom() {
 
               {/* COMMS inline */}
               <div style={{ marginTop: 32 }}>
-                <SectionTitle>COMMS — MONITOREO PASIVO</SectionTitle>
-                <div style={{ fontSize: 12, color: '#555', fontFamily: 'var(--font-mono)', marginBottom: 12 }}>
-                  SSE stream · monitoreo pasivo · sin costo API
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', marginBottom: 6 }}>
+                  <SectionTitle>COMMS — MONITOREO EN VIVO</SectionTitle>
+                  {monitoredMission && (
+                    <button
+                      onClick={() => { if (evtRef.current) evtRef.current.close(); setMonitoredMission(null); }}
+                      style={{
+                        background: 'none', border: '1px solid #333', borderRadius: 6,
+                        color: '#666', fontSize: 12, fontFamily: 'var(--font-mono)',
+                        cursor: 'pointer', padding: '4px 10px', marginBottom: 10,
+                      }}
+                    >✕ desconectar</button>
+                  )}
                 </div>
-                <div style={{
-                  background: '#050505', border: '1px solid #1a1a1a', borderRadius: 10,
-                  padding: '16px 20px', height: 280, overflowY: 'auto', fontFamily: 'var(--font-mono)',
-                }}>
-                  {commsLog.map((line, i) => (
-                    <div key={i} style={{ fontSize: 13, color: '#22C55E', marginBottom: 4, lineHeight: 1.6 }}>{line}</div>
-                  ))}
+                <div style={{ fontSize: 12, color: '#555', fontFamily: 'var(--font-mono)', marginBottom: 12 }}>
+                  {monitoredMission
+                    ? `SSE activo · misión ${monitoredMission} · sin costo API`
+                    : 'SSE inactivo · seleccioná una misión para monitorear'}
+                </div>
+                <div
+                  ref={commsRef}
+                  style={{
+                    background: '#050505', border: '1px solid #1a1a1a', borderRadius: 10,
+                    padding: '16px 20px', height: 320, overflowY: 'auto', fontFamily: 'var(--font-mono)',
+                  }}
+                >
+                  {commsLog.map((line, i) => {
+                    const isOrder = line.includes('ORDER');
+                    const isBlocked = line.includes('BLOCKED') || line.includes('failed');
+                    const isCompleted = line.includes('COMPLETED');
+                    const color = isBlocked ? '#EF4444' : isCompleted ? '#22C55E' : isOrder ? '#FFD700' : '#4169E1';
+                    return (
+                      <div key={i} style={{ fontSize: 13, color, marginBottom: 4, lineHeight: 1.6 }}>{line}</div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

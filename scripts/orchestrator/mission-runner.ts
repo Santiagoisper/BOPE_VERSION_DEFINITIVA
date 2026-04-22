@@ -11,7 +11,7 @@
  *  7. On error: publish REPORT with error summary.
  */
 
-import { execSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { BopeHttpClient } from './http-client.ts';
 import { runCodex, runClaude } from './engines/cli-runner.ts';
 import type { OrchestratorOptions, PlanV1, PlanTask } from './types.ts';
@@ -238,9 +238,12 @@ export class MissionRunner {
       });
       stdout = result.stdout;
     } catch (err) {
-      // If Codex CLI is not available, fall back to a minimal 1-task plan
-      const errMsg = err instanceof Error ? err.message : String(err);
-      if (errMsg.includes('not found in PATH')) {
+      // If Codex CLI is not installed, fall back to a minimal 1-task plan.
+      // Check ENOENT (binary not found) directly, which is cross-platform and consistent.
+      const isNotFound =
+        (err as NodeJS.ErrnoException).code === 'ENOENT' ||
+        (err instanceof Error && err.message.includes('not found in PATH'));
+      if (isNotFound) {
         console.warn('[BOPE] Codex CLI not in PATH — generating fallback 1-task plan.');
         return this.buildFallbackPlan(mission);
       }
