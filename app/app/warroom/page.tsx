@@ -671,7 +671,7 @@ export default function WarRoom() {
     try {
       const [mr, br, ar] = await Promise.all([
         fetch('/api/v1/missions').then(r => r.json()).catch(() => ({ missions: [] })),
-        fetch('/api/v1/budgets').then(r => r.json()).catch(() => null),
+        fetch('/api/v1/budgets').then(r => r.json()).then(b => (b?.ok ? b : null)).catch(() => null),
         fetch('/api/v1/approvals').then(r => r.json()).catch(() => ({ approvals: [] })),
       ]);
       setMissions(mr.missions ?? []);
@@ -1168,11 +1168,11 @@ export default function WarRoom() {
                   {/* KPIs */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 28 }}>
                     {[
-                      { label: 'Gasto mensual', value: `$${budgetData.total_spent_usd?.toFixed(4)}`, color: '#4169E1' },
-                      { label: 'Proyección mensual', value: `$${budgetData.projected_monthly_usd?.toFixed(2)}`, color: '#F59E0B' },
-                      { label: 'Proyección anual', value: `$${budgetData.projected_annual_usd?.toFixed(0)}`, color: '#F59E0B' },
-                      { label: 'Cap anual', value: `$${budgetData.annual_cap_usd?.toFixed(0)}`, color: '#888' },
-                      { label: 'Restante anual', value: `$${budgetData.annual_remaining_usd?.toFixed(2)}`, color: '#22C55E' },
+                      { label: 'Gasto mensual', value: budgetData.total_spent_usd != null ? `$${budgetData.total_spent_usd.toFixed(4)}` : '—', color: '#4169E1' },
+                      { label: 'Proyección mensual', value: budgetData.projected_monthly_usd != null ? `$${budgetData.projected_monthly_usd.toFixed(2)}` : '—', color: '#F59E0B' },
+                      { label: 'Proyección anual', value: budgetData.projected_annual_usd != null ? `$${budgetData.projected_annual_usd.toFixed(0)}` : '—', color: '#F59E0B' },
+                      { label: 'Cap anual', value: budgetData.annual_cap_usd != null ? `$${budgetData.annual_cap_usd.toFixed(0)}` : '—', color: '#888' },
+                      { label: 'Restante anual', value: budgetData.annual_remaining_usd != null ? `$${budgetData.annual_remaining_usd.toFixed(2)}` : '—', color: '#22C55E' },
                     ].map(k => (
                       <div key={k.label} style={{
                         background: '#0d0d0d', border: `1px solid ${k.color}30`,
