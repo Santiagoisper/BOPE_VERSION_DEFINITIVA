@@ -591,7 +591,15 @@ export default function WarRoom() {
   const [newMission, setNewMission] = useState({ intent: '', priority: 'P1', budget: '10' });
   const [commsLog, setCommsLog] = useState<string[]>(['[BOPE COMMS] · Monitoreo pasivo iniciado — sin costo API']);
   const [expandedSoldier, setExpandedSoldier] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const evtRef = useRef<EventSource | null>(null);
+
+  function copyOrchestratorCmd(missionId: string) {
+    const cmd = `bun run bope:orchestrator --mission ${missionId} --base-url http://localhost:3000`;
+    navigator.clipboard.writeText(cmd).catch(() => {});
+    setCopiedId(missionId);
+    setTimeout(() => setCopiedId(null), 2000);
+  }
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -1003,13 +1011,27 @@ export default function WarRoom() {
                               <span>LOCO: <strong style={{ color: m.loco_state === 'HOLD' ? '#22C55E' : '#F59E0B' }}>{m.loco_state}</strong></span>
                             </div>
                           </div>
-                          {m.status === 'active' && (
-                            <button onClick={() => advanceMission(m.id)} style={{
-                              background: '#22C55E', color: '#000', border: 'none',
-                              borderRadius: 7, padding: '10px 18px', cursor: 'pointer',
-                              fontFamily: 'var(--font-head)', fontSize: 14, fontWeight: 800, letterSpacing: 1, flexShrink: 0,
-                            }}>▶ ADVANCE RAMBO</button>
-                          )}
+                          <div style={{ display: 'flex', gap: 8, flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                            {m.status === 'active' && (
+                              <button onClick={() => advanceMission(m.id)} style={{
+                                background: '#22C55E', color: '#000', border: 'none',
+                                borderRadius: 7, padding: '10px 18px', cursor: 'pointer',
+                                fontFamily: 'var(--font-head)', fontSize: 14, fontWeight: 800, letterSpacing: 1,
+                              }}>▶ ADVANCE RAMBO</button>
+                            )}
+                            <button
+                              onClick={() => copyOrchestratorCmd(m.mission_id)}
+                              title={`bun run bope:orchestrator --mission ${m.mission_id} --base-url http://localhost:3000`}
+                              style={{
+                                background: copiedId === m.mission_id ? '#22C55E' : '#1a1a1a',
+                                color: copiedId === m.mission_id ? '#000' : '#FFD700',
+                                border: `1px solid ${copiedId === m.mission_id ? '#22C55E' : '#FFD70050'}`,
+                                borderRadius: 7, padding: '10px 14px', cursor: 'pointer',
+                                fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: 1,
+                                transition: 'all 0.2s',
+                              }}
+                            >{copiedId === m.mission_id ? '✓ COPIED' : '⎘ ORCHESTRATOR CMD'}</button>
+                          </div>
                         </div>
                       </div>
                     );
