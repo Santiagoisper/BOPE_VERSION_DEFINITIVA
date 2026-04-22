@@ -14,3 +14,4 @@ Thumbs.db
 .vercel
 .operator-temp
 .env.operator
+.gstack/
