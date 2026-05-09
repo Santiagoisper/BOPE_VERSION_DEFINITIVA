@@ -1,3 +1,4 @@
+import "./loadEnv.js";
 import http, { type IncomingMessage, type ServerResponse } from "node:http";
 import crypto from "node:crypto";
 import { URL } from "node:url";
@@ -181,6 +182,9 @@ function requireSession(store: PersistedStore, request: IncomingMessage, respons
 
 const ALLOWED_ORIGINS = [
   "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
   "https://bope-visual-code.vercel.app",
   ...(process.env.BOPE_ALLOWED_ORIGIN ? [process.env.BOPE_ALLOWED_ORIGIN] : []),
 ];

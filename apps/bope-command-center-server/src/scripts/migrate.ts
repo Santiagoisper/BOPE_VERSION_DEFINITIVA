@@ -1,3 +1,4 @@
+import "../loadEnv.js";
 import { migrateDatabase } from "../migrations.js";
 
 try {

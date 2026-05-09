@@ -4,16 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --env-file=.env --watch dist/server.js",
+    "dev": "node --watch dist/server.js",
     "build": "pnpm exec tsc -p tsconfig.json",
-    "db:migrate": "pnpm exec tsc -p tsconfig.json && node --env-file=.env dist/bope-command-center-server/src/scripts/migrate.js",
+    "db:migrate": "pnpm exec tsc -p tsconfig.json && node dist/scripts/migrate.js",
     "start": "node dist/server.js",
-    "start:local": "node --env-file=.env dist/server.js",
+    "start:local": "node dist/server.js",
     "typecheck": "pnpm exec tsc -p tsconfig.json --noEmit",
-    "e2e": "node --env-file=.env e2e.mjs",
+    "e2e": "node e2e.mjs",
     "test": "vitest run"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "pg": "^8.16.3"
   },
   "devDependencies": {

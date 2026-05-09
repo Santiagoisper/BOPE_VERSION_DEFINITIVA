@@ -19,9 +19,12 @@ export interface JwtPayload {
 }
 
 function getJwtSecret(): string {
-  const secret = process.env.BOPE_JWT_SECRET ?? "";
+  // Misma variable que valida envValidator (`JWT_SECRET`). `BOPE_JWT_SECRET` queda como alias legacy.
+  const secret = (process.env.JWT_SECRET ?? process.env.BOPE_JWT_SECRET ?? "").trim();
   if (secret.length < 32) {
-    throw new Error("BOPE_JWT_SECRET debe estar configurado con al menos 32 caracteres.");
+    throw new Error(
+      "JWT_SECRET (o BOPE_JWT_SECRET) debe tener al menos 32 caracteres. Revisa apps/bope-command-center-server/.env",
+    );
   }
   return secret;
 }

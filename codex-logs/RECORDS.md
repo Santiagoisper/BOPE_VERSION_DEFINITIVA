@@ -15,7 +15,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 |---|---:|---|---|---:|---|---|
 | `SANTIAGO` | 0 | `-` | `-` | 0 | `sin condecoraciones` | `ninguna` |
 | `JOHN RAMBO` | 15 | `BOPE-CODEX-2026-025` | `2026-04-17` | 249 | `Navy Cross` | `ninguna` |
-| `PIXEL` | 1 | `BOPE-CODEX-2026-001` | `2026-02-17` | 14 | `sin condecoraciones` | `ninguna` |
+| `PIXEL` | 1 | `BOPE-CODEX-2026-001` | `2026-02-17` | 14 | `Bronze Star [BS]` | `ninguna` |
 | `FORGE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 65 | `Bronze Star` | `ninguna` |
 | `HOUSE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 18 | `Good Conduct Medal` | `ninguna` |
 | `MARCO AURELIO` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 18 | `sin condecoraciones` | `ninguna` |
@@ -52,6 +52,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | Mision | Rol | Lineas aprox. | Resultado |
 |---|---|---:|---|
 | `BOPE-CODEX-2026-001` | validacion de frente visual | 14 | superficie confirmada |
+| `cuentas-personales-v1` | frente UI | — | Bronze Star `[BS]` asentada en `ORDEN-DE-BATALLA` — multiples mejoras UI en 2 waves sin errores |
 
 ### FORGE
 

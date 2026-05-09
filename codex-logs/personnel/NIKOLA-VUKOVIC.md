@@ -1,5 +1,10 @@
 # BOPE PERSONNEL DOSSIER
 
+## Integracion Multica / roster maquina
+- agentId: `blade-killer`
+- aliases: `BLADE`, `BLADE KILLER`
+- referencia de canon: `.claude/ORDEN-DE-BATALLA.md`
+
 ## Identificacion
 - Nombre canonico: `BLADE KILLER`
 - Identidad civil: `Nikola Vukovic`
@@ -25,7 +30,7 @@
 - Operaciones acumuladas en capa Codex: `0`
 
 ## Estado de honor y record
-- Posicion actual en `RECORDS.md`: `reserva sin operaciones registradas`
+- Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md (reserva sin operaciones registradas)`
 - Estado de record: `sin record operativo visible`
 - Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`

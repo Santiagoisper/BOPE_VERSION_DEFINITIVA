@@ -12,7 +12,7 @@ $templateName = if ($Full) { "template-sesion-codex.md" } else { "template-sesio
 $templatePath = Join-Path $repoRoot ("docs\setup\" + $templateName)
 
 if (-not (Test-Path $templatePath)) {
-    throw "No existe docs\setup\template-sesion-codex.md. Falta el template de arranque."
+    throw "No existe el template de arranque: $templatePath"
 }
 
 Write-Host "CODEX ONLINE" -ForegroundColor Red

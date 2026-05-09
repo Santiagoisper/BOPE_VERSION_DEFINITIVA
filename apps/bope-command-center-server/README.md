@@ -65,6 +65,16 @@ pnpm --dir apps/bope-command-center-server db:migrate
 pnpm --dir apps/bope-command-center-server start
 ```
 
+### Si “no levanta” en localhost
+
+1. **Node:** 18+ (recomendado 20+). Ejecutá `node -v`.
+2. **`.env`:** copiá `.env.example` → `.env` en esta carpeta y completá `BOPE_COMMAND_CENTER_DATABASE_URL` y `JWT_SECRET`.  
+   En PowerShell: `Copy-Item .env.example .env -Force` (desde `apps/bope-command-center-server`).  
+   El servidor carga ese `.env` aunque ejecutes Node con otro directorio de trabajo.
+3. **Postgres:** tiene que estar accesible en la URL del paso 2 (local o Neon). Sin DB el proceso muere al iniciar (migraciones + store).
+4. **Orden:** `pnpm install` en la raíz del monorepo, luego `build`, opcional `db:migrate`, luego `start` o `start:local`.
+5. **UI:** en otra terminal, `pnpm --dir apps/bope-command-center dev` — la UI usa el puerto del `PORT` de Vite (por defecto **3000**) y proxifica `/api` al backend (**3100**).
+
 ## Checklist Neon
 
 1. Confirmar la `connection string` real de Neon.

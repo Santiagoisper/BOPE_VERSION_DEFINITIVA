@@ -8,7 +8,17 @@
     "build:server": "pnpm --dir apps/bope-command-center-server build",
     "db:migrate": "pnpm --dir apps/bope-command-center-server db:migrate",
     "typecheck": "pnpm --dir apps/bope-command-center-server typecheck && pnpm --dir apps/bope-command-center typecheck",
+    "check": "pnpm typecheck && pnpm test",
     "codex:close-mission": "node scripts/close-codex-mission.js",
-    "test": "pnpm --dir apps/bope-command-center-server run test"
+    "test": "pnpm --dir apps/bope-command-center-server run test",
+    "e2e:api": "pnpm --dir apps/bope-command-center-server exec node e2e.mjs",
+    "e2e:ui": "playwright test e2e/command-center.spec.ts",
+    "e2e": "pnpm e2e:ui",
+    "bope:validate": "node scripts/validate-bope-export.mjs",
+    "dev:local:all": "powershell -ExecutionPolicy Bypass -File scripts/dev-local-all.ps1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.2"
   }
 }

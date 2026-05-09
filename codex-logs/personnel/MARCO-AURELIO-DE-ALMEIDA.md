@@ -1,5 +1,10 @@
 # BOPE PERSONNEL DOSSIER
 
+## Integracion Multica / roster maquina
+- agentId: `marco-aurelio-herald`
+- aliases: `MARCO AURELIO`, `MARCO AURELIO HERALD`
+- referencia de canon: `.claude/ORDEN-DE-BATALLA.md`
+
 ## Identificacion
 - Nombre canonico: `MARCO AURELIO HERALD`
 - Identidad civil: `Marco Aurelio de Almeida`
@@ -25,7 +30,7 @@
 - Operaciones acumuladas en capa Codex: `2`
 
 ## Estado de honor y record
-- Posicion actual en `RECORDS.md`: `#6`
+- Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
 - Estado de record: `empate tecnico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`

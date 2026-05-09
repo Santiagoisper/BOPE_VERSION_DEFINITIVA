@@ -1,5 +1,10 @@
 # BOPE PERSONNEL DOSSIER
 
+## Integracion Multica / roster maquina
+- agentId: `santiago-commander`
+- aliases: `SANTIAGO`, `COMMANDER SANTIAGO`
+- referencia de canon: `.claude/ORDEN-DE-BATALLA.md`
+
 ## Identificacion
 - Nombre canonico: `SANTIAGO ISBERT PERLENDER`
 - Identidad civil: `Santiago Isbert Perlender`
@@ -7,7 +12,7 @@
 - Rango: `Comandante Supremo | General`
 - Funcion: `Mando supremo del BOPE`
 - Estado: `Activo`
-- Condecoraciones: `sin condecoraciones`
+- Condecoraciones: `sin condecoraciones (el Comandante Supremo las otorga; no las recibe)`
 
 ## Datos personales
 - Fecha de nacimiento: `01/07/1973`
@@ -25,7 +30,7 @@
 - Operaciones acumuladas en capa Codex: `0`
 
 ## Estado de honor y record
-- Posicion actual en `RECORDS.md`: `fuera de competencia de tropa`
+- Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md (fuera de competencia de tropa)`
 - Estado de record: `comando supremo no contabilizado en operaciones de tropa`
 - Medalla vigente en `CUADRO-DE-HONOR`: `sin condecoraciones`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`

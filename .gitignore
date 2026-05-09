@@ -21,3 +21,13 @@ Thumbs.db
 # Logs de debug — no versionar
 debug.log
 *.log.debug
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Archivos temporales de agentes / diagnóstico local
+_agent_*.txt

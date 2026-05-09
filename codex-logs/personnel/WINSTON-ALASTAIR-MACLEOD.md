@@ -1,5 +1,10 @@
 # BOPE PERSONNEL DOSSIER
 
+## Integracion Multica / roster maquina
+- agentId: `winston-scribe`
+- aliases: `WINSTON`, `WINSTON SCRIBE`
+- referencia de canon: `.claude/ORDEN-DE-BATALLA.md`
+
 ## Identificacion
 - Nombre canonico: `WINSTON SCRIBE`
 - Identidad civil: `Winston Alastair MacLeod`
@@ -25,7 +30,7 @@
 - Operaciones acumuladas en capa Codex: `11`
 
 ## Estado de honor y record
-- Posicion actual en `RECORDS.md`: `#2`
+- Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
 - Estado de record: `segundo registro historico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[CM] Commendation Medal`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`

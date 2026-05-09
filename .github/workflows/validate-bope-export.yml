@@ -1,0 +1,32 @@
+name: Validate BOPE export
+
+on:
+  push:
+    paths:
+      - "bope/**"
+      - "scripts/validate-bope-export.mjs"
+      - ".github/workflows/validate-bope-export.yml"
+  pull_request:
+    paths:
+      - "bope/**"
+      - "scripts/validate-bope-export.mjs"
+      - ".github/workflows/validate-bope-export.yml"
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Validate roster + agent prompts
+        run: node scripts/validate-bope-export.mjs
+
+  multica-cli-placeholder:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder (Multica CLI integration pending token/command oficial)
+        run: echo "TODO: integrar Multica CLI cuando exista MULTICA_TOKEN y comando oficial."

@@ -1,5 +1,10 @@
 # BOPE PERSONNEL DOSSIER
 
+## Integracion Multica / roster maquina
+- agentId: `john-rambo`
+- aliases: `JOHN RAMBO`, `RAMBO`, `CORONEL RAMBO`
+- referencia de canon: `.claude/ORDEN-DE-BATALLA.md`
+
 ## Identificacion
 - Nombre canonico: `JOHN RAMBO`
 - Identidad civil: `John James Rambo`
@@ -26,7 +31,7 @@
 - Operaciones acumuladas en capa Codex: `15`
 
 ## Estado de honor y record
-- Posicion actual en `RECORDS.md`: `#1`
+- Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
 - Estado de record: `lider absoluto vigente`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[NC] Navy Cross`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`

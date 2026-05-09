@@ -1,5 +1,10 @@
 # BOPE PERSONNEL DOSSIER
 
+## Integracion Multica / roster maquina
+- agentId: `nexus-wire`
+- aliases: `NEXUS`, `NEXUS WIRE`
+- referencia de canon: `.claude/ORDEN-DE-BATALLA.md`
+
 ## Identificacion
 - Nombre canonico: `NEXUS WIRE`
 - Identidad civil: `Darius Wei Tan`
@@ -25,7 +30,7 @@
 - Operaciones acumuladas en capa Codex: `2`
 
 ## Estado de honor y record
-- Posicion actual en `RECORDS.md`: `#7`
+- Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
 - Estado de record: `empate tecnico`
 - Medalla vigente en `CUADRO-DE-HONOR`: `[MS] Meritorious Service`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`

@@ -15,7 +15,7 @@
 
 ## Condecoraciones
 
-- Sin condecoraciones asentadas
+- Bronze Star `[BS]` — `cuentas-personales-v1` (fuente: `.claude/ORDEN-DE-BATALLA.md`)
 
 ## Sanciones
 

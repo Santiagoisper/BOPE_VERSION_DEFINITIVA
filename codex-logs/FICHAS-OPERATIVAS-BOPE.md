@@ -17,7 +17,7 @@
   EFECTIVOS
   Comandante Supremo    SANTIAGO ISBERT PERLENDER   ★★★★★
   Sargento Mayor        JOHN · RAMBO                [NC]
-  Teniente Frontend     PIXEL · FRONT               [sin]
+  Teniente Frontend     PIXEL · FRONT               [BS]
   Teniente Backend      FORGE · BACK                [BS]
   Especialista QA       HOUSE · DOCTOR              [GC]
   Capellán              MARCO AURELIO · HERALD      [sin]

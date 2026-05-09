@@ -42,6 +42,7 @@ Operacion registrada: cierre total de `innova-scoring` con correccion, endurecim
 | `CERBERUS` | Combat Action Ribbon | blindaje del frente publico y endurecimiento de seguridad |
 | `NEXUS` | Meritorious Service | integracion de estados, flujo y coherencia entre capas |
 | `HOUSE` | Good Conduct Medal | verificacion final, deteccion de fallas y validacion limpia |
+| `PIXEL` | Bronze Star | cuentas-personales-v1 — multiples mejoras UI en 2 waves sin errores |
 | `SICARIO | Locura` | Purple Heart | entrada de fuerza total en fase critica por orden de mando |
 
 ## Cuadro actual
@@ -55,8 +56,8 @@ CUADRO DE HONOR BOPE
    Operaciones: 15
 
 2. [# == #] BRONZE STAR
-   Ganador: FORGE
-   Operaciones: 2
+   FORGE — operaciones 2 (innova-scoring)
+   PIXEL — operaciones 1 (cuentas-personales-v1)
 
 3. [==#==] COMMENDATION MEDAL
    Ganador: WINSTON

@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "workspace": "bope-war-room",
+  "project": "BOPE VERSION DEFINITIVA",
+  "doctrine": {
+    "ordenDeBatalla": ".claude/ORDEN-DE-BATALLA.md",
+    "constitucionClaude": ".claude/BOPE-CONSTITUCION.md",
+    "codexAdaptacion": "BOPE-CODEX-ADAPTACION.md",
+    "arsenalRef": "codex-logs/ARSENAL-BOPE.md",
+    "cuadroDeHonorRef": "codex-logs/CUADRO-DE-HONOR.md",
+    "declaration": "bope/doctrine/DECLARATION.md",
+    "collaboration": "bope/doctrine/COLLABORATION_RULES.md",
+    "rosterCivil": "docs/agents/roster.md"
+  },
+  "routing": {
+    "humanCommanderId": "santiago-commander",
+    "entrypointAgentId": "john-rambo",
+    "defaultAssigneeAgentId": "john-rambo"
+  },
+  "agents": [
+    {
+      "id": "santiago-commander",
+      "type": "human",
+      "displayName": "SANTIAGO",
+      "alias": "Comandante Supremo",
+      "role": "Autoridad humana final",
+      "rank": "Comandante Supremo",
+      "activation": "always",
+      "medals": [],
+      "promptFile": null,
+      "notes": "No es agente ejecutor en Multica; no recibe tareas automáticas."
+    },
+    {
+      "id": "john-rambo",
+      "type": "agent",
+      "displayName": "JOHN",
+      "alias": "RAMBO",
+      "role": "Sargento Mayor — mando operativo",
+      "rank": "Sargento Mayor",
+      "activation": "normal",
+      "medals": ["NC"],
+      "entrypoint": true,
+      "promptFile": "bope/agents/john-rambo.md",
+      "defaultSkills": ["single-command-handoff", "minimum-force-execution", "risk-assessment"]
+    },
+    {
+      "id": "winston-scribe",
+      "type": "agent",
+      "displayName": "WINSTON",
+      "alias": "SCRIBE",
+      "role": "Cronista y memoria institucional",
+      "rank": "Warrant Officer",
+      "activation": "normal",
+      "medals": ["CM"],
+      "promptFile": "bope/agents/winston-scribe.md",
+      "defaultSkills": ["evidence-first-closure", "post-mortem-report"]
+    },
+    {
+      "id": "forge-back",
+      "type": "agent",
+      "displayName": "FORGE",
+      "alias": "BACK",
+      "role": "Teniente Backend",
+      "rank": "Teniente",
+      "activation": "normal",
+      "medals": ["BS", "CM"],
+      "promptFile": "bope/agents/forge-back.md",
+      "defaultSkills": ["intel-phase", "code-review-bope", "risk-assessment"]
+    },
+    {
+      "id": "pixel-front",
+      "type": "agent",
+      "displayName": "PIXEL",
+      "alias": "FRONT",
+      "role": "Teniente Frontend",
+      "rank": "Teniente",
+      "activation": "normal",
+      "medals": ["BS"],
+      "promptFile": "bope/agents/pixel-front.md",
+      "defaultSkills": ["intel-phase", "code-review-bope", "minimum-force-execution"]
+    },
+    {
+      "id": "cerberus-guardian",
+      "type": "agent",
+      "displayName": "CERBERUS",
+      "alias": "GUARDIAN",
+      "role": "Guardián — seguridad",
+      "rank": "Master Sergeant",
+      "activation": "normal",
+      "medals": ["CA"],
+      "promptFile": "bope/agents/cerberus-guardian.md",
+      "defaultSkills": ["risk-assessment", "intel-phase"]
+    },
+    {
+      "id": "house-doctor",
+      "type": "agent",
+      "displayName": "HOUSE",
+      "alias": "DOCTOR",
+      "role": "Especialista QA",
+      "rank": "Staff Sergeant",
+      "activation": "normal",
+      "medals": ["GC", "CA"],
+      "promptFile": "bope/agents/house-doctor.md",
+      "defaultSkills": ["evidence-first-closure", "code-review-bope"]
+    },
+    {
+      "id": "sicario-loco",
+      "type": "agent",
+      "displayName": "SICARIO",
+      "alias": "LOCO",
+      "role": "Operativo especial",
+      "rank": "Special Operations",
+      "activation": "restricted",
+      "medals": ["PH", "CM"],
+      "promptFile": "bope/agents/sicario-loco.md",
+      "defaultSkills": ["urgent-execution-mode", "minimum-force-execution"]
+    },
+    {
+      "id": "nexus-wire",
+      "type": "agent",
+      "displayName": "NEXUS",
+      "alias": "WIRE",
+      "role": "Integrador",
+      "rank": "Gunnery Sergeant",
+      "activation": "normal",
+      "medals": ["MS"],
+      "promptFile": "bope/agents/nexus-wire.md",
+      "defaultSkills": ["intel-phase", "evidence-first-closure"]
+    },
+    {
+      "id": "marco-aurelio-herald",
+      "type": "agent",
+      "displayName": "MARCO AURELIO",
+      "alias": "HERALD",
+      "role": "Capellán — doctrina y criterio",
+      "rank": "Capellán",
+      "activation": "normal",
+      "medals": [],
+      "promptFile": "bope/agents/marco-aurelio-herald.md",
+      "defaultSkills": ["risk-assessment", "post-mortem-report"]
+    },
+    {
+      "id": "blade-killer",
+      "type": "agent",
+      "displayName": "BLADE",
+      "alias": "KILLER",
+      "role": "Reserva especial",
+      "rank": "Force Recon",
+      "activation": "restricted",
+      "medals": [],
+      "promptFile": "bope/agents/blade-killer.md",
+      "defaultSkills": ["urgent-execution-mode", "code-review-bope"]
+    }
+  ]
+}

@@ -11,6 +11,56 @@ Este repo define a `BOPE VERSION DEFINITIVA` con identidad local propia:
 - sin orden lateral valida entre soldados
 - cierre con registro, git y GitHub
 
+## BOPE War Room (export Multica)
+
+No es un equipo: es un peloton. Esta capa **versionada** para Multica/GitHub no sustituye `.claude/` ni `CODEX.md`; publica artefactos operativos listos para runtime.
+
+Principios activos:
+
+- Single Command Authority
+- Hermandad de Acero
+- Lealtad absoluta
+- Evidence-First Closure
+- Minimum Force
+
+| Recurso | Ruta |
+|--------|------|
+| Roster + routing | [`bope/roster.json`](bope/roster.json) |
+| Doctrina (Hermandad, colaboración, tablero, roadmap) | [`bope/doctrine/`](bope/doctrine/) |
+| Prompts por agente | [`bope/agents/`](bope/agents/) |
+| Skills | [`bope/skills/`](bope/skills/) |
+| Plantillas de issue | [`bope/templates/`](bope/templates/) · [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/) |
+| Diagramas | [`assets/diagrams/`](assets/diagrams/) |
+| Plataforma Multica | [`platform/multica/`](platform/multica/) |
+
+Referencias canonicas:
+
+- [`.claude/ORDEN-DE-BATALLA.md`](.claude/ORDEN-DE-BATALLA.md)
+- [`.claude/BOPE-CONSTITUCION.md`](.claude/BOPE-CONSTITUCION.md)
+- [`BOPE-CODEX-ADAPTACION.md`](BOPE-CODEX-ADAPTACION.md)
+- [`codex-logs/CUADRO-DE-HONOR.md`](codex-logs/CUADRO-DE-HONOR.md)
+- [`codex-logs/ARSENAL-BOPE.md`](codex-logs/ARSENAL-BOPE.md)
+- [`apps/bope-command-center/`](apps/bope-command-center/)
+- [`apps/bope-command-center-server/`](apps/bope-command-center-server/)
+
+**Cadena de mando:** **SANTIAGO** (humano, Comandante Supremo) -> **JOHN RAMBO** (entrypoint operativo) -> especialistas.
+
+| Agente operativo (Multica) | Especialidad |
+|---|---|
+| JOHN RAMBO | Mando operativo |
+| WINSTON SCRIBE | Cierre y memoria |
+| FORGE BACK | Backend |
+| PIXEL FRONT | Frontend |
+| CERBERUS GUARDIAN | Seguridad |
+| HOUSE DOCTOR | QA |
+| SICARIO LOCO | Operativo especial (restringido) |
+| NEXUS WIRE | Integracion |
+| MARCO AURELIO HERALD | Doctrina |
+| BLADE KILLER | Reserva especial (restringido) |
+
+Validacion local: `pnpm bope:validate`  
+Estado: En desarrollo activo | Plataforma: Multica
+
 ## Capas del sistema
 
 ### Claude
