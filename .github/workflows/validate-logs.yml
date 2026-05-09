@@ -1,0 +1,37 @@
+name: BOPE — Validación de Logs
+
+on:
+  push:
+    branches: [main, feature/bope-automation]
+    paths:
+      - 'logs/**'
+      - 'scripts/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'logs/**'
+
+jobs:
+  validate-logs:
+    runs-on: ubuntu-latest
+    name: "Verificar coherencia de registros BOPE"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install PyYAML
+
+      - name: "[M1-A] Validar coherencia de medallas"
+        run: python scripts/validate_logs.py
+
+      - name: "[M1-B] Validar cierre de misiones"
+        run: python scripts/validate_mission_close.py
