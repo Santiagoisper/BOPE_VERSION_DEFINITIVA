@@ -38,6 +38,55 @@ interface Approval {
   requested_by: string; status: string; requested_at: string;
   mission_label: string;
 }
+interface MissionTaskDetail {
+  id: string; task_id: string; owner: string; status: string;
+  description: string; result?: string | null; created_at: string;
+  evidence?: Record<string, unknown>;
+}
+interface MissionMessageDetail {
+  id: string; from_agent: string; to_agent: string; kind: string;
+  status?: string | null; summary?: string | null; created_at: string;
+}
+interface MissionDetail {
+  mission: Mission;
+  tasks: MissionTaskDetail[];
+  messages: MissionMessageDetail[];
+  total_cost_usd: number;
+}
+
+function buildSoldierSummary(detail: MissionDetail) {
+  const owners = Array.from(new Set(detail.tasks.map(task => task.owner)));
+  return owners.map((owner) => {
+    const tasks = detail.tasks.filter(task => task.owner === owner);
+    const latestTask = [...tasks].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+    const latestMessage = detail.messages.find(msg => msg.from_agent === owner || msg.to_agent === owner);
+    return {
+      owner,
+      taskCount: tasks.length,
+      latestStatus: latestTask?.status ?? 'PENDING',
+      latestDescription: latestTask?.description ?? 'Sin tarea activa',
+      latestMessage: latestMessage?.summary ?? 'Sin mensajes',
+    };
+  });
+}
+
+function getTaskEvidence(task: MissionTaskDetail) {
+  const evidence = task.evidence ?? {};
+  return {
+    engine: typeof evidence.engine === 'string' ? evidence.engine.toUpperCase() : null,
+    channel: typeof evidence.channel === 'string' ? evidence.channel.toUpperCase() : null,
+    lateral: Boolean(evidence.allow_lateral_help),
+  };
+}
+
+function buildTaskStatusSummary(tasks: MissionTaskDetail[]) {
+  return {
+    completed: tasks.filter(task => task.status === 'COMPLETED').length,
+    blocked: tasks.filter(task => task.status === 'BLOCKED').length,
+    active: tasks.filter(task => task.status === 'IN_PROGRESS').length,
+    pending: tasks.filter(task => task.status === 'PENDING').length,
+  };
+}
 
 type Tab = 'mando' | 'efectivos' | 'legajos' | 'salon' | 'misiones' | 'presupuesto' | 'aprobaciones';
 
@@ -587,6 +636,8 @@ export default function WarRoom() {
   const [missions, setMissions] = useState<Mission[]>([]);
   const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
   const [approvals, setApprovals] = useState<Approval[]>([]);
+  const [selectedMissionId, setSelectedMissionId] = useState<string | null>(null);
+  const [missionDetail, setMissionDetail] = useState<MissionDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [newMission, setNewMission] = useState({ intent: '', priority: 'P1', budget: '10' });
   const [commsLog, setCommsLog] = useState<string[]>(['[BOPE COMMS] · Monitoreo pasivo iniciado — sin costo API']);
@@ -601,9 +652,11 @@ export default function WarRoom() {
         fetch('/api/v1/budgets').then(r => r.json()).catch(() => null),
         fetch('/api/v1/approvals').then(r => r.json()).catch(() => ({ approvals: [] })),
       ]);
-      setMissions(mr.missions ?? []);
-      setBudgetData(br);
-      setApprovals(ar.approvals ?? []);
+      const nextMissions = mr.data ?? mr.missions ?? [];
+      setMissions(nextMissions);
+      setBudgetData(br?.data ?? br);
+      setApprovals(ar.data ?? ar.approvals ?? []);
+      setSelectedMissionId((current) => current ?? nextMissions.find((m: Mission) => m.status?.toUpperCase() === 'ACTIVE')?.id ?? nextMissions[0]?.id ?? null);
     } finally {
       setLoading(false);
     }
@@ -611,7 +664,20 @@ export default function WarRoom() {
 
   useEffect(() => { load(); }, [load]);
 
-  const locoState = missions.find(m => m.status === 'active')?.loco_state ?? 'HOLD';
+  const loadMissionDetail = useCallback(async (missionId: string) => {
+    const result = await fetch(`/api/v1/missions/${missionId}`).then(r => r.json()).catch(() => null);
+    setMissionDetail(result?.data ?? null);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedMissionId) {
+      setMissionDetail(null);
+      return;
+    }
+    void loadMissionDetail(selectedMissionId);
+  }, [selectedMissionId, loadMissionDetail]);
+
+  const locoState = missions.find(m => m.status?.toUpperCase() === 'ACTIVE')?.loco_state ?? 'HOLD';
 
   async function createMission() {
     if (!newMission.intent.trim()) return;
@@ -627,40 +693,74 @@ export default function WarRoom() {
       }),
     });
     setNewMission({ intent: '', priority: 'P1', budget: '10' });
-    load();
+    await load();
   }
 
   async function advanceMission(id: string) {
+    setSelectedMissionId(id);
     await fetch(`/api/v1/missions/${id}/advance`, { method: 'POST' });
-    load();
+    await Promise.all([load(), loadMissionDetail(id)]);
   }
 
   async function resolveApproval(id: string, decision: 'approved' | 'rejected') {
     await fetch(`/api/v1/approvals/${id}/resolve`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ decision, notes: '' }),
+      body: JSON.stringify({ decision: decision.toUpperCase(), decision_note: '' }),
     });
-    load();
+    await load();
+  }
+
+  async function retryTask(taskId: string) {
+    await fetch(`/api/v1/tasks/${taskId}/retry`, { method: 'POST' });
+    if (selectedMissionId) {
+      await Promise.all([load(), loadMissionDetail(selectedMissionId)]);
+    } else {
+      await load();
+    }
+  }
+
+  async function cancelTask(taskId: string) {
+    await fetch(`/api/v1/tasks/${taskId}/cancel`, { method: 'POST' });
+    if (selectedMissionId) {
+      await Promise.all([load(), loadMissionDetail(selectedMissionId)]);
+    } else {
+      await load();
+    }
   }
 
   // SSE
   useEffect(() => {
-    if (tab !== 'aprobaciones') return;
-    const activeMission = missions.find(m => m.status === 'active');
+    if (tab !== 'aprobaciones' && tab !== 'misiones') return;
+    const activeMission = missions.find(m => m.status?.toUpperCase() === 'ACTIVE');
     if (!activeMission) return;
     const slug = activeMission.mission_id;
     if (evtRef.current) evtRef.current.close();
     const es = new EventSource(`/api/mission/${slug}/sse`);
-    es.onmessage = (e) => {
+
+    const pushLine = (raw: string) => {
       try {
-        const d = JSON.parse(e.data);
-        const line = `[${new Date().toLocaleTimeString()}] ${d.type ?? 'event'}: ${JSON.stringify(d.payload ?? d).slice(0, 120)}`;
+        const d = JSON.parse(raw);
+        const parts = [
+          d.agent ? `[${d.agent}]` : '',
+          d.to ? `-> ${d.to}` : '',
+          d.kind ? `(${d.kind})` : '',
+          d.summary ?? d.message ?? JSON.stringify(d.payload ?? d),
+        ].filter(Boolean);
+        const line = `[${new Date().toLocaleTimeString()}] ${parts.join(' ')}`.slice(0, 240);
         setCommsLog(prev => [...prev.slice(-199), line]);
+        if (selectedMissionId === activeMission.id) {
+          void loadMissionDetail(activeMission.id);
+        }
       } catch {}
     };
+
+    es.onmessage = (e) => pushLine(e.data);
+    ['MISSION_UPDATED', 'AGENT_REPLIED', 'HANDOFF_INITIATED', 'system_log'].forEach((eventName) => {
+      es.addEventListener(eventName, (e) => pushLine((e as MessageEvent).data));
+    });
     evtRef.current = es;
     return () => es.close();
-  }, [tab, missions]);
+  }, [tab, missions, selectedMissionId, loadMissionDetail]);
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'mando', label: 'MANDO' },
@@ -804,8 +904,8 @@ export default function WarRoom() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                       {[
                         { label: 'Misiones', value: missions.length, color: '#4169E1' },
-                        { label: 'Activas', value: missions.filter(m => m.status === 'active').length, color: '#22C55E' },
-                        { label: 'Pendientes', value: approvals.filter(a => a.status === 'pending').length, color: '#F59E0B' },
+                        { label: 'Activas', value: missions.filter(m => m.status?.toUpperCase() === 'ACTIVE').length, color: '#22C55E' },
+                        { label: 'Pendientes', value: approvals.filter(a => a.status?.toUpperCase() === 'PENDING').length, color: '#F59E0B' },
                         { label: 'Soldados', value: 10, color: '#FFD700' },
                       ].map(s => (
                         <div key={s.label} style={{
@@ -981,14 +1081,17 @@ export default function WarRoom() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {missions.map(m => {
                     const priColor = m.priority === 'P0' ? '#EF4444' : m.priority === 'P1' ? '#F59E0B' : '#22C55E';
-                    const stColor = m.status === 'active' ? '#22C55E' : m.status === 'completed' ? '#4169E1' : '#888';
+                    const status = m.status?.toUpperCase();
+                    const stColor = status === 'ACTIVE' ? '#22C55E' : status === 'COMPLETED' ? '#4169E1' : '#888';
                     return (
                       <div key={m.id} style={{
                         background: '#0d0d0d', border: `1px solid #222`,
                         borderLeft: `4px solid ${priColor}`,
                         borderRadius: '0 10px 10px 0', padding: '20px 24px',
+                        cursor: 'pointer',
+                        boxShadow: selectedMissionId === m.id ? `0 0 0 1px ${priColor} inset` : 'none',
                       }}>
-                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18 }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18 }} onClick={() => setSelectedMissionId(m.id)}>
                           <div style={{ flex: 1 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
                               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: '#666' }}>{m.mission_id}</span>
@@ -1003,8 +1106,8 @@ export default function WarRoom() {
                               <span>LOCO: <strong style={{ color: m.loco_state === 'HOLD' ? '#22C55E' : '#F59E0B' }}>{m.loco_state}</strong></span>
                             </div>
                           </div>
-                          {m.status === 'active' && (
-                            <button onClick={() => advanceMission(m.id)} style={{
+                          {status === 'ACTIVE' && (
+                            <button onClick={(e) => { e.stopPropagation(); advanceMission(m.id); }} style={{
                               background: '#22C55E', color: '#000', border: 'none',
                               borderRadius: 7, padding: '10px 18px', cursor: 'pointer',
                               fontFamily: 'var(--font-head)', fontSize: 14, fontWeight: 800, letterSpacing: 1, flexShrink: 0,
@@ -1016,6 +1119,141 @@ export default function WarRoom() {
                   })}
                 </div>
               )}
+
+              <div style={{
+                marginTop: 24, background: '#0d0d0d', border: '1px solid #1f1f1f',
+                borderRadius: 12, padding: '22px 24px',
+              }}>
+                <div style={{ fontFamily: 'var(--font-head)', fontSize: 18, fontWeight: 700, color: '#FFD700', letterSpacing: 2, marginBottom: 18 }}>
+                  MISION TACTICA EN FOCO
+                </div>
+                {!missionDetail ? (
+                  <div style={{ color: '#666', fontStyle: 'italic' }}>Selecciona una misión para ver tareas, comms y costo operativo.</div>
+                ) : (
+                  <>
+                  <div style={{
+                    display: 'grid', gridTemplateColumns: '1.3fr 0.7fr', gap: 14, marginBottom: 18,
+                    background: 'linear-gradient(135deg, rgba(255,215,0,0.06), rgba(17,17,17,0.9))',
+                    border: '1px solid #2a2a2a', borderRadius: 12, padding: '14px 16px',
+                  }}>
+                    <div>
+                      <div style={{ color: '#fff', fontSize: 18, fontWeight: 800, marginBottom: 8 }}>{missionDetail.mission.intent}</div>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        <span style={{ background: '#151515', border: '1px solid #333', color: '#ddd', borderRadius: 999, padding: '3px 9px', fontSize: 11, fontWeight: 700 }}>{missionDetail.mission.mission_id}</span>
+                        <span style={{ background: '#132017', border: '1px solid #264d31', color: '#8fe39d', borderRadius: 999, padding: '3px 9px', fontSize: 11, fontWeight: 700 }}>{missionDetail.mission.status}</span>
+                        <span style={{ background: '#201608', border: '1px solid #5a3c12', color: '#f5c46b', borderRadius: 999, padding: '3px 9px', fontSize: 11, fontWeight: 700 }}>{missionDetail.mission.priority}</span>
+                        {(missionDetail.mission.active_agents ?? []).map(agent => (
+                          <span key={agent} style={{ background: '#101820', border: '1px solid #29435c', color: '#8dc6ff', borderRadius: 999, padding: '3px 9px', fontSize: 11, fontWeight: 700 }}>{agent}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(70px, 1fr))', gap: 10 }}>
+                      {Object.entries(buildTaskStatusSummary(missionDetail.tasks)).map(([label, value]) => (
+                        <div key={label} style={{ background: '#111', border: '1px solid #252525', borderRadius: 10, padding: '10px 12px' }}>
+                          <div style={{ color: '#fff', fontSize: 18, fontWeight: 800 }}>{value}</div>
+                          <div style={{ color: '#6f6f6f', fontSize: 10, textTransform: 'uppercase', letterSpacing: 1 }}>{label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 18 }}>
+                    {buildSoldierSummary(missionDetail).map((soldier) => {
+                      const color = soldier.latestStatus === 'COMPLETED' ? '#22C55E' : soldier.latestStatus === 'BLOCKED' ? '#EF4444' : '#F59E0B';
+                      return (
+                        <div key={soldier.owner} style={{ background: '#111', border: `1px solid ${color}33`, borderRadius: 10, padding: '12px 14px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginBottom: 6 }}>
+                            <span style={{ color: '#fff', fontWeight: 800 }}>{soldier.owner}</span>
+                            <span style={{ color, fontSize: 11, fontWeight: 800 }}>{soldier.latestStatus}</span>
+                          </div>
+                          <div style={{ color: '#888', fontSize: 11, marginBottom: 6 }}>{soldier.taskCount} tarea(s)</div>
+                          <div style={{ color: '#ccc', fontSize: 12, lineHeight: 1.4 }}>{soldier.latestDescription.slice(0, 72)}</div>
+                          <div style={{ color: '#666', fontSize: 11, marginTop: 8 }}>{soldier.latestMessage.slice(0, 90)}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 18 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ marginBottom: 16 }}>
+                        <div style={{ color: '#fff', fontSize: 18, fontWeight: 700 }}>{missionDetail.mission.intent}</div>
+                        <div style={{ fontSize: 12, color: '#777', marginTop: 4 }}>
+                          {missionDetail.mission.mission_id} · Estado {missionDetail.mission.status} · Costo ${missionDetail.total_cost_usd?.toFixed?.(4) ?? '0.0000'}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {missionDetail.tasks.length === 0 ? (
+                          <div style={{ color: '#666', fontStyle: 'italic' }}>Sin tareas registradas todavía.</div>
+                        ) : missionDetail.tasks.map(task => {
+                          const color = task.status === 'COMPLETED' ? '#22C55E' : task.status === 'BLOCKED' ? '#EF4444' : '#F59E0B';
+                          const meta = getTaskEvidence(task);
+                          return (
+                            <div key={task.id} style={{ background: '#111', border: `1px solid ${color}30`, borderRadius: 8, padding: '12px 14px' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 6 }}>
+                                <span style={{ color: '#fff', fontWeight: 700 }}>{task.task_id} · {task.owner}</span>
+                                <span style={{ color, fontSize: 12, fontWeight: 700 }}>{task.status}</span>
+                              </div>
+                              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                                {meta.engine && <span style={{ background: '#17202a', color: '#8dc6ff', border: '1px solid #29435c', borderRadius: 999, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>{meta.engine}</span>}
+                                {meta.channel && <span style={{ background: '#1a1a1a', color: '#e8e8e8', border: '1px solid #353535', borderRadius: 999, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>{meta.channel}</span>}
+                                {meta.lateral && <span style={{ background: '#20162b', color: '#d6b3ff', border: '1px solid #51346e', borderRadius: 999, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>LATERAL</span>}
+                              </div>
+                              <div style={{ color: '#ccc', fontSize: 13 }}>{task.description}</div>
+                              {task.result && <div style={{ color: '#777', fontSize: 12, marginTop: 6 }}>{String(task.result).slice(0, 180)}</div>}
+                              <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                                {task.status === 'BLOCKED' && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); retryTask(task.id); }}
+                                    style={{
+                                      background: '#F59E0B', color: '#111', border: 'none', borderRadius: 6,
+                                      padding: '6px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer',
+                                    }}
+                                  >
+                                    REINTENTAR
+                                  </button>
+                                )}
+                                {task.status !== 'COMPLETED' && task.status !== 'CANCELLED' && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); cancelTask(task.id); }}
+                                    style={{
+                                      background: '#2a2a2a', color: '#ddd', border: '1px solid #444', borderRadius: 6,
+                                      padding: '6px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                                    }}
+                                  >
+                                    CANCELAR
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontFamily: 'var(--font-head)', fontSize: 16, color: '#FFD700', letterSpacing: 1, marginBottom: 12 }}>
+                        COMMS DE LA MISION
+                      </div>
+                      <div style={{
+                        background: '#050505', border: '1px solid #1a1a1a', borderRadius: 10,
+                        padding: '14px 16px', maxHeight: 520, overflowY: 'auto', fontFamily: 'var(--font-mono)',
+                      }}>
+                        {missionDetail.messages.length === 0 ? (
+                          <div style={{ color: '#666', fontStyle: 'italic' }}>Sin mensajes todavía.</div>
+                        ) : missionDetail.messages.map(msg => (
+                          <div key={msg.id} style={{ marginBottom: 10, fontSize: 12, lineHeight: 1.55 }}>
+                            <div style={{ color: '#777' }}>
+                              [{new Date(msg.created_at).toLocaleTimeString()}] {msg.from_agent} -&gt; {msg.to_agent} {msg.kind}
+                            </div>
+                            <div style={{ color: msg.status === 'BLOCKED' ? '#EF4444' : msg.status === 'COMPLETED' ? '#22C55E' : '#d2d2d2' }}>
+                              {msg.summary ?? 'Sin resumen'}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  </>
+                )}
+              </div>
             </div>
           )}
 
@@ -1112,14 +1350,14 @@ export default function WarRoom() {
               <SectionTitle>COLA DE APROBACIONES</SectionTitle>
               {loading ? (
                 <div style={{ textAlign: 'center', color: '#555', padding: 40, fontSize: 16 }}>Cargando…</div>
-              ) : approvals.filter(a => a.status === 'pending').length === 0 ? (
+              ) : approvals.filter(a => a.status?.toUpperCase() === 'PENDING').length === 0 ? (
                 <div style={{
                   textAlign: 'center', padding: 60, color: '#444',
                   fontSize: 16, fontStyle: 'italic', border: '1px dashed #222', borderRadius: 12,
                 }}>Sin aprobaciones pendientes. Batallón en espera.</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                  {approvals.filter(a => a.status === 'pending').map(a => {
+                  {approvals.filter(a => a.status?.toUpperCase() === 'PENDING').map(a => {
                     const rColor = a.risk_level === 'CRITICAL' ? '#EF4444' : a.risk_level === 'HIGH' ? '#F59E0B' : '#4169E1';
                     return (
                       <div key={a.id} style={{

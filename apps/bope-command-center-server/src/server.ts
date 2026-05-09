@@ -42,9 +42,13 @@ import {
   sanitizeState,
   synchronizeState,
 } from "./state.js";
-import { execute, type ExecuteInput } from "./engine/executor.js";
+import { execute, type ExecuteInput, resolveLlmProvider } from "./engine/executor.js";
+import { ProviderBlockedError } from "./engine/providerGuard.js";
 import { readBudget, getBudgetSummary } from "./engine/budget.js";
 import { getEngineStatus } from "./engine/llm.js";
+import { validateEnv } from "./envValidator.js";
+import { getPool } from "./db.js";
+import { getExecutions, getExecutionById } from "./executions.js";
 
 const PORT = Number(process.env.PORT ?? process.env.BOPE_COMMAND_CENTER_SERVER_PORT ?? "3100");
 const SESSION_COOKIE         = "bope_command_center_session";
@@ -200,7 +204,24 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
   }
 
   if (method === "GET" && url.pathname === "/api/healthz") {
-    json(response, 200, { ok: true, service: "bope-command-center-server" });
+    let dbStatus: "connected" | "error" = "error";
+    try {
+      const client = await getPool().connect();
+      try {
+        await Promise.race([
+          client.query("SELECT 1"),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("DB healthcheck timeout")), 3000)
+          ),
+        ]);
+        dbStatus = "connected";
+      } finally {
+        client.release();
+      }
+    } catch {
+      dbStatus = "error";
+    }
+    json(response, 200, { ok: dbStatus === "connected", db: dbStatus, version: "1.0.0" });
     return;
   }
 
@@ -849,25 +870,82 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
       maxTokens: body.maxTokens,
     };
 
+    const llmProvider = resolveLlmProvider(input.provider, input.order);
+    const providerConfig = store.state.providerConfigs.find((c) => c.providerId === llmProvider);
+    if (!providerConfig) {
+      json(response, 400, { error: `No hay configuración de provider para "${llmProvider}".` });
+      return;
+    }
+
+    const policy = {
+      config: providerConfig,
+      governance: store.state.providerGovernance,
+    };
+
     // Stream execution events via SSE broadcast to all connected clients
     // Each event carries executionId so clients can filter their own execution
     // The HTTP response returns the final result when done
     const executionId = crypto.randomUUID();
     try {
-      const result = await execute({ ...input, executionId }, (event) => {
+      const result = await execute({ ...input, executionId, policy }, (event) => {
         broadcast("execution", { ...event, executionId });
       });
       json(response, 200, result);
     } catch (error) {
+      if (error instanceof ProviderBlockedError) {
+        broadcast("execution", {
+          id: crypto.randomUUID(),
+          executionId,
+          type: "error",
+          message: error.message,
+          timestamp: new Date().toISOString(),
+        });
+        json(response, 500, { error: error.message });
+        return;
+      }
       const message = error instanceof Error ? error.message : "Error desconocido.";
       json(response, 500, { error: message });
     }
     return;
   }
 
+  // ─── EXECUTION HISTORY ─────────────────────────────────────────────────────
+  if (method === "GET" && url.pathname === "/api/executions") {
+    const session = requireSession(store, request, response);
+    if (!session) return;
+
+    const limit = Math.max(1, Math.min(500, Number(url.searchParams.get("limit") ?? "50") || 50));
+    const offset = Math.max(0, Number(url.searchParams.get("offset") ?? "0") || 0);
+
+    const result = await getExecutions(limit, offset);
+    json(response, 200, result);
+    return;
+  }
+
+  if (method === "GET" && url.pathname.startsWith("/api/executions/")) {
+    const session = requireSession(store, request, response);
+    if (!session) return;
+
+    const id = url.pathname.slice("/api/executions/".length);
+    if (!id) {
+      json(response, 400, { error: "ID de ejecución requerido." });
+      return;
+    }
+
+    const record = await getExecutionById(id);
+    if (!record) {
+      json(response, 404, { error: "Ejecución no encontrada." });
+      return;
+    }
+
+    json(response, 200, record);
+    return;
+  }
+
   json(response, 404, { error: "Ruta no encontrada." });
 }
 
+validateEnv();
 await initializePersistence();
 
 const server = http.createServer((request: IncomingMessage, response: ServerResponse) => {

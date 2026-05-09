@@ -4,7 +4,7 @@ import { annualUsagePercent, formatCost, monthlyUsagePercent } from "@/lib/budge
 import { agentStatusColor, agentStatusDotClass, agentStatusLabel, cn } from "@/lib/utils";
 
 function TerminalConsole() {
-  const { auditLog, executionLog, isExecuting, executeOrder } = useCommandCenter();
+  const { auditLog, executionLog, activeChunks, isExecuting, executeOrder } = useCommandCenter();
   const [order, setOrder] = useState("");
   const [provider, setProvider] = useState<"auto" | "claude" | "codex">("auto");
   const [error, setError] = useState<string | null>(null);
@@ -26,10 +26,22 @@ function TerminalConsole() {
     | { kind: "audit"; id: string; timestamp: string; label: string; message: string }
     | { kind: "exec"; id: string; timestamp: string; type: string; provider?: string; message: string; costUSD?: number };
 
+  const liveLines: LogLine[] = Object.entries(activeChunks).map(([execId, text]) => ({
+    kind: "exec" as const,
+    id: `stream-${execId}`,
+    timestamp: "",
+    type: "streaming",
+    provider: undefined,
+    message: text,
+  }));
+
   const combined: LogLine[] = [
-    ...auditLog.map((e) => ({ kind: "audit" as const, id: e.id, timestamp: e.timestamp, label: e.actorLabel, message: e.message })),
-    ...executionLog.map((e) => ({ kind: "exec" as const, id: e.id, timestamp: e.timestamp, type: e.type, provider: e.provider, message: e.message, costUSD: e.costUSD })),
-  ].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+    ...[
+      ...auditLog.map((e) => ({ kind: "audit" as const, id: e.id, timestamp: e.timestamp, label: e.actorLabel, message: e.message })),
+      ...executionLog.map((e) => ({ kind: "exec" as const, id: e.id, timestamp: e.timestamp, type: e.type, provider: e.provider, message: e.message, costUSD: e.costUSD })),
+    ].sort((a, b) => a.timestamp.localeCompare(b.timestamp)),
+    ...liveLines,
+  ];
 
   return (
     <div className="flex-1 bg-[hsl(222_22%_7%)] border border-border rounded-lg flex flex-col overflow-hidden">
@@ -57,11 +69,23 @@ function TerminalConsole() {
               <span className="text-foreground/70">{entry.message}</span>
             </div>
           ) : (
-            <div key={entry.id} className={cn("flex gap-3 items-start", entry.type === "error" && "text-red-400", entry.type === "completed" && "text-green-400")}>
+            <div
+              key={entry.id}
+              className={cn(
+                "flex gap-3 items-start",
+                entry.type === "error" && "text-red-400",
+                entry.type === "completed" && "text-green-400",
+                entry.type === "streaming" && "text-amber/90",
+              )}
+            >
               <span className="text-muted-foreground/60 flex-shrink-0 tabular-nums">
-                {new Date(entry.timestamp).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                {entry.timestamp
+                  ? new Date(entry.timestamp).toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+                  : "···"}
               </span>
-              <span className="text-cyan-400 flex-shrink-0 min-w-[90px]">[{(entry.provider ?? "BOT").toUpperCase()}]</span>
+              <span className="text-cyan-400 flex-shrink-0 min-w-[90px]">
+                [{entry.type === "streaming" ? "STREAM" : (entry.provider ?? "BOT").toUpperCase()}]
+              </span>
               <span className="text-foreground/80 whitespace-pre-wrap break-all">{entry.message}</span>
             </div>
           )
@@ -236,7 +260,7 @@ export default function Dashboard() {
     <div className="h-full flex flex-col p-4 gap-4 overflow-hidden">
       <div className="flex items-baseline gap-3 flex-shrink-0">
         <h1 className="text-base font-mono font-semibold text-foreground tracking-wide">Centro de Mando</h1>
-        <span className="text-[10px] font-mono text-muted-foreground tracking-wider">OPERACIONES CON PERSISTENCIA LOCAL</span>
+        <span className="text-[10px] font-mono text-muted-foreground tracking-wider">OPERACIONES CON PERSISTENCIA EN NEON</span>
       </div>
 
       <div className="flex-1 flex gap-4 overflow-hidden min-h-0">

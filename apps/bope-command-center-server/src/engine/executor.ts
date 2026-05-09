@@ -3,6 +3,8 @@ import { callClaude, runCodex, type LLMProvider } from "./llm.js";
 import { readBudget, getBudgetSummary } from "./budget.js";
 import { autoRouteSoldier, getSoldierProfile, selectModel } from "./soldiers.js";
 import { detectTools, executeTool, formatToolResults } from "./tools.js";
+import { assertProviderAllowed, type ProviderPolicy } from "./providerGuard.js";
+import { persistExecution } from "../executions.js";
 
 export type ExecutionProvider = "claude" | "codex" | "auto";
 
@@ -13,6 +15,8 @@ export interface ExecuteInput {
   projectPath?: string;
   maxTokens?: number;
   executionId?: string;
+  /** Política de gobernanza del provider. El servidor HTTP la envía siempre en `/api/execute`. */
+  policy?: ProviderPolicy;
 }
 
 export type ExecutionEventType =
@@ -30,6 +34,12 @@ export interface ExecutionEvent {
   message: string;
   timestamp: string;
   costUSD?: number;
+  /** Solo presente en eventos completed de modo shadow */
+  shadow?: boolean;
+  /** Solo presente en eventos completed */
+  model?: string;
+  /** Solo presente en eventos completed */
+  durationMs?: number;
 }
 
 export interface ExecuteResult {
@@ -75,11 +85,14 @@ function selectProvider(
   return isCodeTask ? "codex" : "claude";
 }
 
+/** Expuesto para que el servidor resuelva el provider efectivo y cargue la política correcta antes de ejecutar. */
+export { selectProvider as resolveLlmProvider };
+
 export async function execute(
   input: ExecuteInput,
   onEvent: (event: ExecutionEvent) => void
 ): Promise<ExecuteResult> {
-  const executionId = crypto.randomUUID();
+  const executionId = input.executionId ?? crypto.randomUUID();
   const startedAt = Date.now();
 
   // ── Step 1: Auto-route soldier (ZERO tokens) ─────────────────────────────
@@ -98,6 +111,76 @@ export async function execute(
 
   const provider = selectProvider(input.provider, input.order);
 
+  // ── Step 5: Provider governance check (Req 1.2, 1.3, 1.4, 1.5) ──────────
+  // assertProviderAllowed lanza ProviderBlockedError si el provider está bloqueado.
+  // Retorna el modo efectivo: "shadow" | "armed".
+  let effectiveMode: "shadow" | "armed" = "armed";
+  if (input.policy) {
+    effectiveMode = assertProviderAllowed(input.policy);
+  }
+
+  // ── Modo shadow: simular sin llamar al LLM (Req 1.4) ─────────────────────
+  if (effectiveMode === "shadow") {
+    const shadowTimestamp = new Date().toISOString();
+
+    onEvent(
+      makeEvent(
+        executionId,
+        "started",
+        "Iniciando ejecución (modo shadow)...",
+        { provider }
+      )
+    );
+
+    const durationMs = Date.now() - startedAt;
+
+    onEvent({
+      id: crypto.randomUUID(),
+      executionId,
+      type: "completed",
+      provider,
+      message: "Ejecución shadow completada.",
+      timestamp: new Date().toISOString(),
+      costUSD: 0,
+      shadow: true,
+      model: "shadow",
+      durationMs,
+    });
+
+    const shadowOutput = "[shadow] Ejecución simulada. No se enviaron tokens al LLM externo.";
+
+    // Persistir ejecución shadow (Req 4.1, 1.4)
+    await persistExecution({
+      id: executionId,
+      agentId,
+      provider,
+      model: "shadow",
+      order: input.order,
+      output: shadowOutput,
+      costUSD: 0,
+      inputTokens: 0,
+      outputTokens: 0,
+      durationMs,
+      viaCliTool: false,
+      status: "shadow",
+      timestamp: shadowTimestamp,
+    });
+
+    return {
+      id: executionId,
+      output: shadowOutput,
+      provider,
+      model: "shadow",
+      agentId,
+      costUSD: 0,
+      inputTokens: 0,
+      outputTokens: 0,
+      durationMs,
+      viaCliTool: false,
+    };
+  }
+
+  // ── Modo armed: flujo normal (Req 1.5) ────────────────────────────────────
   onEvent(
     makeEvent(
       executionId,
@@ -120,6 +203,8 @@ export async function execute(
       )
     );
   }
+
+  const executionTimestamp = new Date().toISOString();
 
   try {
     let result;
@@ -157,11 +242,11 @@ export async function execute(
         executionId,
         "completed",
         `✅ [${agentId.toUpperCase()}] Completado en ${(durationMs / 1000).toFixed(1)}s — Modelo: ${result.model} — Costo: $${result.costUSD.toFixed(4)} — ${result.viaCliTool ? "vía CLI (suscripción)" : "vía API (tokens pagos)"}`,
-        { provider, costUSD: result.costUSD }
+        { provider, costUSD: result.costUSD, model: result.model, durationMs }
       )
     );
 
-    return {
+    const executeResult: ExecuteResult = {
       id: executionId,
       output: result.content,
       provider: result.provider,
@@ -173,9 +258,51 @@ export async function execute(
       durationMs,
       viaCliTool: result.viaCliTool,
     };
+
+    // Persistir ejecución completada (Req 4.1, 1.8)
+    await persistExecution({
+      id: executionId,
+      agentId,
+      provider,
+      model: result.model,
+      order: input.order,
+      output: result.content,
+      costUSD: result.costUSD,
+      inputTokens: result.inputTokens,
+      outputTokens: result.outputTokens,
+      durationMs,
+      viaCliTool: result.viaCliTool,
+      status: "completed",
+      timestamp: executionTimestamp,
+    });
+
+    return executeResult;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     onEvent(makeEvent(executionId, "error", `❌ Error: ${message}`, { provider }));
+
+    // Persistir ejecución fallida (Req 4.1)
+    const durationMs = Date.now() - startedAt;
+    try {
+      await persistExecution({
+        id: executionId,
+        agentId,
+        provider,
+        model: claudeModel,
+        order: input.order,
+        output: message,
+        costUSD: 0,
+        inputTokens: 0,
+        outputTokens: 0,
+        durationMs,
+        viaCliTool: false,
+        status: "failed",
+        timestamp: executionTimestamp,
+      });
+    } catch {
+      // No propagar errores de persistencia — el error original tiene prioridad
+    }
+
     throw error;
   }
 }

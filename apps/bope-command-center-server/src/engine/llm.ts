@@ -50,10 +50,12 @@ export interface EngineStatus {
   claude: { mode: "cli" | "api" | "unavailable"; cliAvailable: boolean; apiKeySet: boolean };
   codex: { mode: "cli" | "api" | "unavailable"; cliAvailable: boolean; apiKeySet: boolean };
   preferApi: boolean;
+  disableApi: boolean;
 }
 
 export async function getEngineStatus(): Promise<EngineStatus> {
   const preferApi = process.env.BOPE_PREFER_API === "true";
+  const disableApi = process.env.BOPE_DISABLE_API === "true";
   const [claudeCli, codexCli] = await Promise.all([
     isCliAvailable("claude"),
     isCliAvailable("codex"),
@@ -61,13 +63,14 @@ export async function getEngineStatus(): Promise<EngineStatus> {
   const claudeApiKey = Boolean(process.env.ANTHROPIC_API_KEY);
   const openaiApiKey = Boolean(process.env.OPENAI_API_KEY);
 
-  const claudeMode = !preferApi && claudeCli ? "cli" : claudeApiKey ? "api" : "unavailable";
-  const codexMode = !preferApi && codexCli ? "cli" : openaiApiKey ? "api" : "unavailable";
+  const claudeMode = !preferApi && claudeCli ? "cli" : !disableApi && claudeApiKey ? "api" : "unavailable";
+  const codexMode = !preferApi && codexCli ? "cli" : !disableApi && openaiApiKey ? "api" : "unavailable";
 
   return {
     claude: { mode: claudeMode, cliAvailable: claudeCli, apiKeySet: claudeApiKey },
     codex: { mode: codexMode, cliAvailable: codexCli, apiKeySet: openaiApiKey },
     preferApi,
+    disableApi,
   };
 }
 
@@ -81,11 +84,15 @@ export async function callClaude(
   model = DEFAULT_CLAUDE_MODEL
 ): Promise<LLMCallResult> {
   const preferApi = process.env.BOPE_PREFER_API === "true";
+  const disableApi = process.env.BOPE_DISABLE_API === "true";
   const cliAvailable = await isCliAvailable("claude");
 
   // CLI mode: use subscription exclusively, NO API fallback (avoids unexpected charges)
   if (!preferApi && cliAvailable) {
     return callClaudeCli(systemPrompt, userMessage, maxTokens, onChunk, model);
+  }
+  if (disableApi) {
+    throw new Error("BOPE_DISABLE_API=true: fallback a Claude API bloqueado.");
   }
 
   // API mode: either BOPE_PREFER_API=true, or CLI not installed (e.g. Railway)
@@ -252,11 +259,15 @@ export async function runCodex(
   onChunk: (chunk: string) => void
 ): Promise<LLMCallResult> {
   const preferApi = process.env.BOPE_PREFER_API === "true";
+  const disableApi = process.env.BOPE_DISABLE_API === "true";
   const cliAvailable = await isCliAvailable("codex");
 
   // CLI mode: use subscription exclusively, NO API fallback
   if (!preferApi && cliAvailable) {
     return runCodexCli(prompt, onChunk);
+  }
+  if (disableApi) {
+    throw new Error("BOPE_DISABLE_API=true: fallback a OpenAI API bloqueado.");
   }
 
   return runCodexApi(prompt, onChunk);

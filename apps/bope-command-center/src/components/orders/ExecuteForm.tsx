@@ -31,25 +31,21 @@ const inputClass =
 const labelClass = "block text-[9px] font-mono tracking-[0.12em] text-muted-foreground mb-1";
 
 export function ExecuteForm({ onSuccess }: Props) {
-  const { executeOrder, executionLog, isExecuting } = useCommandCenter();
+  const { executeOrder, activeChunks } = useCommandCenter();
   const [order, setOrder] = useState("");
   const [agentId, setAgentId] = useState("");
   const [provider, setProvider] = useState<"auto" | "claude" | "codex">("auto");
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<ExecuteOrderResult | null>(null);
   const [error, setError] = useState("");
-  const [executionId, setExecutionId] = useState<string | null>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll streaming log
   useEffect(() => {
     if (running) logEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [executionLog, running]);
+  }, [activeChunks, running]);
 
-  // Filter SSE chunks for this execution only
-  const streamChunks = executionId
-    ? executionLog.filter((e) => e.executionId === executionId && e.type === "chunk")
-    : [];
+  const streamPreview = Object.values(activeChunks).join("\n\n");
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -59,7 +55,6 @@ export function ExecuteForm({ onSuccess }: Props) {
     }
     setError("");
     setResult(null);
-    setExecutionId(null);
     setRunning(true);
 
     try {
@@ -157,12 +152,10 @@ export function ExecuteForm({ onSuccess }: Props) {
       {/* Streaming log — visible while executing */}
       {running && (
         <div className="bg-[hsl(222_22%_6%)] border border-[hsl(222_22%_14%)] rounded p-2 max-h-40 overflow-y-auto">
-          {streamChunks.length === 0 ? (
+          {!streamPreview ? (
             <p className="text-[10px] font-mono text-muted-foreground animate-pulse">Conectando con el agente...</p>
           ) : (
-            streamChunks.map((chunk, i) => (
-              <p key={i} className="text-[10px] font-mono text-foreground/80 whitespace-pre-wrap leading-relaxed">{chunk.message}</p>
-            ))
+            <pre className="text-[10px] font-mono text-foreground/80 whitespace-pre-wrap leading-relaxed">{streamPreview}</pre>
           )}
           <div ref={logEndRef} />
         </div>

@@ -1,16 +1,23 @@
-// ============================================================
-// Claude Adapter — Anthropic SDK con cost tracking exacto
+﻿// ============================================================
+// Claude Adapter â€” Anthropic SDK con cost tracking exacto
 // ============================================================
 import Anthropic from '@anthropic-ai/sdk';
 import { sql } from '../db';
 import { calculateCost, billingMonth } from '../config';
 import type { SoldierId, BopeProvider } from '../types';
 
+function assertApiEnabled(): void {
+  if (process.env.BOPE_DISABLE_API === 'true') {
+    throw new Error('BOPE_DISABLE_API=true: consumo por API bloqueado.');
+  }
+}
+
 let _client: Anthropic | null = null;
 function getClient(): Anthropic {
+  assertApiEnabled();
   if (!_client) {
     const key = process.env.ANTHROPIC_API_KEY;
-    if (!key) throw new Error('ANTHROPIC_API_KEY no configurada — revisar .env.local');
+    if (!key) throw new Error('ANTHROPIC_API_KEY no configurada â€” revisar .env.local');
     _client = new Anthropic({ apiKey: key });
   }
   return _client;
@@ -24,7 +31,7 @@ export interface ClaudeCallOptions {
   system?:     string;
   messages:    Anthropic.MessageParam[];
   max_tokens?: number;
-  // Prompt caching — pasar bloques con cache_control cuando aplique
+  // Prompt caching â€” pasar bloques con cache_control cuando aplique
   use_cache?:  boolean;
 }
 
@@ -56,7 +63,7 @@ export async function callClaude(opts: ClaudeCallOptions): Promise<ClaudeCallRes
     messages: opts.messages,
   });
 
-  // ── Extraer tokens ────────────────────────────────────────
+  // â”€â”€ Extraer tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const usage = response.usage;
   const tokens_input       = usage.input_tokens  ?? 0;
   const tokens_output      = usage.output_tokens ?? 0;
@@ -64,7 +71,7 @@ export async function callClaude(opts: ClaudeCallOptions): Promise<ClaudeCallRes
   const tokens_cache_write = ((usage as unknown) as Record<string, number>).cache_creation_input_tokens ?? 0;
   const tokens_cache_read  = ((usage as unknown) as Record<string, number>).cache_read_input_tokens     ?? 0;
 
-  // ── Calcular costo exacto ────────────────────────────────
+  // â”€â”€ Calcular costo exacto â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const cost = calculateCost('anthropic', model, {
     input:       tokens_input,
     output:      tokens_output,
@@ -72,7 +79,7 @@ export async function callClaude(opts: ClaudeCallOptions): Promise<ClaudeCallRes
     cache_read:  tokens_cache_read,
   });
 
-  // ── Persistir en bope_costs ──────────────────────────────
+  // â”€â”€ Persistir en bope_costs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   await sql`
     INSERT INTO bope_costs (
       mission_id, task_id, agent, provider, model,
@@ -93,7 +100,7 @@ export async function callClaude(opts: ClaudeCallOptions): Promise<ClaudeCallRes
     )
   `;
 
-  // ── Extraer texto de la respuesta ────────────────────────
+  // â”€â”€ Extraer texto de la respuesta â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const content = response.content
     .filter((b): b is Anthropic.TextBlock => b.type === 'text')
     .map(b => b.text)
@@ -110,13 +117,14 @@ export async function callClaude(opts: ClaudeCallOptions): Promise<ClaudeCallRes
   };
 }
 
-// ── OpenAI adapter — Chat Completions con cost tracking exacto ───
+// â”€â”€ OpenAI adapter â€” Chat Completions con cost tracking exacto â”€â”€â”€
 
 let _openaiClient: { apiKey: string } | null = null;
 
 function getOpenAIKey(): string {
+  assertApiEnabled();
   const key = process.env.OPENAI_API_KEY;
-  if (!key) throw new Error('OPENAI_API_KEY no configurada — revisar .env.local');
+  if (!key) throw new Error('OPENAI_API_KEY no configurada â€” revisar .env.local');
   return key;
 }
 
@@ -171,19 +179,19 @@ export async function callOpenAI(opts: OpenAICallOptions): Promise<OpenAICallRes
   const choice = data.choices?.[0];
   const usage  = data.usage ?? {};
 
-  // ── Extraer tokens ────────────────────────────────────────
+  // â”€â”€ Extraer tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const tokens_input      = usage.prompt_tokens            ?? 0;
   const tokens_output     = usage.completion_tokens        ?? 0;
   const tokens_cache_read = usage.prompt_tokens_details?.cached_tokens ?? 0;
 
-  // ── Calcular costo exacto ────────────────────────────────
+  // â”€â”€ Calcular costo exacto â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const cost = calculateCost('openai', model, {
     input:      tokens_input,
     output:     tokens_output,
     cache_read: tokens_cache_read,
   });
 
-  // ── Persistir en bope_costs ──────────────────────────────
+  // â”€â”€ Persistir en bope_costs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   await sql`
     INSERT INTO bope_costs (
       mission_id, task_id, agent, provider, model,
@@ -221,3 +229,4 @@ export async function callOpenAI(opts: OpenAICallOptions): Promise<OpenAICallRes
     model,
   };
 }
+

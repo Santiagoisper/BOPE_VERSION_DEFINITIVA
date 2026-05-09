@@ -74,9 +74,10 @@ export async function GET(
               `;
 
           for (const msg of [...messages].reverse()) {
-            const eventType = msg.kind === 'REPORT'    ? 'AGENT_REPLIED'
-                            : msg.kind === 'ORDER'     ? 'HANDOFF_INITIATED'
-                            : 'MISSION_UPDATED';
+            const eventType =
+              msg.kind === 'REPORT' ? 'AGENT_REPLIED'
+              : msg.kind === 'ORDER' || msg.kind === 'REQUEST_HELP' ? 'HANDOFF_INITIATED'
+              : 'MISSION_UPDATED';
 
             send(eventType, {
               taskId:    msg.task_id,
@@ -85,6 +86,8 @@ export async function GET(
               kind:      msg.kind,
               status:    msg.status,
               summary:   msg.summary,
+              payload:   msg.payload,
+              evidence:  msg.evidence,
               timestamp: msg.created_at,
               type:      eventType,
             });

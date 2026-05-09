@@ -23,6 +23,8 @@ import {
   updateProviderGovernanceRequest,
   type ExecuteOrderInput,
   type ExecuteOrderResult,
+  type ExecutionRecordDto,
+  getExecutionsRequest,
 } from "@/lib/api";
 import {
   buildGlobalBudget,
@@ -118,6 +120,9 @@ export interface ExecutionLogEntry {
   message: string;
   timestamp: string;
   costUSD?: number;
+  model?: string;
+  durationMs?: number;
+  shadow?: boolean;
 }
 
 interface CommandCenterContextValue {
@@ -141,6 +146,10 @@ interface CommandCenterContextValue {
   isAuthenticated: boolean;
   budgetPolicy: BudgetPolicySnapshot | null;
   executionLog: ExecutionLogEntry[];
+  /** Texto acumulado por executionId mientras llegan chunks SSE (no duplica líneas en el log). */
+  activeChunks: Record<string, string>;
+  executionHistory: ExecutionRecordDto[];
+  refreshExecutionHistory: () => Promise<void>;
   isExecuting: boolean;
   bootstrapAuth: (username: string, password: string) => Promise<AuthResult>;
   login: (username: string, password: string) => Promise<AuthResult>;
@@ -192,21 +201,21 @@ function buildViewModel(state: CommandCenterState | null) {
     agents: mapAgents(state),
     missions,
     providers: mapProviders(state),
-      providerControls: state.providerConfigs.map((config) => ({
-        providerId: config.providerId,
-        mode: config.mode,
-        enabled: config.enabled,
-        killSwitchActive: config.killSwitchActive,
-        monthlyHardLimit: config.monthlyHardLimit,
-        annualHardLimit: config.annualHardLimit,
-        maxTokensPerRequest: config.maxTokensPerRequest,
-        maxRequestsPerMinute: config.maxRequestsPerMinute,
-        maxRequestsPerMission: config.maxRequestsPerMission,
-        maxMissionBudget: config.maxMissionBudget,
-        traceLevel: config.traceLevel,
-        notes: config.notes,
-        updatedAt: config.updatedAt,
-      })),
+    providerControls: state.providerConfigs.map((config) => ({
+      providerId: config.providerId,
+      mode: config.mode,
+      enabled: config.enabled,
+      killSwitchActive: config.killSwitchActive,
+      monthlyHardLimit: config.monthlyHardLimit,
+      annualHardLimit: config.annualHardLimit,
+      maxTokensPerRequest: config.maxTokensPerRequest,
+      maxRequestsPerMinute: config.maxRequestsPerMinute,
+      maxRequestsPerMission: config.maxRequestsPerMission,
+      maxMissionBudget: config.maxMissionBudget,
+      traceLevel: config.traceLevel,
+      notes: config.notes,
+      updatedAt: config.updatedAt,
+    })),
     providerGovernance: state.providerGovernance,
     tools: mapTools(state),
     directOrders: mapDirectOrders(state),
@@ -226,8 +235,11 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
   const [initError, setInitError] = useState<string | null>(null);
   const [needsBootstrap, setNeedsBootstrap] = useState(false);
   const [executionLog, setExecutionLog] = useState<ExecutionLogEntry[]>([]);
+  const [activeChunks, setActiveChunks] = useState<Record<string, string>>({});
+  const [executionHistory, setExecutionHistory] = useState<ExecutionRecordDto[]>([]);
   const [isExecuting, setIsExecuting] = useState(false);
   const sseCleanupRef = useRef<(() => void) | null>(null);
+  const chunkAccRef = useRef<Record<string, string>>({});
 
   async function refreshState() {
     const response = await getCommandCenterState();
@@ -236,7 +248,16 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
   }
 
   const addToLog = useCallback((entry: ExecutionLogEntry) => {
-    setExecutionLog((prev) => [...prev.slice(-199), entry]);
+    setExecutionLog((prev) => [...prev.slice(-499), entry]);
+  }, []);
+
+  const refreshExecutionHistory = useCallback(async () => {
+    try {
+      const res = await getExecutionsRequest(100, 0);
+      setExecutionHistory(res.rows);
+    } catch {
+      // sin sesión o error de red: no romper la UI
+    }
   }, []);
 
   useEffect(() => {
@@ -256,9 +277,55 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
 
           // Abrimos el stream SSE para recibir eventos de ejecución
           const cleanup = openEventStream((event) => {
-            if (event.type === "execution") {
-              const data = event.data as ExecutionLogEntry;
-              addToLog(data);
+            if (event.type !== "execution") return;
+            const raw = event.data as Record<string, unknown>;
+            const executionId = String(raw.executionId ?? "");
+            const evType = String(raw.type ?? "");
+
+            if (evType === "chunk" && executionId) {
+              const piece = String(raw.message ?? "");
+              chunkAccRef.current[executionId] = (chunkAccRef.current[executionId] ?? "") + piece;
+              setActiveChunks({ ...chunkAccRef.current });
+              return;
+            }
+
+            if ((evType === "completed" || evType === "error") && executionId) {
+              const accumulated = chunkAccRef.current[executionId] ?? "";
+              delete chunkAccRef.current[executionId];
+              setActiveChunks({ ...chunkAccRef.current });
+              const baseMsg = String(raw.message ?? "");
+              const message =
+                evType === "completed" && accumulated
+                  ? `${accumulated}\n\n${baseMsg}`
+                  : accumulated && evType === "error"
+                    ? `${accumulated}\n\n${baseMsg}`
+                    : baseMsg;
+              addToLog({
+                id: String(raw.id ?? globalThis.crypto?.randomUUID?.() ?? `${Date.now()}`),
+                executionId,
+                type: evType,
+                provider: raw.provider as string | undefined,
+                message,
+                timestamp: String(raw.timestamp ?? new Date().toISOString()),
+                costUSD: typeof raw.costUSD === "number" ? raw.costUSD : undefined,
+                model: raw.model as string | undefined,
+                durationMs: typeof raw.durationMs === "number" ? raw.durationMs : undefined,
+                shadow: raw.shadow === true,
+              });
+              void refreshExecutionHistory();
+              return;
+            }
+
+            if (evType === "started" || evType === "budget_warning") {
+              addToLog({
+                id: String(raw.id ?? globalThis.crypto?.randomUUID?.() ?? `${Date.now()}`),
+                executionId: executionId || String(raw.id ?? ""),
+                type: evType,
+                provider: raw.provider as string | undefined,
+                message: String(raw.message ?? ""),
+                timestamp: String(raw.timestamp ?? new Date().toISOString()),
+                costUSD: typeof raw.costUSD === "number" ? raw.costUSD : undefined,
+              });
             }
           });
           sseCleanupRef.current = cleanup;
@@ -280,7 +347,7 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       sseCleanupRef.current?.();
     };
-  }, [addToLog]);
+  }, [addToLog, refreshExecutionHistory]);
 
   const view = buildViewModel(state);
 
@@ -411,6 +478,9 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
         updateProviderControl,
         recordProviderAttempt,
         executionLog,
+        activeChunks,
+        executionHistory,
+        refreshExecutionHistory,
         isExecuting,
         executeOrder,
       }}

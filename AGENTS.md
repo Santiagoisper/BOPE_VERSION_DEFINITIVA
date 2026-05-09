@@ -12,8 +12,13 @@ Este repositorio usa Codex con bootstrap real en `.Codex/AGENTS.md`.
 
 1. Abrir Codex en la raiz del repo.
 2. Verificar que exista `.Codex/AGENTS.md`.
-3. Escribir `BOPE` en el chat para activar el protocolo.
-4. Dar la orden a `JOHN`.
+3. Escribir `CODEX` en el chat para mostrar el selector de agentes BOPE.
+4. Elegir un agente.
+
+Regla simple:
+- Si elegis `JOHN RAMBO`, puede coordinar o delegar.
+- Si elegis cualquier otro agente, trabaja solo ese agente.
+- No se guarda mision ni logs por defecto.
 
 ## Archivos clave
 

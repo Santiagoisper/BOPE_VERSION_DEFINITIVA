@@ -8,6 +8,7 @@ import Agents from "@/pages/Agents";
 import Missions from "@/pages/Missions";
 import Arsenal from "@/pages/Arsenal";
 import Records from "@/pages/Records";
+import Execute from "@/pages/Execute";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ function Router() {
         <Route path="/missions" component={Missions} />
         <Route path="/arsenal" component={Arsenal} />
         <Route path="/records" component={Records} />
+        <Route path="/execute" component={Execute} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

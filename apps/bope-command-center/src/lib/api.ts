@@ -211,3 +211,32 @@ export function openEventStream(onEvent: (event: { type: string; data: unknown }
 
   return () => es.close();
 }
+
+export interface ExecutionRecordDto {
+  id: string;
+  agentId: string;
+  provider: "claude" | "codex";
+  model: string;
+  order: string;
+  output: string;
+  costUSD: number;
+  inputTokens: number;
+  outputTokens: number;
+  durationMs: number;
+  viaCliTool: boolean;
+  status: "completed" | "failed" | "shadow";
+  timestamp: string;
+}
+
+export function getHealthzRequest() {
+  return requestJson<{ ok: boolean; db: "connected" | "error"; version: string }>("/api/healthz");
+}
+
+export function getExecutionsRequest(limit = 50, offset = 0) {
+  const q = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+  return requestJson<{ rows: ExecutionRecordDto[]; total: number }>(`/api/executions?${q}`);
+}
+
+export function getExecutionByIdRequest(id: string) {
+  return requestJson<ExecutionRecordDto>(`/api/executions/${encodeURIComponent(id)}`);
+}

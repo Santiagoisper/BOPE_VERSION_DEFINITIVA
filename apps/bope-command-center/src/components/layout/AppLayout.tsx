@@ -4,7 +4,7 @@ import { OrdersPanel } from "@/components/orders/OrdersPanel";
 import { useCommandCenter } from "@/context/CommandCenterContext";
 import { formatCost } from "@/lib/budget";
 import { cn } from "@/lib/utils";
-import { getEngineStatusRequest, type EngineStatus } from "@/lib/api";
+import { getEngineStatusRequest, getHealthzRequest, type EngineStatus } from "@/lib/api";
 
 interface NavItem {
   path: string;
@@ -15,6 +15,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { path: "/", label: "Centro de Mando", icon: "■", shortLabel: "Mando" },
+  { path: "/execute", label: "Ejecución", icon: "▶", shortLabel: "Ejecutar" },
   { path: "/missions", label: "Misiones", icon: "◆", shortLabel: "Misiones" },
   { path: "/agents", label: "Agentes", icon: "◉", shortLabel: "Agentes" },
   { path: "/arsenal", label: "Arsenal", icon: "⬢", shortLabel: "Arsenal" },
@@ -223,9 +224,36 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [dbDown, setDbDown] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function tick() {
+      try {
+        const h = await getHealthzRequest();
+        if (!cancelled) setDbDown(h.db === "error");
+      } catch {
+        if (!cancelled) setDbDown(true);
+      }
+    }
+    void tick();
+    const id = setInterval(() => void tick(), 30_000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col h-screen bg-background overflow-hidden">
+      {dbDown && (
+        <div
+          role="alert"
+          className="flex-shrink-0 bg-red-950/90 border-b border-red-500/50 px-4 py-2 text-center text-[11px] font-mono text-red-200"
+        >
+          Base de datos no disponible (healthz). Revisá Neon y <code className="text-amber">BOPE_COMMAND_CENTER_DATABASE_URL</code>.
+        </div>
+      )}
       <StatusBar />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar collapsed={sidebarCollapsed} />

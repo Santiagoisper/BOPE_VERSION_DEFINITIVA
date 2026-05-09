@@ -42,13 +42,19 @@ const ROUTING_RULES: Array<{ keywords: string[]; agentId: string }> = [
 /**
  * Deterministic keyword-based routing. Zero tokens.
  * Returns agentId based on order content, or "john-rambo" as default.
+ * Short keywords (≤3 chars) are matched as whole words to avoid false positives.
  */
 export function autoRouteSoldier(order: string): string {
   const lower = order.toLowerCase();
   for (const rule of ROUTING_RULES) {
-    if (rule.keywords.some((kw) => lower.includes(kw))) {
-      return rule.agentId;
-    }
+    const matched = rule.keywords.some((kw) => {
+      if (kw.length <= 3) {
+        // Match as whole word to avoid substring false positives (e.g. "ci" in "credencial")
+        return new RegExp(`\\b${kw}\\b`).test(lower);
+      }
+      return lower.includes(kw);
+    });
+    if (matched) return rule.agentId;
   }
   return "john-rambo";
 }
