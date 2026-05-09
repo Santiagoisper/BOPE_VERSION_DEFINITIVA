@@ -1,0 +1,42 @@
+name: BOPE — Cálculo semanal de rangos
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Todos los lunes a las 9:00 UTC (6:00 AM Buenos Aires)
+  workflow_dispatch:        # Ejecutable manualmente desde GitHub Actions
+
+jobs:
+  calculate-ranks:
+    runs-on: ubuntu-latest
+    name: "Calcular y registrar rangos del batallón"
+
+    permissions:
+      contents: write   # Necesario para hacer commit del resultado
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Calcular rangos
+        run: python scripts/rank_calculator.py
+
+      - name: Commit resultado
+        run: |
+          git config user.name "WINSTON · SCRIBE [bot]"
+          git config user.email "bope-bot@users.noreply.github.com"
+          git add logs/ASCENSOS-PENDIENTES.md
+          # Solo commitear si hay cambios
+          if git diff --staged --quiet; then
+            echo "Sin cambios en ASCENSOS-PENDIENTES.md — nada que commitear"
+          else
+            git commit -m "chore(ranks): cálculo semanal de ascensos [auto]"
+            git push
+            echo "✅ ASCENSOS-PENDIENTES.md actualizado y pusheado"
+          fi
