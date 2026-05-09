@@ -27,12 +27,10 @@ export async function isCliAvailable(name: "claude" | "codex"): Promise<boolean>
 }
 
 function stripEnv(keys: string[]): NodeJS.ProcessEnv {
-  const env: NodeJS.ProcessEnv = {};
   const denied = new Set(keys);
-  for (const [key, value] of Object.entries(process.env)) {
-    if (!denied.has(key) && value !== undefined) {
-      env[key] = value;
-    }
+  const env = { ...process.env } as NodeJS.ProcessEnv;
+  for (const key of denied) {
+    delete env[key];
   }
   return env;
 }
