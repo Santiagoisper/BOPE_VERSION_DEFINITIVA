@@ -14,3 +14,10 @@ Thumbs.db
 .vercel
 .operator-temp
 .env.operator
+
+# Claude Code local config — no versionar
+.claude/settings.local.json
+
+# Logs de debug — no versionar
+debug.log
+*.log.debug
