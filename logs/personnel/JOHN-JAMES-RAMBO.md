@@ -63,6 +63,11 @@ John decide el modelo antes de lanzar cada subagente. No necesita consultar al C
 ## Observacion de mando
 No es solo un combatiente. Es el superviviente que convierte caos en cadena de mando.
 
+## Doctrina exportable Cursor (mayo 2026)
+
+- Fuente ejecutable ampliada: `bope/doctrine/OPERATIONS-PLAYBOOK.md` — severidades N/P, protocolo misión (clasificar/asignar/validar/cerrar), coordinación lateral, traspaso formal ATD/desempates, aborto/contención, SLA internos y cierre canónico con rutas `logs/`.
+- Perfil Claude operativo enlazando excepciones N1 y ATD: `.claude/agents/JOHN.md` (regla 1 y tabla WINSTON alineadas al playbook).
+
 ---
 
 ## Historial de condecoraciones
@@ -76,3 +81,4 @@ No es solo un combatiente. Es el superviviente que convierte caos en cadena de m
 ---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
 *Última actualización de historial: 2026-04-01*
+*Última actualización doctrina Cursor / legajo: 2026-05-10 — misión BOPE-CURSOR-2026-026 cerrada.*

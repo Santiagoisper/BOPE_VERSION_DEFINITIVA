@@ -232,3 +232,5 @@ Formato: [YYYY-MM-DD HH:MM] [REMITENTE → DESTINATARIO] mensaje
 ──────────────────────────────────────────────
 [2026-04-08 20:23] [NEXUS ? JOHN] Reporte de integraciones completado. Puentes rotos identificados: api/ Python legacy sin uso. Docs/ desactualizados. Configs OK.
 [2026-04-12 18:40] [SANTIAGO -> JOHN] Se establece como canon el prompt de sistema `logs/JOHN-RAMBO-ORCHESTRATOR-v3.md`. Aplicacion inmediata para mando operativo y orquestacion BOPE.
+
+[2026-05-10 12:00] [WINSTON -> SANTIAGO] Cierre BOPE-CURSOR-2026-026 registrado: RECORDS.md y warroom-state.json actualizados; legajo `logs/personnel/JOHN-JAMES-RAMBO.md` doctrina mayo 2026; detalle `logs/missions/BOPE-CURSOR-2026-026.md`.

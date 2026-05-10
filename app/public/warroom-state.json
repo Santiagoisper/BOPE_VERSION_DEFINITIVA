@@ -17,12 +17,12 @@
   "soldiers": {
     "RAMBO": {
       "stats": {
-        "missionsParticipated": 15,
+        "missionsParticipated": 16,
         "sanctionsTotal": 0,
         "decorationsMedalCodes": ["NC"],
-        "lastMissionId": "BOPE-CODEX-2026-025",
-        "lastMissionDate": "2026-04-17",
-        "approxLinesTotal": 249
+        "lastMissionId": "BOPE-CURSOR-2026-026",
+        "lastMissionDate": "2026-05-10",
+        "approxLinesTotal": 344
       },
       "missionLog": [
         {"missionId": "BOPE-CODEX-2026-001", "role": "mando total", "approxLines": 18, "resultado": "cierre demostrativo completo", "effects": []},
@@ -39,7 +39,8 @@
         {"missionId": "BOPE-CODEX-2026-022", "role": "mando doctrinal", "approxLines": 12, "resultado": "activacion doctrinal absorbida sin refuerzos innecesarios", "effects": []},
         {"missionId": "BOPE-CODEX-2026-023", "role": "mando doctrinal", "approxLines": 16, "resultado": "saneamiento canonico y cierre asistido asentados", "effects": []},
         {"missionId": "BOPE-CODEX-2026-024", "role": "mando doctrinal", "approxLines": 12, "resultado": "activacion dirigida absorbida · doctrina local verificada", "effects": []},
-        {"missionId": "BOPE-CODEX-2026-025", "role": "mando doctrinal", "approxLines": 12, "resultado": "equivalencias doctrinales y economia operativa estricta", "effects": []}
+        {"missionId": "BOPE-CODEX-2026-025", "role": "mando doctrinal", "approxLines": 12, "resultado": "equivalencias doctrinales y economia operativa estricta", "effects": []},
+        {"missionId": "BOPE-CURSOR-2026-026", "role": "mando doctrinal Cursor", "approxLines": 95, "resultado": "OPERATIONS-PLAYBOOK + paridad JOHN; ficha sincronizada post-cierre institucional", "effects": []}
       ]
     },
     "PIXEL": {
