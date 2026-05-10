@@ -18,6 +18,9 @@ Thumbs.db
 # Claude Code local config — no versionar
 .claude/settings.local.json
 
+# Worktrees enlazados (mismo repo): no versionar como gitlink; evita drift infinito
+.claude/worktrees/
+
 # Logs de debug — no versionar
 debug.log
 *.log.debug
