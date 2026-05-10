@@ -8,6 +8,7 @@
 | [COLLABORATION_RULES.md](./COLLABORATION_RULES.md) | Colaboración y paralelismo; mando único; modalidades |
 | [MULTICA-BOARD.md](./MULTICA-BOARD.md) | Tablero *BOPE War Room — Operations* (columnas, flujo) |
 | [ROADMAP-MULTICA.md](./ROADMAP-MULTICA.md) | Roadmap corto de adopción Multica |
+| [CURSOR-CLI-PARITY.md](./CURSOR-CLI-PARITY.md) | BOPE en Cursor = paridad CLI; brief final; save & return |
 
 **Fuentes canónicas del repo (no duplicar):**
 

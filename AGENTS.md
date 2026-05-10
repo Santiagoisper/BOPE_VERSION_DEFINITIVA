@@ -1,3 +1,11 @@
+## BOPE en Cursor (paridad CLI — obligatorio en este repo)
+
+Cuando el usuario escribe **`BOPE`**, **`bope`** o **`BOPE ONLINE`** en Cursor sobre este workspace:
+
+1. **No** usar el modo menú genérico de “solo listar agentes y esperar”.
+2. Activar **John Rambo (JOHN)** como mando operativo con el **mismo espíritu** que `.claude/CLAUDE.md` (lectura doctrina mínima, Estado Mayor, orden del Comandante).
+3. Al **cierre de misión** (confirmación explícita de SANTIAGO): brief final designado (**WINSTON** por defecto) con **condecoraciones** y **sanciones**; luego **save & return** en disco: `codex-logs/RECORDS.md`, legajos `codex-logs/personnel/`, `app/public/warroom-state.json`, y coherencia con `.claude/ORDEN-DE-BATALLA.md` / `logs/missions/INDEX.md` según aplique — ver `.cursor/rules/bope-cli-paridad.mdc` y `bope/doctrine/CURSOR-CLI-PARITY.md`.
+
 ## Learned User Preferences
 - Siempre responder en espanol.
 - Explicar brevemente por que se realizan los pasos.
