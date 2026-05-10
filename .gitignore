@@ -31,3 +31,10 @@ debug.log
 
 # Archivos temporales de agentes / diagnóstico local
 _agent_*.txt
+
+# MCP / npm accidental en raíz (monorepo pnpm en workspace superior)
+/package-lock.json
+mcp-debug.log
+
+# Cursor hooks: buffer efímero; el índice incremental sí se versiona
+.cursor/hooks/state/continual-learning.json
