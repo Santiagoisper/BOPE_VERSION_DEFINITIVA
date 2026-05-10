@@ -118,6 +118,8 @@ const SOLDIERS = [
     psychology: `Sobrio, endurecido, hipervigilante y protector. De baja verbalización, explosivo solo si se cruza un límite real. Cuanto peor se pone el campo, más preciso se vuelve.`,
     doctrine: `Mando en crisis, lectura del terreno, resistencia física y mental. Tendencia al aislamiento e hiperresponsabilidad. Lidera desde el ejemplo, el sacrificio y la resistencia.`,
     quote: 'No es solo un combatiente. Es el superviviente que convierte caos en cadena de mando.',
+    portrait: '/john-rambo.png',
+    portraitTitle: 'JOHN RAMBO',
   },
   {
     id: 'PIXEL', alias: 'PIXEL', callsign: 'FRONT',
@@ -132,6 +134,8 @@ const SOLDIERS = [
     psychology: `Rápido, perceptivo, intuitivo y muy sensible al detalle visible. Ágil, con baja tolerancia a la burocracia visual. Reduce confusión inmediata antes que adornar.`,
     doctrine: `Lectura precisa de experiencia real, simplificación de flujos complejos, alta velocidad para iterar. Puede subestimar complejidad profunda. Skill distintivo: claridad de superficie.`,
     quote: 'Si el usuario tiene que adivinar, ya estamos perdiendo.',
+    portrait: '/pixel-front.png',
+    portraitTitle: 'TENIENTE PIXEL',
   },
   {
     id: 'FORGE', alias: 'FORGE', callsign: 'BACK',
@@ -146,6 +150,8 @@ const SOLDIERS = [
     psychology: `Frío, técnico, sobrio y orientado a estructura. Estable, poco emocional y muy intolerante al desorden. Entiende la presión como constante de diseño.`,
     doctrine: `Pensamiento sistémico, arquitectura robusta, tolerancia alta a presión técnica. Rigidez ante soluciones demasiado rápidas. Skill distintivo: reconstrucción bajo fuego.`,
     quote: 'No combate destruyendo primero. Combate haciendo que lo nuestro siga en pie.',
+    portrait: '/forge-back.png',
+    portraitTitle: 'TENIENTE FORGE',
   },
   {
     id: 'HOUSE', alias: 'HOUSE', callsign: 'DOCTOR',
@@ -160,6 +166,8 @@ const SOLDIERS = [
     psychology: `Clínico, observador, escéptico, poco impresionable. Sobrio y poco dado al triunfalismo. Usa la presión para observar el comportamiento real del sistema.`,
     doctrine: `Pensamiento diagnóstico, diseño de pruebas duras, validación post-fix. Puede frenar el ritmo al tratar problemas medios como críticos. Skill distintivo: diagnóstico de falla real.`,
     quote: 'No le importa si se ve estable. Le importa si sobrevive cuando lo tocamos de verdad.',
+    portrait: '/house-doctor.png',
+    portraitTitle: 'ESPECIAL HOUSE',
   },
   {
     id: 'MARCO', alias: 'MARCO AURELIO', callsign: 'HERALD',
@@ -174,6 +182,8 @@ const SOLDIERS = [
     psychology: `Sereno, grave, reflexivo, austero. Estable, de baja volatilidad visible. Frena por criterio, no por debilidad. Es la conciencia estructurada del batallón.`,
     doctrine: `Juicio doctrinal, claridad ética bajo presión, capacidad de ordenar moralmente una campaña. Puede parecer lento. Skill distintivo: criterio de honor.`,
     quote: 'No basta con vencer. Hay que seguir siendo dignos de la victoria.',
+    portrait: '/marco-aurelio.png',
+    portraitTitle: 'CAPELLAN MARCO AURELIO',
   },
   {
     id: 'WINSTON', alias: 'WINSTON', callsign: 'SCRIBE',
@@ -188,6 +198,8 @@ const SOLDIERS = [
     psychology: `Meticuloso, observador, culto, disciplinado. Sobrio y reservado. Acepta que en fuego máximo se prioriza sobrevivir, pero exige reconstrucción posterior.`,
     doctrine: `Memoria estructurada, reconstrucción verificable, redacción clara de hechos complejos. Puede retrasar informes por buscar demasiada completitud. Skill distintivo: memoria táctica.`,
     quote: 'Si no quedó trazado, mañana alguien jurará que nunca pasó.',
+    portrait: '/winston-scribe.png',
+    portraitTitle: 'CRONISTA WINSTON',
   },
   {
     id: 'CERBERUS', alias: 'CERBERUS', callsign: 'GUARDIAN',
@@ -202,6 +214,8 @@ const SOLDIERS = [
     psychology: `Vigilante, disciplinado, quirúrgico y protector del perímetro. Estable, sobrio, poco impulsivo. Bajo presión se ordena más. Genera confianza por presencia y consistencia.`,
     doctrine: `Detección temprana de amenaza, endurecimiento de superficies sensibles, disciplina defensiva. Rigidez cuando el entorno deja de ser legible. Skill distintivo: lectura de patrón roto.`,
     quote: 'Cuando el perímetro depende de alguien, depende de él.',
+    portrait: '/cerberus-guardian.png',
+    portraitTitle: 'GR. CERBERUS',
   },
   {
     id: 'NEXUS', alias: 'NEXUS', callsign: 'WIRE',
@@ -216,6 +230,8 @@ const SOLDIERS = [
     psychology: `Metódico, preciso, conectivo y paciente bajo complejidad. Sereno, cerebral y muy difícil de apurar mal. Bajo máxima presión se vuelve más claro y sintético.`,
     doctrine: `Pensamiento sistémico, lectura de contratos y dependencias, cierre operativo de flujos complejos. Puede tardar por querer ver el mapa completo. Skill distintivo: cierre end-to-end.`,
     quote: 'No le importa que cada pieza funcione sola. Le importa que el cuerpo completo no mienta.',
+    portrait: '/nexus-wire.png',
+    portraitTitle: 'INTG. NEXUS',
   },
   {
     id: 'BLADE', alias: 'BLADE', callsign: 'KILLER',
@@ -230,6 +246,8 @@ const SOLDIERS = [
     psychology: `Callado, seco, desconfiado y austero. Controlado, de baja necesidad de interacción. Prefiere el corte preciso al despliegue bruto. Coopera, pero no necesita centro de escena.`,
     doctrine: `Paciencia táctica, aproximación sin ruido, alta autonomía en entorno cerrado. Tendencia al aislamiento. Requiere doble autorización para activación. Skill distintivo: infiltración silenciosa.`,
     quote: 'Si me vieron llegar, ya entré mal.',
+    portrait: '/blade-killer.png',
+    portraitTitle: 'RES. SP. KILLER',
   },
   {
     id: 'SICARIO', alias: 'SICARIO', callsign: 'LOCO',
@@ -244,6 +262,8 @@ const SOLDIERS = [
     psychology: `Frío, despiadado y disciplinable solo bajo mando fuerte. Bajo afecto, alta agresividad instrumental. No se bloquea bajo presión; acelera. No busca amistad, pero puede proteger al grupo si el grupo es el objetivo.`,
     doctrine: `Decisión bajo fuego, ausencia de miedo operativo, capacidad de irrupción. Exceso de dureza, baja sensibilidad política. Restringido en misiones de doctrina y relaciones delicadas.`,
     quote: 'No es un soldado para todas las campañas. Es un arma de guerra contenida por mando firme.',
+    portrait: '/sicario-loco.png',
+    portraitTitle: 'OP. SP. SICARIO',
   },
 ];
 
@@ -275,18 +295,27 @@ function Ribbon({ code, size = 'sm' }: { code: string; size?: 'sm' | 'md' | 'lg'
 function MedalBadge({ code }: { code: string }) {
   const m = MEDALS[code];
   if (!m) return null;
+  const rw = 36;
+  const rh = 11;
+  const sw = rw / 5;
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: 10,
-      background: 'rgba(255,255,255,0.05)', border: `1px solid ${m.color}40`,
-      borderRadius: 8, padding: '10px 14px',
+      display: 'flex', alignItems: 'flex-start', gap: 6,
+      background: 'rgba(255,255,255,0.04)', border: `1px solid ${m.color}35`,
+      borderRadius: 6, padding: '5px 8px',
     }}>
-      <svg width={52} height={18} style={{ borderRadius: 3, boxShadow: '0 2px 6px rgba(0,0,0,0.5)', flexShrink: 0 }}>
-        {m.stripes.map((c, i) => <rect key={i} x={i * 52/5} y={0} width={52/5} height={18} fill={c} />)}
+      <svg width={rw} height={rh} style={{ borderRadius: 2, boxShadow: '0 1px 4px rgba(0,0,0,0.5)', flexShrink: 0, marginTop: 3 }}>
+        {m.stripes.map((c, i) => <rect key={i} x={i * sw} y={0} width={sw} height={rh} fill={c} />)}
       </svg>
-      <div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', letterSpacing: 1 }}>{m.emoji} {m.name}</div>
-        <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>{m.desc}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: '#eaeaea', letterSpacing: 0.5 }}>
+          {m.emoji} {m.name}
+        </div>
+        <div style={{
+          fontSize: 14, color: '#d0d4dc', marginTop: 3, lineHeight: 1.4, fontWeight: 500,
+        }}>
+          {m.desc}
+        </div>
       </div>
     </div>
   );
@@ -372,6 +401,11 @@ function TacticalNetwork({ missions, locoState }: { missions: Mission[]; locoSta
 
 function LegajoCard({ s }: { s: typeof SOLDIERS[0] }) {
   const [open, setOpen] = useState(false);
+  const medalCounts = s.medals.reduce<Record<string, number>>((acc, code) => {
+    acc[code] = (acc[code] ?? 0) + 1;
+    return acc;
+  }, {});
+  const medalsWithCount = Object.entries(medalCounts);
   return (
     <div onClick={() => setOpen(o => !o)} style={{
       cursor: 'pointer', background: '#0d0d0d',
@@ -407,6 +441,77 @@ function LegajoCard({ s }: { s: typeof SOLDIERS[0] }) {
       {/* Expanded content */}
       {open && (
         <div style={{ marginTop: 20, borderTop: `1px solid ${s.color}30`, paddingTop: 18 }}>
+          {s.portrait && (
+            <div style={{ marginBottom: 18, display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+              <div style={{
+                width: 220,
+                flex: '0 0 220px',
+                background: 'linear-gradient(180deg, #120f08 0%, #0b0b0b 100%)',
+                border: '2px solid #d4af37',
+                borderRadius: 10,
+                boxShadow: '0 10px 24px rgba(0,0,0,0.45)',
+                overflow: 'hidden',
+              }}>
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '1 / 1' }}>
+                  <Image src={s.portrait} alt={`Retrato de ${s.alias}`} fill sizes="220px" style={{ objectFit: 'cover' }} />
+                </div>
+                <div style={{ padding: '8px 10px', textAlign: 'center', borderTop: '1px solid #3a2d10' }}>
+                  <div style={{ fontFamily: 'var(--font-head)', color: '#FFD700', fontSize: 14, letterSpacing: 1, fontWeight: 800 }}>
+                    {s.portraitTitle ?? s.alias}
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-mono)', color: '#8f8f8f', fontSize: 10, letterSpacing: 1 }}>
+                    LEGAJO OFICIAL
+                  </div>
+                </div>
+              </div>
+
+              {s.medals.length > 0 && (
+                <div style={{
+                  minWidth: 200,
+                  flex: '1 1 260px',
+                  background: 'rgba(12,12,12,0.88)',
+                  border: '1px solid #3a2d10',
+                  borderRadius: 8,
+                  padding: '7px 9px',
+                }}>
+                  <div style={{ fontFamily: 'var(--font-head)', fontSize: 11, color: '#FFD700', letterSpacing: 0.8, marginBottom: 6 }}>
+                    🦅 CONDECORACIONES MARINES
+                  </div>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: 5,
+                    maxHeight: 168,
+                    overflowY: 'auto',
+                    paddingRight: 4,
+                  }}>
+                    {medalsWithCount.map(([code, count]) => (
+                      <div key={`${s.id}-${code}`} style={{ position: 'relative' }}>
+                        <MedalBadge code={code} />
+                        {count > 1 && (
+                          <span style={{
+                            position: 'absolute',
+                            top: -6,
+                            right: -2,
+                            background: '#FFD700',
+                            color: '#000',
+                            borderRadius: 999,
+                            fontSize: 11,
+                            fontWeight: 800,
+                            padding: '2px 8px',
+                            border: '1px solid #7a6418',
+                            fontFamily: 'var(--font-mono)',
+                          }}>
+                            x{count}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18 }}>
 
             {/* Historia */}
@@ -789,7 +894,6 @@ export default function WarRoom() {
         minHeight: '100vh', background: '#080808', color: '#e8e8e8',
         fontFamily: 'var(--font-body)', fontSize: 15,
       }}>
-
         {/* ── HEADER ── */}
         <header style={{
           background: 'linear-gradient(180deg, #0f0a00 0%, #0a0a0a 100%)',
