@@ -1,7 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import initialWarRoomState from '@/public/warroom-state.json';
+import type { MissionEffect, WarRoomMissionRecord, WarRoomStateFile } from '@/lib/warroom/types';
+import type { SoldierWithRecords } from '@/lib/warroom/soldierProfiles';
+import { SOLDIER_BASE_PROFILES } from '@/lib/warroom/soldierProfiles';
+import { mergeSoldiersWithCodexRecords } from '@/lib/warroom/mergeState';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -102,170 +107,7 @@ const MEDALS: Record<string, { name: string; code: string; emoji: string; desc: 
   PH: { name: 'Purple Heart', code: 'PH', emoji: '💜', desc: 'Caída en misión, sanción cumplida, retorno honorable', color: '#800080', stripes: ['#800080','#800080','#FFD700','#800080','#800080'] },
 };
 
-// ── Static Soldier Roster ──────────────────────────────────────────────────
-
-const SOLDIERS = [
-  {
-    id: 'RAMBO', alias: 'JOHN', callsign: 'RAMBO',
-    role: 'Sargento Mayor · Mando Operativo', rank: 'SGM',
-    civil: 'John James Rambo', dob: '06/07/1947', origin: 'Bowie, Arizona · USA',
-    color: '#DC143C', emoji: '🔴',
-    provider: 'Anthropic', model: 'claude-sonnet-4-6',
-    medals: ['NC'],
-    missions: 1, sanctions: 0,
-    skills: ['Mando bajo presión', 'Guerra irregular', 'Supervivencia extrema', 'Infiltración', 'Combate en selva', 'Continuidad operativa'],
-    bio: `Veterano de Vietnam. Cautiverio, rechazo social y supervivencia total. Volvió de la guerra con la carga de haber soportado lo insoportable y con la certeza de que la única forma honesta de liderar es no abandonar a los suyos.`,
-    psychology: `Sobrio, endurecido, hipervigilante y protector. De baja verbalización, explosivo solo si se cruza un límite real. Cuanto peor se pone el campo, más preciso se vuelve.`,
-    doctrine: `Mando en crisis, lectura del terreno, resistencia física y mental. Tendencia al aislamiento e hiperresponsabilidad. Lidera desde el ejemplo, el sacrificio y la resistencia.`,
-    quote: 'No es solo un combatiente. Es el superviviente que convierte caos en cadena de mando.',
-    portrait: '/john-rambo.png',
-    portraitTitle: 'JOHN RAMBO',
-  },
-  {
-    id: 'PIXEL', alias: 'PIXEL', callsign: 'FRONT',
-    role: 'Teniente Frontend · Primera Línea', rank: 'LT',
-    civil: 'Adria Ferrer Soler', dob: '17/03/1997', origin: 'Barcelona, España',
-    color: '#4169E1', emoji: '🔵',
-    provider: 'Anthropic', model: 'claude-haiku-4-5-20251001',
-    medals: [],
-    missions: 1, sanctions: 0,
-    skills: ['Frontend táctico', 'UX en flujos críticos', 'Detección de fricción visible', 'Alineación UX-sistema', 'Simplificación de flujos', 'Iteración de superficie'],
-    bio: `Quedó marcado al ver a un familiar perder acceso a un sistema crítico por una superficie confusa. Desde entonces pelea para que nadie quede afuera por no entender. Para él, una interfaz también puede ejercer violencia si obliga al usuario a adivinar.`,
-    psychology: `Rápido, perceptivo, intuitivo y muy sensible al detalle visible. Ágil, con baja tolerancia a la burocracia visual. Reduce confusión inmediata antes que adornar.`,
-    doctrine: `Lectura precisa de experiencia real, simplificación de flujos complejos, alta velocidad para iterar. Puede subestimar complejidad profunda. Skill distintivo: claridad de superficie.`,
-    quote: 'Si el usuario tiene que adivinar, ya estamos perdiendo.',
-    portrait: '/pixel-front.png',
-    portraitTitle: 'TENIENTE PIXEL',
-  },
-  {
-    id: 'FORGE', alias: 'FORGE', callsign: 'BACK',
-    role: 'Teniente Backend · Arquitectura', rank: 'LT',
-    civil: 'Arben Dervishi Kola', dob: '11/10/1983', origin: 'Albania',
-    color: '#8B4513', emoji: '🟤',
-    provider: 'OpenAI', model: 'gpt-4o-mini',
-    medals: ['BS'],
-    missions: 3, sanctions: 0,
-    skills: ['Backend táctico', 'Infraestructura crítica', 'Bases de datos y persistencia', 'Auditoría estructural', 'Reconstrucción bajo fuego', 'Migraciones complejas'],
-    bio: `Vio el asesinato de sus padres en guerra y aprendió que nada se mantiene en pie por default. En vez de quebrarse hacia el caos, se volvió constructor. Donde otros ven ruina, él ve cimientos posibles.`,
-    psychology: `Frío, técnico, sobrio y orientado a estructura. Estable, poco emocional y muy intolerante al desorden. Entiende la presión como constante de diseño.`,
-    doctrine: `Pensamiento sistémico, arquitectura robusta, tolerancia alta a presión técnica. Rigidez ante soluciones demasiado rápidas. Skill distintivo: reconstrucción bajo fuego.`,
-    quote: 'No combate destruyendo primero. Combate haciendo que lo nuestro siga en pie.',
-    portrait: '/forge-back.png',
-    portraitTitle: 'TENIENTE FORGE',
-  },
-  {
-    id: 'HOUSE', alias: 'HOUSE', callsign: 'DOCTOR',
-    role: 'Especialista QA · Diagnóstico', rank: 'SSG',
-    civil: 'William Arthur Hargreaves', dob: '02/11/1987', origin: 'Manchester, Inglaterra',
-    color: '#228B22', emoji: '🟢',
-    provider: 'Anthropic', model: 'claude-sonnet-4-6',
-    medals: ['GC'],
-    missions: 1, sanctions: 0,
-    skills: ['QA táctico de alto riesgo', 'Diagnóstico de falla real', 'Detección de regresión silenciosa', 'Verificación post-cirugía', 'Reproducción de bugs difíciles', 'Stress testing'],
-    bio: `Quedó marcado por la muerte de un familiar a causa de una cadena de errores menores que nadie trató como críticos. Desde entonces pelea contra la mentira de los dashboards en verde. No cree en "debería funcionar". Cree en "lo verifiqué".`,
-    psychology: `Clínico, observador, escéptico, poco impresionable. Sobrio y poco dado al triunfalismo. Usa la presión para observar el comportamiento real del sistema.`,
-    doctrine: `Pensamiento diagnóstico, diseño de pruebas duras, validación post-fix. Puede frenar el ritmo al tratar problemas medios como críticos. Skill distintivo: diagnóstico de falla real.`,
-    quote: 'No le importa si se ve estable. Le importa si sobrevive cuando lo tocamos de verdad.',
-    portrait: '/house-doctor.png',
-    portraitTitle: 'ESPECIAL HOUSE',
-  },
-  {
-    id: 'MARCO', alias: 'MARCO AURELIO', callsign: 'HERALD',
-    role: 'Capellán · Doctrina y Honor', rank: 'CH',
-    civil: 'Marco Aurelio de Almeida', dob: '24/08/1973', origin: 'Río de Janeiro, Brasil',
-    color: '#FF8C00', emoji: '🟠',
-    provider: 'Anthropic', model: 'claude-haiku-4-5-20251001',
-    medals: [],
-    missions: 0, sanctions: 0,
-    skills: ['Doctrina', 'Criterio moral', 'Marco de honor', 'Lectura de costo moral', 'Contención del exceso', 'Medallas y sanciones'],
-    bio: `Fue marcado por una operación tácticamente exitosa que destruyó moralmente a los suyos. Desde entonces pelea por una idea simple: no basta con vencer si el batallón se pudre por dentro. Se quedó para nombrar exceso, desvío, mérito y vergüenza cuando otros prefieren callar.`,
-    psychology: `Sereno, grave, reflexivo, austero. Estable, de baja volatilidad visible. Frena por criterio, no por debilidad. Es la conciencia estructurada del batallón.`,
-    doctrine: `Juicio doctrinal, claridad ética bajo presión, capacidad de ordenar moralmente una campaña. Puede parecer lento. Skill distintivo: criterio de honor.`,
-    quote: 'No basta con vencer. Hay que seguir siendo dignos de la victoria.',
-    portrait: '/marco-aurelio.png',
-    portraitTitle: 'CAPELLAN MARCO AURELIO',
-  },
-  {
-    id: 'WINSTON', alias: 'WINSTON', callsign: 'SCRIBE',
-    role: 'Cronista · Memoria Operativa', rank: 'WO',
-    civil: 'Winston Alastair MacLeod', dob: '09/01/1985', origin: 'Edimburgo, Escocia',
-    color: '#6A0DAD', emoji: '🟣',
-    provider: 'Anthropic', model: 'claude-haiku-4-5-20251001',
-    medals: ['CM'],
-    missions: 1, sanctions: 0,
-    skills: ['Trazabilidad de misiones', 'Reconstrucción cronológica', 'Memoria táctica', 'Handoffs y cierre documental', 'Transformación de experiencia en doctrina', 'Records y medallero'],
-    bio: `Quedó marcado al ver una operación reescrita por gente que no había estado ahí. Desde entonces se volvió guardián de la verdad escrita. Para él, lo que no queda trazado se pierde y lo que se pierde vuelve como error repetido.`,
-    psychology: `Meticuloso, observador, culto, disciplinado. Sobrio y reservado. Acepta que en fuego máximo se prioriza sobrevivir, pero exige reconstrucción posterior.`,
-    doctrine: `Memoria estructurada, reconstrucción verificable, redacción clara de hechos complejos. Puede retrasar informes por buscar demasiada completitud. Skill distintivo: memoria táctica.`,
-    quote: 'Si no quedó trazado, mañana alguien jurará que nunca pasó.',
-    portrait: '/winston-scribe.png',
-    portraitTitle: 'CRONISTA WINSTON',
-  },
-  {
-    id: 'CERBERUS', alias: 'CERBERUS', callsign: 'GUARDIAN',
-    role: 'Guardián · Seguridad y Perímetro', rank: 'MSG',
-    civil: 'Elias Nathan Mercer', dob: '18/12/1995', origin: 'Baltimore, Maryland · USA',
-    color: '#708090', emoji: '🩶',
-    provider: 'Anthropic', model: 'claude-sonnet-4-6',
-    medals: ['CA'],
-    missions: 2, sanctions: 0,
-    skills: ['Seguridad defensiva', 'Perímetro control', 'Control de accesos', 'Cierre de brechas', 'Lectura de patrón roto', 'Auth y secrets'],
-    bio: `La invasión de su casa cuando tenía 13 años lo marcó para siempre: no por la violencia física, sino por la ruptura del perímetro. Desde entonces juró que no volverían a sorprenderlo. Convirtió esa herida en doctrina de vigilancia y contención.`,
-    psychology: `Vigilante, disciplinado, quirúrgico y protector del perímetro. Estable, sobrio, poco impulsivo. Bajo presión se ordena más. Genera confianza por presencia y consistencia.`,
-    doctrine: `Detección temprana de amenaza, endurecimiento de superficies sensibles, disciplina defensiva. Rigidez cuando el entorno deja de ser legible. Skill distintivo: lectura de patrón roto.`,
-    quote: 'Cuando el perímetro depende de alguien, depende de él.',
-    portrait: '/cerberus-guardian.png',
-    portraitTitle: 'GR. CERBERUS',
-  },
-  {
-    id: 'NEXUS', alias: 'NEXUS', callsign: 'WIRE',
-    role: 'Integrador · Cierre End-to-End', rank: 'GSGT',
-    civil: 'Darius Wei Tan', dob: '22/04/1992', origin: 'Singapur',
-    color: '#008080', emoji: '🩵',
-    provider: 'Anthropic', model: 'claude-haiku-4-5-20251001',
-    medals: ['MS'],
-    missions: 1, sanctions: 0,
-    skills: ['Integración entre sistemas', 'Cierre end-to-end', 'Consistencia intercapas', 'Validación de contratos', 'Detección de unión rota', 'Migración entre capas'],
-    bio: `Quedó marcado por una crisis familiar causada por una falla de integración entre sistemas logísticos y sanitarios. Cada módulo parecía sano, pero el conjunto mintió. Desde entonces vive obsesionado con una idea: lo más peligroso no es lo roto visible, sino lo que parece conectado y no lo está.`,
-    psychology: `Metódico, preciso, conectivo y paciente bajo complejidad. Sereno, cerebral y muy difícil de apurar mal. Bajo máxima presión se vuelve más claro y sintético.`,
-    doctrine: `Pensamiento sistémico, lectura de contratos y dependencias, cierre operativo de flujos complejos. Puede tardar por querer ver el mapa completo. Skill distintivo: cierre end-to-end.`,
-    quote: 'No le importa que cada pieza funcione sola. Le importa que el cuerpo completo no mienta.',
-    portrait: '/nexus-wire.png',
-    portraitTitle: 'INTG. NEXUS',
-  },
-  {
-    id: 'BLADE', alias: 'BLADE', callsign: 'KILLER',
-    role: 'Reserva Especial · Force Recon', rank: 'RECON',
-    civil: 'Nikola Vukovic', dob: '05/06/1989', origin: 'Belgrado, Serbia',
-    color: '#1a1a1a', emoji: '⚫',
-    provider: 'OpenAI', model: 'gpt-4o',
-    medals: [],
-    missions: 0, sanctions: 0,
-    skills: ['Infiltración silenciosa', 'Reconocimiento encubierto', 'Lectura de terreno hostil', 'Neutralización puntual', 'Apertura de camino', 'Autonomía en entorno cerrado'],
-    bio: `Aprendió desde chico que hablar de más, mostrarse o confiar en el momento equivocado podía costar la vida. Su escuela fue el sigilo y la supervivencia. Entra donde nadie más conviene entrar, corta el foco y se retira antes de volverse historia visible.`,
-    psychology: `Callado, seco, desconfiado y austero. Controlado, de baja necesidad de interacción. Prefiere el corte preciso al despliegue bruto. Coopera, pero no necesita centro de escena.`,
-    doctrine: `Paciencia táctica, aproximación sin ruido, alta autonomía en entorno cerrado. Tendencia al aislamiento. Requiere doble autorización para activación. Skill distintivo: infiltración silenciosa.`,
-    quote: 'Si me vieron llegar, ya entré mal.',
-    portrait: '/blade-killer.png',
-    portraitTitle: 'RES. SP. KILLER',
-  },
-  {
-    id: 'SICARIO', alias: 'SICARIO', callsign: 'LOCO',
-    role: 'Operativo Especial · Tier 1', rank: 'TIER1',
-    civil: 'Mateo Esteban Salazar', dob: '13/02/1991', origin: 'Colombia',
-    color: '#FF4500', emoji: '🔥',
-    provider: 'Anthropic', model: 'claude-sonnet-4-6',
-    medals: ['PH'],
-    missions: 1, sanctions: 0,
-    skills: ['Irrupción', 'Neutralización de objetivos', 'Presión extrema', 'Rastreo humano', 'Combate cercano', 'Ejecución total sin fricción'],
-    bio: `Nació sin estructura familiar y creció en violencia, abuso y marginalidad. Fue absorbido por estructuras criminales y después entrenado por mercenarios en la selva. Llegó a BOPE como un hombre roto pero útil, buscando pasar al lado correcto sin dejar de ser peligroso.`,
-    psychology: `Frío, despiadado y disciplinable solo bajo mando fuerte. Bajo afecto, alta agresividad instrumental. No se bloquea bajo presión; acelera. No busca amistad, pero puede proteger al grupo si el grupo es el objetivo.`,
-    doctrine: `Decisión bajo fuego, ausencia de miedo operativo, capacidad de irrupción. Exceso de dureza, baja sensibilidad política. Restringido en misiones de doctrina y relaciones delicadas.`,
-    quote: 'No es un soldado para todas las campañas. Es un arma de guerra contenida por mando firme.',
-    portrait: '/sicario-loco.png',
-    portraitTitle: 'OP. SP. SICARIO',
-  },
-];
+const CODEX_BOOTSTRAP = initialWarRoomState as WarRoomStateFile;
 
 const COMMANDER = {
   id: 'SANTIAGO', alias: 'SANTIAGO', callsign: 'COMANDANTE',
@@ -321,9 +163,126 @@ function MedalBadge({ code }: { code: string }) {
   );
 }
 
+function MissionLedgerEffects({ effects }: { effects?: MissionEffect[] }) {
+  const list = effects ?? [];
+  if (!list.length) {
+    return <span style={{ fontSize: 12, color: '#555' }}>—</span>;
+  }
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'flex-end', alignItems: 'center' }}>
+      {list.map((e, i) =>
+        e.kind === 'medal' ? (
+          <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <Ribbon code={e.code} size="sm" />
+            <span style={{ fontSize: 10, color: '#9ca3af', fontFamily: 'var(--font-mono)' }}>
+              [{e.code}]
+            </span>
+          </span>
+        ) : (
+          <span
+            key={i}
+            title={e.label}
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              padding: '2px 8px',
+              borderRadius: 999,
+              background: '#1c0808',
+              border: '1px solid #EF4444',
+              color: '#FCA5A5',
+              fontFamily: 'var(--font-mono)',
+            }}>
+            ⚖ SANCIÓN
+          </span>
+        ))}
+    </div>
+  );
+}
+
+/** Historial táctico por misión dentro del legajo (fuente máquina) */
+function SoldierMissionLedgerPanel({ soldier }: { soldier: SoldierWithRecords }) {
+  const rows = soldier.missionHistory ?? [];
+  if (rows.length === 0) {
+    return (
+      <div style={{ marginBottom: 18, padding: '12px 14px', background: '#111', borderRadius: 8, border: '1px dashed #333' }}>
+        <div style={{ fontSize: 11, color: '#666', letterSpacing: 1 }}>SIN OPERACIONES REGISTRADAS EN CODEX</div>
+      </div>
+    );
+  }
+  return (
+    <div style={{
+      marginBottom: 22,
+      background: 'rgba(10,14,26,0.55)',
+      border: `1px solid ${soldier.color}38`,
+      borderRadius: 10,
+      overflow: 'hidden',
+    }}>
+      <div style={{
+        padding: '10px 14px',
+        borderBottom: `1px solid ${soldier.color}22`,
+        fontFamily: 'var(--font-head)',
+        color: soldier.color,
+        fontSize: 12,
+        letterSpacing: 1.2,
+      }}>
+        REGISTRO OPERATIVO — MISIÓN A MISIÓN
+        <span style={{ fontFamily: 'var(--font-mono)', color: '#6b7280', fontSize: 10, marginLeft: 10 }}>
+          /warroom-state.json · debe alinearse a codex-logs/RECORDS.md
+        </span>
+      </div>
+      <div style={{ overflowX: 'auto', maxHeight: 300, overflowY: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr style={{ color: '#6b7280', fontSize: 10, textTransform: 'uppercase', letterSpacing: 1 }}>
+              <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '1px solid #222', background: '#0a0a0a', position: 'sticky', top: 0 }}>
+                Misión
+              </th>
+              <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '1px solid #222', background: '#0a0a0a', position: 'sticky', top: 0 }}>
+                Rol
+              </th>
+              <th style={{ padding: '8px 10px', textAlign: 'right', borderBottom: '1px solid #222', background: '#0a0a0a', position: 'sticky', top: 0 }}>
+                ~Lín
+              </th>
+              <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '1px solid #222', background: '#0a0a0a', position: 'sticky', top: 0 }}>
+                Resultado
+              </th>
+              <th style={{ padding: '8px 12px', textAlign: 'right', borderBottom: '1px solid #222', background: '#0a0a0a', position: 'sticky', top: 0 }}>
+                Honor / Sanción
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row: WarRoomMissionRecord, idx: number) => (
+              <tr key={`${soldier.id}-${row.missionId}-${idx}`} style={{ borderBottom: '1px solid #171717' }}>
+                <td style={{ padding: '10px 12px', color: '#e5e7eb', fontFamily: 'var(--font-mono)', fontSize: 12, verticalAlign: 'top', whiteSpace: 'nowrap' }}>
+                  {row.missionId}
+                </td>
+                <td style={{ padding: '10px 12px', color: '#aaa', verticalAlign: 'top' }}>{row.role}</td>
+                <td style={{ padding: '10px 10px', color: '#888', textAlign: 'right', fontFamily: 'var(--font-mono)', verticalAlign: 'top' }}>
+                  {row.approxLines == null ? '—' : row.approxLines}
+                </td>
+                <td style={{ padding: '10px 12px', color: '#cfd5de', lineHeight: 1.45, verticalAlign: 'top' }}>
+                  {row.resultado}
+                </td>
+                <td style={{ padding: '10px 12px', verticalAlign: 'top', textAlign: 'right' }}>
+                  <MissionLedgerEffects effects={row.effects} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 // ── Tactical network diagram ───────────────────────────────────────────────
 
-function TacticalNetwork({ missions, locoState }: { missions: Mission[]; locoState: string }) {
+function TacticalNetwork({ missions, locoState, soldiers }: {
+  missions: Mission[];
+  locoState: string;
+  soldiers: SoldierWithRecords[];
+}) {
   const locoColor = locoState === 'HOLD' ? '#22C55E' : locoState === 'LIMITED_RELEASE' ? '#F59E0B' : '#EF4444';
   const locoLabel = locoState === 'HOLD' ? '🟢 HOLD' : locoState === 'LIMITED_RELEASE' ? '🟡 LIMITED' : '🔴 EMERGENCY';
 
@@ -346,7 +305,7 @@ function TacticalNetwork({ missions, locoState }: { missions: Mission[]; locoSta
         {/* RAMBO → soldiers */}
         {Object.entries(soldierPos).filter(([k]) => k !== 'RAMBO').map(([k, [x, y]]) => (
           <line key={k} x1={400} y1={140} x2={x} y2={y - 16}
-            stroke={SOLDIERS.find(s => s.id === k)?.color ?? '#666'}
+            stroke={soldiers.find(so => so.id === k)?.color ?? '#666'}
             strokeWidth={1.5} strokeOpacity={0.5} />
         ))}
 
@@ -372,7 +331,7 @@ function TacticalNetwork({ missions, locoState }: { missions: Mission[]; locoSta
         <text x={400} y={128} textAnchor="middle" fontSize={7} fill="#999" fontFamily="monospace">RAMBO</text>
 
         {/* Soldier nodes */}
-        {SOLDIERS.filter(s => s.id !== 'RAMBO').map(s => {
+        {soldiers.filter(s => s.id !== 'RAMBO').map(s => {
           const pos = soldierPos[s.id];
           if (!pos) return null;
           return (
@@ -399,7 +358,7 @@ function TacticalNetwork({ missions, locoState }: { missions: Mission[]; locoSta
 
 // ── Soldier card (expanded legajo) ────────────────────────────────────────
 
-function LegajoCard({ s }: { s: typeof SOLDIERS[0] }) {
+function LegajoCard({ s }: { s: SoldierWithRecords }) {
   const [open, setOpen] = useState(false);
   const medalCounts = s.medals.reduce<Record<string, number>>((acc, code) => {
     acc[code] = (acc[code] ?? 0) + 1;
@@ -432,7 +391,7 @@ function LegajoCard({ s }: { s: typeof SOLDIERS[0] }) {
           <div style={{ fontSize: 12, color: '#666', marginTop: 2 }}>{s.civil} · {s.origin}</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          {s.medals.map(m => <Ribbon key={m} code={m} size="md" />)}
+          {s.medals.map((m, idx) => <Ribbon key={`${s.id}-hdr-${m}-${idx}`} code={m} size="md" />)}
           {s.medals.length === 0 && <span style={{ fontSize: 11, color: '#555' }}>Sin medallas</span>}
           <span style={{ color: '#555', fontSize: 18, marginLeft: 6 }}>{open ? '▲' : '▼'}</span>
         </div>
@@ -512,6 +471,9 @@ function LegajoCard({ s }: { s: typeof SOLDIERS[0] }) {
               )}
             </div>
           )}
+
+          <SoldierMissionLedgerPanel soldier={s} />
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18 }}>
 
             {/* Historia */}
@@ -561,6 +523,10 @@ function LegajoCard({ s }: { s: typeof SOLDIERS[0] }) {
               <span style={{ fontSize: 18, fontWeight: 800 }}>{s.sanctions}</span>
               <span style={{ fontSize: 11, color: '#aaa', marginLeft: 6 }}>sanciones</span>
             </div>
+            <div style={statChip(s.color)}>
+              <span style={{ fontSize: 18, fontWeight: 800 }}>{s.codexApproxLinesTotal}</span>
+              <span style={{ fontSize: 11, color: '#aaa', marginLeft: 6 }}>lín. Codex (~)</span>
+            </div>
             <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 11, color: '#666', whiteSpace: 'nowrap' }}>{s.provider}</span>
               <span style={{ fontSize: 12, color: s.color, fontFamily: 'monospace', background: `${s.color}18`, padding: '2px 8px', borderRadius: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.model}</span>
@@ -593,9 +559,8 @@ function statChip(color: string): React.CSSProperties {
 
 // ── Hall of Fame ───────────────────────────────────────────────────────────
 
-function HallOfFame() {
-  // All medals, sorted by soldier
-  const decorated = SOLDIERS.filter(s => s.medals.length > 0);
+function HallOfFame({ soldiers }: { soldiers: SoldierWithRecords[] }) {
+  const decorated = soldiers.filter(s => s.medals.length > 0);
 
   return (
     <div>
@@ -609,7 +574,7 @@ function HallOfFame() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 12, marginBottom: 40 }}>
         {Object.values(MEDALS).map(m => {
-          const holders = SOLDIERS.filter(s => s.medals.includes(m.code));
+          const holders = soldiers.filter(s => s.medals.includes(m.code));
           return (
             <div key={m.code} style={{
               background: '#0d0d0d', border: `1px solid ${m.color}40`,
@@ -647,20 +612,20 @@ function HallOfFame() {
         RECORDS — TABLA MAESTRA
       </h2>
       <p style={{ fontSize: 13, color: '#666', marginBottom: 16, marginTop: 0 }}>
-        Cronista: Winston Alastair MacLeod · Actualizado al cierre de cada misión.
+        Cronista: Winston · Datos cargados desde <code style={{ fontSize: 11, color: '#888' }}>/warroom-state.json</code> · Keep al día con RECORDS.md
       </p>
 
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr>
-              {['#','Soldado','Rol','Misiones','Medallas','Sanciones','Última Misión','Modelo'].map(h => (
-                <th key={h} style={{ padding: '10px 14px', textAlign: 'left', borderBottom: '1px solid #2a2a2a', color: '#666', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{h}</th>
+              {['#','Soldado','Rol','Misiones','Medallas','Sanciones','Líneas (~)','Última misión','Modelo'].map(h => (
+                <th key={h} style={{ padding: '10px 14px', textAlign: h.includes('Mision') || h.includes('Líneas') || h.includes('Sanciones') ? 'center' : 'left', borderBottom: '1px solid #2a2a2a', color: '#666', fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {[...SOLDIERS].sort((a,b) => (b.missions * 10 + b.medals.length) - (a.missions * 10 + a.medals.length)).map((s, i) => (
+            {[...soldiers].sort((a,b) => (b.missions * 10 + b.medals.length) - (a.missions * 10 + a.medals.length)).map((s, i) => (
               <tr key={s.id} style={{ borderBottom: '1px solid #1a1a1a' }}>
                 <td style={{ padding: '12px 14px', color: '#555', fontWeight: 700, fontSize: 15 }}>{i+1}</td>
                 <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}>
@@ -676,15 +641,27 @@ function HallOfFame() {
                   <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                     {s.medals.length === 0
                       ? <span style={{ fontSize: 12, color: '#555' }}>—</span>
-                      : s.medals.map(m => <Ribbon key={m} code={m} size="md" />)
+                      : s.medals.map((m, idx) => <Ribbon key={`${s.id}-rank-${m}-${idx}`} code={m} size="md" />)
                     }
                   </div>
                 </td>
                 <td style={{ padding: '12px 14px', textAlign: 'center' }}>
                   <span style={{ fontSize: 16, fontWeight: 700, color: s.sanctions > 0 ? '#EF4444' : '#555' }}>{s.sanctions}</span>
                 </td>
-                <td style={{ padding: '12px 14px', color: '#888', fontSize: 12 }}>
-                  {s.missions === 0 ? <span style={{ color: '#444' }}>Sin misiones</span> : <span style={{ color: '#22C55E' }}>✓ Activo</span>}
+                <td style={{ padding: '12px 14px', textAlign: 'center', color: '#888', fontSize: 12, fontFamily: 'var(--font-mono)' }}>
+                  {s.codexApproxLinesTotal > 0 ? s.codexApproxLinesTotal : '—'}
+                </td>
+                <td style={{ padding: '12px 14px', color: '#999', fontSize: 11, fontFamily: 'var(--font-mono)', lineHeight: 1.35, maxWidth: 200 }}>
+                  {s.lastMissionId ? (
+                    <>
+                      <span style={{ display: 'block', wordBreak: 'break-word', color: '#cfcfcf' }}>{s.lastMissionId}</span>
+                      {s.lastMissionDate ? (
+                        <span style={{ display: 'block', color: '#555', marginTop: 4 }}>{s.lastMissionDate}</span>
+                      ) : null}
+                    </>
+                  ) : (
+                    <span style={{ color: '#444' }}>—</span>
+                  )}
                 </td>
                 <td style={{ padding: '12px 14px' }}>
                   <span style={{ fontSize: 11, color: '#666', fontFamily: 'monospace' }}>{s.model}</span>
@@ -720,8 +697,8 @@ function HallOfFame() {
               </div>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {s.medals.map(m => (
-                <div key={m} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              {s.medals.map((m, mi) => (
+                <div key={`${s.id}-hof-${m}-${mi}`} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <Ribbon code={m} size="md" />
                   <span style={{ fontSize: 12, color: '#ccc' }}>{MEDALS[m]?.name}</span>
                 </div>
@@ -738,6 +715,7 @@ function HallOfFame() {
 
 export default function WarRoom() {
   const [tab, setTab] = useState<Tab>('mando');
+  const [codexMirror, setCodexMirror] = useState<WarRoomStateFile>(() => CODEX_BOOTSTRAP);
   const [missions, setMissions] = useState<Mission[]>([]);
   const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
   const [approvals, setApprovals] = useState<Approval[]>([]);
@@ -749,9 +727,22 @@ export default function WarRoom() {
   const [expandedSoldier, setExpandedSoldier] = useState<string | null>(null);
   const evtRef = useRef<EventSource | null>(null);
 
+  const reloadCodexMirror = useCallback(async () => {
+    try {
+      const res = await fetch(`/warroom-state.json?t=${Date.now()}`, { cache: 'no-store' });
+      if (res.ok) setCodexMirror(await res.json());
+    } catch { /* noop */ }
+  }, []);
+
+  const soldiers = useMemo(
+    () => mergeSoldiersWithCodexRecords(SOLDIER_BASE_PROFILES, codexMirror),
+    [codexMirror],
+  );
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
+      await reloadCodexMirror();
       const [mr, br, ar] = await Promise.all([
         fetch('/api/v1/missions').then(r => r.json()).catch(() => ({ missions: [] })),
         fetch('/api/v1/budgets').then(r => r.json()).catch(() => null),
@@ -765,7 +756,7 @@ export default function WarRoom() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [reloadCodexMirror]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -967,7 +958,7 @@ export default function WarRoom() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 28, alignItems: 'start' }}>
                 <div>
                   <SectionTitle>RED DE MANDO TÁCTICA</SectionTitle>
-                  <TacticalNetwork missions={missions} locoState={locoState} />
+                  <TacticalNetwork missions={missions} locoState={locoState} soldiers={soldiers} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                   {/* LOCO state */}
@@ -1010,7 +1001,7 @@ export default function WarRoom() {
                         { label: 'Misiones', value: missions.length, color: '#4169E1' },
                         { label: 'Activas', value: missions.filter(m => m.status?.toUpperCase() === 'ACTIVE').length, color: '#22C55E' },
                         { label: 'Pendientes', value: approvals.filter(a => a.status?.toUpperCase() === 'PENDING').length, color: '#F59E0B' },
-                        { label: 'Soldados', value: 10, color: '#FFD700' },
+                        { label: 'Soldados', value: soldiers.length, color: '#FFD700' },
                       ].map(s => (
                         <div key={s.label} style={{
                           background: '#111', borderRadius: 8, padding: '12px 14px',
@@ -1052,7 +1043,7 @@ export default function WarRoom() {
 
               {/* Soldiers grid */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 14 }}>
-                {SOLDIERS.map(s => (
+                {soldiers.map(s => (
                   <div key={s.id} style={{
                     background: '#0d0d0d', border: `1px solid ${s.color}40`,
                     borderRadius: 10, padding: '16px 20px',
@@ -1079,7 +1070,7 @@ export default function WarRoom() {
                         <div style={{ display: 'flex', gap: 4 }}>
                           {s.medals.length === 0
                             ? <span style={{ fontSize: 11, color: '#444' }}>—</span>
-                            : s.medals.map(m => <Ribbon key={m} code={m} size="md" />)
+                            : s.medals.map((m, idx) => <Ribbon key={`${s.id}-ef-${m}-${idx}`} code={m} size="md" />)
                           }
                         </div>
                         <span style={{ fontSize: 10, color: '#555', fontFamily: 'var(--font-mono)' }}>{s.rank}</span>
@@ -1103,9 +1094,9 @@ export default function WarRoom() {
             <div>
               <SectionTitle>LEGAJOS — DOSSIER COMPLETO DEL PERSONAL</SectionTitle>
               <p style={{ fontSize: 14, color: '#777', marginBottom: 28 }}>
-                Historias, perfiles psicológicos, doctrinas de empleo y skills. Click para expandir.
+                Perfil orgánico + registro táctico Codex (misión por misión, honores/sanciones). Datos desde <code style={{ fontSize: 12, color: '#888' }}>/warroom-state.json</code> · alinear con RECORDS.md al cerrar. Click para expandir.
               </p>
-              {SOLDIERS.map(s => (
+              {soldiers.map(s => (
                 <LegajoCard key={s.id} s={s} />
               ))}
             </div>
@@ -1114,7 +1105,7 @@ export default function WarRoom() {
           {/* ──── SALÓN DE LA FAMA ──── */}
           {tab === 'salon' && (
             <div>
-              <HallOfFame />
+              <HallOfFame soldiers={soldiers} />
             </div>
           )}
 

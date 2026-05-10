@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "canonicalMarkdown": "../codex-logs/RECORDS.md",
+  "notes": "Mantener alineado con codex-logs/RECORDS.md (Winston/cierra cada mision). Editar este JSON junto al cierre canonico.",
+  "commander": {
+    "alias": "SANTIAGO",
+    "stats": {
+      "missionsParticipated": 0,
+      "sanctionsTotal": 0,
+      "decorationsMedalCodes": [],
+      "lastMissionId": null,
+      "lastMissionDate": null,
+      "approxLinesTotal": 0
+    },
+    "missionLog": []
+  },
+  "soldiers": {
+    "RAMBO": {
+      "stats": {
+        "missionsParticipated": 15,
+        "sanctionsTotal": 0,
+        "decorationsMedalCodes": ["NC"],
+        "lastMissionId": "BOPE-CODEX-2026-025",
+        "lastMissionDate": "2026-04-17",
+        "approxLinesTotal": 249
+      },
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-001", "role": "mando total", "approxLines": 18, "resultado": "cierre demostrativo completo", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-002", "role": "mando doctrinal", "approxLines": 24, "resultado": "bootstrap local normalizado", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-003", "role": "mando doctrinal", "approxLines": 22, "resultado": "medallero visible fijado", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-004", "role": "mando doctrinal", "approxLines": 18, "resultado": "cuadro de honor fijado", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-005", "role": "mando doctrinal", "approxLines": 14, "resultado": "cuadro ampliado con sanciones y KIA", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-006", "role": "mando doctrinal", "approxLines": 46, "resultado": "bootstrap autosuficiente fijado", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-017", "role": "mando doctrinal", "approxLines": 43, "resultado": "replica intercapas completada", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-018", "role": "replica intercapas", "approxLines": 28, "resultado": "replica fiel desde Claude asentada", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-019", "role": "mando doctrinal", "approxLines": 18, "resultado": "compatibilidad de invocacion fijada", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-020", "role": "mando doctrinal", "approxLines": 18, "resultado": "activacion inicial absorbida por el canon local", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-021", "role": "mando doctrinal", "approxLines": 14, "resultado": "mapa operativo de repos y deploy canonico fijados", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-022", "role": "mando doctrinal", "approxLines": 12, "resultado": "activacion doctrinal absorbida sin refuerzos innecesarios", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-023", "role": "mando doctrinal", "approxLines": 16, "resultado": "saneamiento canonico y cierre asistido asentados", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-024", "role": "mando doctrinal", "approxLines": 12, "resultado": "activacion dirigida absorbida · doctrina local verificada", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-025", "role": "mando doctrinal", "approxLines": 12, "resultado": "equivalencias doctrinales y economia operativa estricta", "effects": []}
+      ]
+    },
+    "PIXEL": {
+      "stats": {
+        "missionsParticipated": 2,
+        "sanctionsTotal": 0,
+        "decorationsMedalCodes": ["BS"],
+        "lastMissionId": "cuentas-personales-v1",
+        "lastMissionDate": "2026-02-17",
+        "approxLinesTotal": 14
+      },
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-001", "role": "validacion de frente visual", "approxLines": 14, "resultado": "superficie confirmada", "effects": []},
+        {"missionId": "cuentas-personales-v1", "role": "frente UI", "approxLines": null, "resultado": "Bronze Star [BS] asentada en ORDEN — multiples mejoras UI en 2 waves sin errores", "effects": [{"kind": "medal", "code": "BS"}]}
+      ]
+    },
+    "FORGE": {
+      "stats": {"missionsParticipated": 2, "sanctionsTotal": 0, "decorationsMedalCodes": ["BS"], "lastMissionId": "BOPE-CODEX-2026-009", "lastMissionDate": "2026-02-17", "approxLinesTotal": 65},
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-001", "role": "validacion backend", "approxLines": 12, "resultado": "backend en regla", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-009", "role": "resolucion tecnica principal", "approxLines": 53, "resultado": "Bronze Star asentada", "effects": [{"kind": "medal", "code": "BS"}]}
+      ]
+    },
+    "HOUSE": {
+      "stats": {"missionsParticipated": 2, "sanctionsTotal": 0, "decorationsMedalCodes": ["GC"], "lastMissionId": "BOPE-CODEX-2026-009", "lastMissionDate": "2026-02-17", "approxLinesTotal": 18},
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-001", "role": "validacion QA", "approxLines": 8, "resultado": "riesgos doctrinales observados", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-009", "role": "validacion final", "approxLines": 10, "resultado": "Good Conduct Medal asentada", "effects": [{"kind": "medal", "code": "GC"}]}
+      ]
+    },
+    "MARCO": {
+      "stats": {"missionsParticipated": 2, "sanctionsTotal": 0, "decorationsMedalCodes": [], "lastMissionId": "BOPE-CODEX-2026-009", "lastMissionDate": "2026-02-17", "approxLinesTotal": 18},
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-001", "role": "observacion doctrinal", "approxLines": 8, "resultado": "calibracion humana registrada", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-009", "role": "criterio de honor", "approxLines": 10, "resultado": "correccion canonica de medallas", "effects": []}
+      ]
+    },
+    "WINSTON": {
+      "stats": {"missionsParticipated": 11, "sanctionsTotal": 0, "decorationsMedalCodes": ["CM"], "lastMissionId": "BOPE-CODEX-2026-024", "lastMissionDate": "2026-04-15", "approxLinesTotal": 162},
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-001", "role": "cierre documental", "approxLines": 16, "resultado": "archivo y cierre preparados", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-002", "role": "trazabilidad", "approxLines": 18, "resultado": "registro del nuevo arranque", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-003", "role": "trazabilidad", "approxLines": 16, "resultado": "cierre visual asentado", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-004", "role": "trazabilidad", "approxLines": 14, "resultado": "cuadro ceremonial registrado", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-009", "role": "trazabilidad de honor", "approxLines": 24, "resultado": "condecoraciones corregidas", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-017", "role": "trazabilidad intercapas", "approxLines": 32, "resultado": "records, legajos e intercapas unificados", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-018", "role": "trazabilidad de replica", "approxLines": 28, "resultado": "origen Claude y firma local asentados", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-019", "role": "trazabilidad doctrinal", "approxLines": 14, "resultado": "alias y rutas heredadas normalizados", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-021", "role": "trazabilidad doctrinal", "approxLines": 10, "resultado": "repos y deploy asentados en memoria local", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-023", "role": "trazabilidad de saneamiento", "approxLines": 12, "resultado": "cierre asistido y derivados canonicos realineados", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-024", "role": "trazabilidad doctrinal", "approxLines": 8, "resultado": "activacion · evidencia y cierre remoto preparados para GitHub", "effects": []}
+      ]
+    },
+    "CERBERUS": {
+      "stats": {"missionsParticipated": 2, "sanctionsTotal": 0, "decorationsMedalCodes": ["CA"], "lastMissionId": "BOPE-CODEX-2026-009", "lastMissionDate": "2026-02-17", "approxLinesTotal": 14},
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-001", "role": "validacion de seguridad", "approxLines": 6, "resultado": "seguridad confirmada", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-009", "role": "blindaje del frente publico", "approxLines": 8, "resultado": "Combat Action Ribbon asentada", "effects": [{"kind": "medal", "code": "CA"}]}
+      ]
+    },
+    "NEXUS": {
+      "stats": {"missionsParticipated": 2, "sanctionsTotal": 0, "decorationsMedalCodes": ["MS"], "lastMissionId": "BOPE-CODEX-2026-009", "lastMissionDate": "2026-02-17", "approxLinesTotal": 16},
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-001", "role": "validacion de integracion", "approxLines": 6, "resultado": "integracion validada", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-009", "role": "coherencia entre capas", "approxLines": 10, "resultado": "Meritorious Service asentada", "effects": [{"kind": "medal", "code": "MS"}]}
+      ]
+    },
+    "BLADE": {
+      "stats": {"missionsParticipated": 0, "sanctionsTotal": 0, "decorationsMedalCodes": [], "lastMissionId": null, "lastMissionDate": null, "approxLinesTotal": 0},
+      "missionLog": []
+    },
+    "SICARIO": {
+      "stats": {"missionsParticipated": 2, "sanctionsTotal": 0, "decorationsMedalCodes": ["PH"], "lastMissionId": "BOPE-CODEX-2026-009", "lastMissionDate": "2026-02-17", "approxLinesTotal": 10},
+      "missionLog": [
+        {"missionId": "BOPE-CODEX-2026-002", "role": "alta operativa", "approxLines": 4, "resultado": "incorporacion visible al roster", "effects": []},
+        {"missionId": "BOPE-CODEX-2026-009", "role": "fase critica bajo mando", "approxLines": 6, "resultado": "Purple Heart asentada", "effects": [{"kind": "medal", "code": "PH"}]}
+      ]
+    }
+  }
+}
