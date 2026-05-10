@@ -2,6 +2,8 @@
 
 *Documento doctrinal — vigente. Complementa `.claude/ORDEN-DE-BATALLA.md` y [`DECLARATION.md`](./DECLARATION.md).*
 
+Para protocolo de misión en crisis, desempates, ATD y aborto: [`OPERATIONS-PLAYBOOK.md`](./OPERATIONS-PLAYBOOK.md).
+
 ---
 
 ## 1. Principio fundamental

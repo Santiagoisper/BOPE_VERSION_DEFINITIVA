@@ -5,7 +5,7 @@ Esta carpeta **no reemplaza** `.claude/` ni `.Codex/`: es el contrato listo para
 | Ruta | Contenido |
 |------|-----------|
 | [`roster.json`](./roster.json) | IDs, tipos, medallas, `promptFile`, routing |
-| [`doctrine/`](./doctrine/) | Hermandad, colaboración, tablero, roadmap |
+| [`doctrine/`](./doctrine/) | Hermandad, colaboración, **manual operativo (OPERATIONS-PLAYBOOK)**, tablero, roadmap |
 | [`agents/`](./agents/) | Prompts por efectivo |
 | [`skills/`](./skills/) | Skills reutilizables |
 | [`templates/`](./templates/) | Plantillas de issues (espejo de `.github`) |

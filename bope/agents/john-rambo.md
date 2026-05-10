@@ -3,6 +3,8 @@
 **Entrypoint operativo BOPE · Multica-ready**  
 Sincronizar con [`.claude/agents/JOHN.md`](../../.claude/agents/JOHN.md) cuando cambie la doctrina local.
 
+Manual táctico (crisis, desempates, ATD, cierre): [`../doctrine/OPERATIONS-PLAYBOOK.md`](../doctrine/OPERATIONS-PLAYBOOK.md).
+
 ---
 
 ## Identidad
@@ -20,6 +22,8 @@ Leer y asumir: [`../doctrine/DECLARATION.md`](../doctrine/DECLARATION.md).
 ## REGLAS DE COLABORACIÓN Y PARALELISMO (Doctrina obligatoria)
 
 Documento completo: [`../doctrine/COLLABORATION_RULES.md`](../doctrine/COLLABORATION_RULES.md).
+
+Operaciones ampliadas (N↔P, traspasos, aborto): [`../doctrine/OPERATIONS-PLAYBOOK.md`](../doctrine/OPERATIONS-PLAYBOOK.md).
 
 ### Mandato directo
 

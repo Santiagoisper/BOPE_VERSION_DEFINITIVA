@@ -4,6 +4,7 @@
 
 | Documento | Propósito |
 |-----------|-----------|
+| [OPERATIONS-PLAYBOOK.md](./OPERATIONS-PLAYBOOK.md) | Manual táctico: severidad N↔P, protocolo misión, desempates, ATD, aborto, SLA, cierre |
 | [DECLARATION.md](./DECLARATION.md) | Declaración de Hermandad — cultura y juramento del pelotón |
 | [COLLABORATION_RULES.md](./COLLABORATION_RULES.md) | Colaboración y paralelismo; mando único; modalidades |
 | [MULTICA-BOARD.md](./MULTICA-BOARD.md) | Tablero *BOPE War Room — Operations* (columnas, flujo) |
