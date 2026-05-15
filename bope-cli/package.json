@@ -1,0 +1,37 @@
+{
+  "name": "bope-cli",
+  "version": "1.0.0",
+  "description": "CLI global para preparar contexto BOPE con Claude Code",
+  "type": "module",
+  "bin": {
+    "bope": "./bin/bope.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "link-global": "npm link"
+  },
+  "keywords": [
+    "bope",
+    "cli",
+    "claude"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

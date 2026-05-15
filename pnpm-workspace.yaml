@@ -1,2 +1,7 @@
 packages:
   - apps/*
+  - 'bope-cli'
+allowBuildScripts:
+  esbuild: true
+allowBuilds:
+  esbuild: true

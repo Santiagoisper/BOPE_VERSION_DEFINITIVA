@@ -14,6 +14,10 @@
     "e2e:api": "pnpm --dir apps/bope-command-center-server exec node e2e.mjs",
     "e2e:ui": "playwright test e2e/command-center.spec.ts",
     "e2e": "pnpm e2e:ui",
+    "bope:build": "pnpm --dir apps/bope-command-center-server build",
+    "bope:dev": "pnpm bope:build && pnpm --dir apps/bope-command-center-server exec node dist/scripts/bope-cli.js --dry-run",
+    "bope:example": "pnpm bope:build && pnpm --dir apps/bope-command-center-server exec node dist/scripts/bope-cli.js --example",
+    "bope:test": "pnpm --dir apps/bope-command-center-server run test",
     "bope:validate": "node scripts/validate-bope-export.mjs",
     "dev:local:all": "powershell -ExecutionPolicy Bypass -File scripts/dev-local-all.ps1"
   },
