@@ -111,3 +111,50 @@ MISION: BOPE-CLAUDE-2026-ACTIVACION-RAMBO
 ESTADO DEL BATALLON: Operativo. Sin sanciones. Sin bajas.
 FIRMADO: JOHN + WINSTON
 ══════════════════════════════════════════
+
+══════════════════════════════════════════
+NOTIFICACION DE BATALLON - 2026-06-01
+══════════════════════════════════════════
+TIPO: EQUIPAMIENTO — INCORPORACION DE ARMAMENTO PERMANENTE
+MISION: BOPE-CLAUDE-2026-EQUIPAMIENTO-V1
+ORIGEN: Orden directa de SANTIAGO
+
+ARMAMENTO INCORPORADO:
+
+  [INSTALADO] impeccable v3.5.0 → PIXEL
+    23 comandos de diseno, 27 anti-patterns detectados.
+    Instalado en: .claude/skills/impeccable/
+    Activar con: /impeccable [audit|craft|polish|critique|init|...]
+
+  [INSTALADO] fff MCP v0.8.5-nightly → HOUSE + TODOS
+    File search toolkit: ffgrep, fffind, fff-multi-grep.
+    Binario: C:\Users\Santiago\AppData\Local\fff-mcp\bin\fff-mcp.exe
+    Registrado como MCP global en Claude Code.
+    REGLA: todos los agentes usan fff para busquedas en git repo.
+
+  [INSTALADO] harness SKILL.md → JOHN
+    Meta-skill de diseno de equipos. 6 patrones de orquestacion.
+    Instalado en: .claude/skills/harness/SKILL.md
+
+  [INSTALADO] compound-engineering (37 skills) → JOHN + FORGE
+    Ciclo completo: strategy → brainstorm → plan → work → review → compound.
+    Instalado en: .claude/skills/compound-engineering/
+    Skill estrella para BOPE: /ce-compound (documenta learnings al cierre)
+
+  [DOCUMENTADO, no instalado globalmente] markitdown → WINSTON
+    Convertidor PDF/Word/Excel/PPT/YouTube a Markdown.
+    Instalar bajo demanda: pip install 'markitdown[all]'
+
+  [DOCUMENTADO, no instalado globalmente] scrapling → FORGE
+    Web scraping adaptativo, bypasea Cloudflare.
+    Instalar bajo demanda: pip install "scrapling[all]" && scrapling install
+
+  [DOCTRINA INCORPORADA] oh-my-pi — 3 patrones en CLAUDE.md
+    Hindsight: WINSTON escribe HINDSIGHT-[MISION].md al cierre de mision.
+    Hashline Edits: doctrine de edicion quirurgica ya activa en todos los agentes.
+    Time-traveling Rules: mapeado al protocolo de monitoreo de JOHN.
+
+ESTADO: Equipamiento completo. Batallon operativo con nuevo armamento.
+FIRMADO: JOHN
+Testigo: SANTIAGO ISBERT PERLENDER — Comandante Supremo
+══════════════════════════════════════════

@@ -185,3 +185,115 @@ Nunca usar las herramientas nativas de Chrome directamente.
 | `/god-mode` | JOHN (autoriza Santiago) | Orquestacion total sin confirmaciones |
 
 Referencia completa de skills: `.claude/skills/gstack/`
+
+---
+
+### ARMAMENTO INCORPORADO — Misión BOPE-CLAUDE-2026-EQUIPAMIENTO-V1
+
+#### REGLA GLOBAL — BUSQUEDA DE ARCHIVOS
+Para cualquier busqueda de archivos o grep en el directorio indexado por git, usar las herramientas fff MCP: `ffgrep`, `fffind`, `fff-multi-grep`. No usar grep ni find nativos.
+
+#### 1. impeccable — PIXEL (instalado en `.claude/skills/impeccable/`)
+
+Skill de diseno frontend de produccion. 23 comandos especializados, detecta 27 anti-patterns.
+
+**Comandos principales:**
+- `/impeccable audit` — revision de UI contra 27 anti-patterns
+- `/impeccable craft` — construccion de interfaz con decisiones de diseno comprometidas
+- `/impeccable polish` — refinamiento de detalles visuales
+- `/impeccable critique` — feedback estructurado de diseno
+- `/impeccable init` — configurar PRODUCT.md y DESIGN.md del proyecto
+
+**Dominios cubiertos:** tipografia, color, motion, spatial, interaction, responsive, UX writing.
+
+**Activar cuando:** PIXEL recibe tarea de UI, onboarding, rediseno, auditoria visual o mejora de componentes.
+
+**Prerequisito:** requiere `PRODUCT.md` en la raiz del proyecto. Correr `/impeccable init` si no existe.
+
+#### 2. fff MCP — HOUSE + JOHN (instalado globalmente en Claude Code)
+
+File search toolkit para agentes. Reemplaza grep/find con herramientas MCP optimizadas para IA.
+
+**Herramientas disponibles:**
+- `ffgrep` — busqueda de contenido con frecency memory y fuzzy fallback
+- `fffind` — busqueda de archivos con smart-case y anotaciones git-aware
+- `fff-multi-grep` — busqueda multi-patron simultanea
+
+**Binario:** `C:\Users\Santiago\AppData\Local\fff-mcp\bin\fff-mcp.exe`
+**Registrado como:** MCP server global `fff` en Claude Code
+
+**TODOS los agentes usan fff para busquedas en el repo.** Es la herramienta estandar, no una opcion.
+
+#### 3. harness — JOHN (instalado en `.claude/skills/harness/`)
+
+Meta-skill para diseno de equipos de agentes. Define 6 patrones de orquestacion.
+
+**Patrones disponibles:**
+- Pipeline — tareas con dependencias secuenciales
+- Fan-out/Fan-in — tareas paralelas independientes
+- Expert Pool — seleccion dinamica de especialista
+- Producer-Reviewer — generacion + validacion de calidad
+- Supervisor — agente central con distribucion dinamica
+- Hierarchical Delegation — delegacion recursiva en jerarquias
+
+**Activar cuando:** JOHN necesita disenar un nuevo esquema de orquestacion multi-agente o auditar el existente.
+
+#### 4. compound-engineering — JOHN + FORGE (instalado en `.claude/skills/compound-engineering/`)
+
+37 skills para el ciclo completo de ingenieria. Filosofia: cada unidad de trabajo facilita la siguiente.
+
+**Flujo principal:** `/ce-strategy` → `/ce-brainstorm` → `/ce-plan` → `/ce-work` → `/ce-code-review` → `/ce-compound`
+
+**Skills clave para BOPE:**
+- `/ce-compound` — documenta learnings al cierre de cada mision para que futuros agentes no repitan errores
+- `/ce-brainstorm` — Q&A interactivo para clarificar requisitos antes de planear
+- `/ce-plan` — transforma ideas en planes de implementacion detallados
+- `/ce-code-review` — revision multi-agente antes de merge
+- `/ce-debug` — reproduccion sistematica de fallas y traza de causa raiz
+
+**Prerequisito:** correr `/ce-setup` en cada proyecto nuevo para bootstrapear config.
+
+#### 5. markitdown — WINSTON (dependencia documentada, no instalada globalmente)
+
+Convierte PDF, Word, Excel, PowerPoint y YouTube a Markdown.
+
+**Instalacion cuando se necesite:** `pip install 'markitdown[all]'`
+
+**Activar cuando:** mision recibe documentos de cliente (briefs, specs, contratos, presentaciones) que deben integrarse al contexto del agente.
+
+#### 6. scrapling — FORGE (dependencia documentada, no instalada globalmente)
+
+Framework adaptativo de web scraping. Bypasea Cloudflare Turnstile. Tiene MCP server.
+
+**Instalacion cuando se necesite:** `pip install "scrapling[all]"` + `scrapling install`
+
+**Activar cuando:** mision requiere extraccion de datos desde sitios web con proteccion anti-bot.
+
+#### 7. oh-my-pi — Patrones doctrinales incorporados a la doctrina BOPE
+
+Tres conceptos estudiados e integrados como propuestas de mejora operativa:
+
+**A. Patron Hindsight (Memoria por proyecto)**
+
+Concepto: un agente escribe hechos durante la sesion (`retain`) y los recupera al inicio de la siguiente (`recall`). Memoria persistente ligada al proyecto, no al usuario.
+
+Propuesta BOPE: WINSTON incorpora este patron en el ritual de cierre de mision. Al cerrar, escribe en `logs/MEMORIA/HINDSIGHT-[MISION].md` los hechos operativos clave (decisiones tomadas, errores evitados, patrones detectados). John lee ese archivo al activar en misiones del mismo dominio.
+
+Formato de entrada:
+```
+RETAIN: [hecho concreto observable, no opinion]
+CONTEXTO: [nombre-mision o dominio]
+FECHA: [YYYY-MM-DD]
+```
+
+**B. Hashline Edits (Edicion anclada a contenido)**
+
+Concepto: en vez de reescribir lineas por numero de linea, el agente apunta a anchors de contenido — fragmentos unicos del texto que identifican el punto de insercion. Reduce ~61% los tokens en ediciones de archivos grandes.
+
+Propuesta BOPE: todos los agentes del BOPE ya usan el tool `Edit` con `old_string`/`new_string` en vez de reescribir archivos completos. Este patron esta implementado. Reforzar en la doctrina de FORGE y PIXEL: nunca reescribir un archivo completo cuando se puede hacer un edit quirurgico.
+
+**C. Time-traveling Stream Rules (Reglas durmientes)**
+
+Concepto: reglas que permanecen dormidas y se activan solo cuando el modelo se devia del objetivo. No consumen contexto mientras no son necesarias.
+
+Propuesta BOPE: mapea directamente al rol de JOHN como monitor del batallon. John no interrumpe a los agentes a menos que: (a) se desvien del scope, (b) haya conflicto sin resolucion, (c) una decision exceda la autoridad del escuadron, (d) se detecte riesgo que suba a Santiago. Esta es la implementacion operativa del patron — las reglas de escalado de John son "reglas durmientes" que se activan por desvio.
