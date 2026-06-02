@@ -158,3 +158,42 @@ ESTADO: Equipamiento completo. Batallon operativo con nuevo armamento.
 FIRMADO: JOHN
 Testigo: SANTIAGO ISBERT PERLENDER — Comandante Supremo
 ══════════════════════════════════════════
+
+══════════════════════════════════════════
+NOTIFICACION DE BATALLON - 2026-06-01
+══════════════════════════════════════════
+TIPO: EQUIPAMIENTO — RONDA 2 (TRENDING SEMANAL)
+ORIGEN: Orden de SANTIAGO · Ejecutado por JOHN
+
+ARMAMENTO INCORPORADO RONDA 2:
+
+  [INSTALADO] ECC — 249 skills, 63 categorias → JOHN + TODOS
+    Multi-agent orchestration, continuous learning, harness performance.
+    Instalado en: ~/.claude/skills/ecc/
+    Rules presentes en: ~/.claude/rules/ecc/ (directorio creado, pendiente de contenido)
+
+  [INSTALADO] understand-anything → HOUSE + JOHN
+    Knowledge graph interactivo de cualquier codebase.
+    Skills disponibles: /understand, /understand-chat, /understand-diff,
+    /understand-dashboard, /understand-domain, /understand-explain,
+    /understand-knowledge, /understand-onboard
+    Instalado en: ~/.claude/skills/understand-anything/
+
+  [INSTALADO] taste-skill + 5 variantes → PIXEL
+    Anti-slop frontend design. Variantes: brutalist, minimalist, soft, redesign, output.
+    Instalados en: ~/.claude/skills/[nombre-variante]/SKILL.md
+
+  [INSTALADO] cerberus-security — 16 playbooks → CERBERUS
+    Dominios: web app, API security, DevSecOps, cloud, IR, vulns.
+    Playbooks: building-devsecops-pipeline, incident-response-dashboard,
+    incident-response-playbook, api-security-testing (x3), cloud-security-posture-mgmt,
+    devsecops-security-scanning, vulnerability-management, ot-ir-playbook, y mas.
+    Instalado en: ~/.claude/skills/cerberus-security/
+
+  [INSTALADO] kwp — Knowledge Work Plugins (Anthropic) → FORGE + JOHN
+    Plugins oficiales por rol: data, engineering, productivity, product-management.
+    Instalado en: ~/.claude/skills/kwp/
+
+ESTADO: Ronda 2 completada. Batallon operativo con armamento ampliado.
+FIRMADO: JOHN + WINSTON
+══════════════════════════════════════════

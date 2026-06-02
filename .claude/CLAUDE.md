@@ -186,6 +186,21 @@ Nunca usar las herramientas nativas de Chrome directamente.
 
 Referencia completa de skills: `.claude/skills/gstack/`
 
+#### RONDA 2 — Armamento semanal (2026-06-01)
+
+| Skill | Soldado | Para que |
+|-------|---------|----------|
+| ECC (249 skills) | JOHN + TODOS | Performance del harness, multi-agent orchestration, continuous learning |
+| Understand-Anything | HOUSE + JOHN | Knowledge graph interactivo de cualquier codebase — /understand, /understand-chat, /understand-diff |
+| taste-skill + variantes | PIXEL | Anti-slop frontend: design-taste-frontend, redesign, soft, minimalist, brutalist, output |
+| cerberus-security | CERBERUS | 16 playbooks de ciberseguridad — web app, API, DevSecOps, cloud, IR, vulns |
+| kwp (Anthropic) | FORGE + JOHN | Plugins oficiales Anthropic por rol: data, engineering, productivity, product-management |
+
+**ECC rules instaladas en:** `~/.claude/rules/ecc/` (directorio presente, pendiente de contenido)
+**ECC skills instalados en:** `~/.claude/skills/ecc/`
+**Understand-Anything skills:** `/understand`, `/understand-chat`, `/understand-diff`, `/understand-dashboard`, `/understand-domain`, `/understand-explain`, `/understand-knowledge`, `/understand-onboard`
+**taste-skill variantes:** taste-skill, brutalist-skill, minimalist-skill, soft-skill, redesign-skill, output-skill
+
 ---
 
 ### ARMAMENTO INCORPORADO — Misión BOPE-CLAUDE-2026-EQUIPAMIENTO-V1
