@@ -1,4 +1,4 @@
-# ORDEN DE BATALLA — BOPE v2
+# ORDEN DE BATALLA — BOPE v3
 
 > Roster oficial del escuadrón. Actualizado por Winston con aprobación de John.
 
@@ -9,15 +9,15 @@
 | CARGO | COLOR | NOMBRE | ALIAS | MEDALLAS |
 |-------|-------|--------|-------|----------|
 | Comandante Supremo | 🟡 | SANTIAGO | — | *el Comandante no lleva medallas — las otorga* |
-| Sargento Mayor | 🔴 | JOHN | RAMBO | [NC] |
-| Teniente Frontend | 🔵 | PIXEL | FRONT | [BS] |
-| Teniente Backend | 🟤 | FORGE | BACK | [BS][CM] |
-| Especialista QA | 🟢 | HOUSE | DOCTOR | [GC][CA] |
-| Capellán | 🟠 | MARCO AURELIO | HERALD | [ ] |
-| Cronista | 🟣 | WINSTON | SCRIBE | [CM] |
+| Sargento Mayor | 🔴 | JOHN | RAMBO | [NC][NC+] |
+| Teniente Frontend | 🔵 | PIXEL | FRONT | [AAM][BS] |
+| Teniente Backend | 🟤 | FORGE | BACK | [BS][BS+][CM] |
+| Especialista QA | 🟢 | HOUSE | DOCTOR | [GC][GC+][CA] |
+| Capellán | 🟠 | MARCO AURELIO | HERALD | — |
+| Cronista | 🟣 | WINSTON | SCRIBE | [CM][CM+] |
 | Guardián | 🩶 | CERBERUS | GUARDIAN | [CA] |
 | Integrador | 🩵 | NEXUS | WIRE | [MS] |
-| Reserva Especial | ⚫ | BLADE | KILLER | [ ] |
+| Reserva Especial | ⚫ | BLADE | KILLER | — |
 | Operativo Especial | 🔥 | SICARIO | LOCO | [PH][CM] |
 
 ---
@@ -41,36 +41,42 @@
 
 ## TABLA DE CONDECORACIONES
 
-| Medalla | Código | Se gana por | Quién propone |
-|---------|--------|-------------|---------------|
-| 🥇 Navy Cross | `[NC]` | Ejecución excepcional bajo presión extrema | Marco Aurelio |
-| 🥈 Bronze Star | `[BS]` | Entrega sin errores en misión crítica | Marco Aurelio |
-| ⭐ Commendation Medal | `[CM]` | Trabajo sobresaliente en campaña | John |
-| 🎯 Combat Action Ribbon | `[CA]` | Resolver bug/crisis en producción en vivo | John |
-| 🔧 Meritorious Service | `[MS]` | Contribución técnica de alto impacto | Marco Aurelio |
-| 🛡️ Good Conduct Medal | `[GC]` | 10 misiones sin una sola infracción | Winston |
-| 💜 Purple Heart | `[PH]` | Caída en misión, sanción cumplida, retorno honorable | El propio soldado |
+| Medalla | Código | Criterio verificable | Quién propone |
+|---------|--------|---------------------|---------------|
+| 🥇 Navy Cross | `[NC]` | Coordinación de ≥3 agentes bajo deadline crítico sin errores de integración, evidencia en commits | Marco Aurelio |
+| 🥈 Bronze Star | `[BS]` | Entrega sin regresiones en misión marcada N1/N2, verificado por HOUSE | Marco Aurelio |
+| ⭐ Commendation Medal | `[CM]` | Output técnico adoptado en producción sin rollback posterior | John |
+| 🎯 Combat Action Ribbon | `[CA]` | Bug/crisis en producción resuelta dentro del SLA de severidad, log de resolución | John |
+| 🔧 Meritorious Service | `[MS]` | Contribución técnica referenciada en ≥2 misiones posteriores | Marco Aurelio |
+| 🛡️ Good Conduct Medal | `[GC]` | 10 misiones registradas en INDEX.md sin sanción activa en SANCIONES-REGISTRO.md | Winston |
+| 💜 Purple Heart | `[PH]` | Entrada en SANCIONES-REGISTRO.md marcada "cumplida" + retorno a misiones activas | El propio soldado |
+| 🎖️ Army Achievement Medal | `[AAM]` | Contribución de interfaz o módulo en misión de alto impacto, primera medalla del soldado | Marco Aurelio |
 
-> El Purple Heart es la medalla más difícil de llevar — porque la ganaste perdiendo.
-> Y la más respetada, porque muestra que te levantaste.
+> Las barras de servicio (`[NC+]`, `[BS+]`, `[CM+]`, `[GC+]`) se otorgan por segunda condecoración consecutiva al mismo nivel.
+> Expedientes completos en: `.claude/MEDALLAS-EXPEDIENTES.md`
 
 ---
 
 ## HISTORIAL DE MEDALLAS
 
-| Soldado | Medalla | Código | Operación |
-|---------|---------|--------|-----------|
-| JOHN | Navy Cross | `[NC]` | innova-scoring — conducción total del cierre operativo |
-| FORGE | Bronze Star | `[BS]` | innova-scoring — resolución técnica principal sobre backend, parser y transacciones |
-| WINSTON | Commendation Medal | `[CM]` | innova-scoring — registro, versionado y cierre remoto |
-| CERBERUS | Combat Action Ribbon | `[CA]` | innova-scoring — blindaje del frente público y endurecimiento de seguridad |
-| NEXUS | Meritorious Service | `[MS]` | innova-scoring — integración de estados, flujo y coherencia entre capas |
-| HOUSE | Good Conduct Medal | `[GC]` | innova-scoring — verificación final, detección de fallas y validación limpia |
-| SICARIO | Purple Heart | `[PH]` | innova-scoring — entrada de fuerza total en fase crítica por orden de mando |
-| PIXEL | Bronze Star | `[BS]` | cuentas-personales-v1 — múltiples mejoras UI en 2 waves sin errores |
-| FORGE | Commendation Medal | `[CM]` | cuentas-personales-v1 — consolidación backend, fix patrimonio, constants.ts |
-| HOUSE | Combat Action Ribbon | `[CA]` | cuentas-personales-v1 — auditoría completa en producción, 2 críticos + 8 hallazgos |
-| SICARIO | Commendation Medal | `[CM]` | cuentas-personales-v1 — eliminación 11 componentes muertos, limpieza naming, Wave 2 |
+| Soldado | Medalla | Código | Expediente | Operación |
+|---------|---------|--------|-----------|-----------|
+| JOHN | Navy Cross | `[NC]` | NC-001 | innova-scoring — conducción total del cierre operativo |
+| JOHN | Barra Navy Cross | `[NC+]` | NC-002 | MEMORIA-CAP-V-2026-0516 — mando cierre MVP v0.9/v1.0 |
+| FORGE | Bronze Star | `[BS]` | BS-001 | innova-scoring — resolución técnica principal backend |
+| FORGE | Barra Bronze Star | `[BS+]` | BS+001 | MEMORIA-CAP-V-2026-0516 — incubator.ts, advancedThreshold.ts, GraphState |
+| FORGE | Commendation Medal | `[CM]` | CM-002 | cuentas-personales-v1 — consolidación backend, fix patrimonio |
+| WINSTON | Commendation Medal | `[CM]` | CM-001 | innova-scoring — registro, versionado y cierre remoto |
+| WINSTON | Barra Commendation Medal | `[CM+]` | CM+001 | MEMORIA-CAP-V-2026-0516 — persistencia, ROADMAP, GUARDIAN.md, bootstrap |
+| CERBERUS | Combat Action Ribbon | `[CA]` | CA-001 | innova-scoring — blindaje frente público, endurecimiento seguridad |
+| NEXUS | Meritorious Service | `[MS]` | MS-001 | innova-scoring — integración de estados, flujo y coherencia intercapas |
+| HOUSE | Good Conduct Medal | `[GC]` | GC-001 | innova-scoring — verificación final, detección de fallas |
+| HOUSE | Barra Good Conduct Medal | `[GC+]` | GC+001 | MEMORIA-CAP-V-2026-0516 — suite de tests, validación baseline 82/82 |
+| HOUSE | Combat Action Ribbon | `[CA]` | CA-002 | cuentas-personales-v1 — auditoría producción, 2 críticos + 8 hallazgos |
+| SICARIO | Purple Heart | `[PH]` | PH-001 | innova-scoring — entrada de fuerza total en fase crítica |
+| SICARIO | Commendation Medal | `[CM]` | CM-003 | cuentas-personales-v1 — Wave 2, 11 componentes muertos eliminados |
+| PIXEL | Army Achievement Medal | `[AAM]` | AAM-001 | MEMORIA-CAP-V-2026-0516 — DreamIncubator, GuardianPanel ampliado |
+| PIXEL | Bronze Star | `[BS]` | BS-002 | cuentas-personales-v1 — 10+ mejoras UI en 2 waves sin errores |
 
 ---
 
@@ -86,4 +92,4 @@
 
 ---
 
-*Última actualización: 2026-04-11 | Firmado: WINSTON + JOHN*
+*Última actualización: 2026-06-01 | Firmado: WINSTON + JOHN*

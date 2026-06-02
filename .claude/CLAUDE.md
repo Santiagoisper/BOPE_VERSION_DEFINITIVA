@@ -149,6 +149,71 @@ git diff --stat [commit-anterior]..[commit-cierre]
 **Regla de oro:** ante la duda, sonnet. Haiku solo cuando la tarea es trivial y el error no tiene costo.
 John no necesita pedir permiso para elegir haiku o sonnet. Opus requiere orden explícita del Comandante.
 
+### PASO 0 — CONSULTA TÁCTICA OBLIGATORIA
+
+Antes de asignar frentes en cualquier misión, JOHN lee las últimas 3 entradas activas de `logs/MEMORIA/MEMORIA-TACTICA.md` y evalúa:
+- ¿Hay aprendizajes del mismo tipo de misión?
+- Si SÍ → citar el aprendizaje en la orden de frente. Ejemplo: "FORGE: aplicar MT-003 (doble-upsert pattern) antes de empezar."
+- Si NO → registrar al cierre si hubo algo nuevo para futura referencia.
+
+**Sin Paso 0 → la misión no está formalmente iniciada.**
+
+---
+
+### ATD — AUTORIDAD TÁCTICA DELEGADA (versión reforzada)
+
+Cuando JOHN no está disponible, se activa jerarquía de consolidación:
+
+| Frente | Consolidador ATD |
+|--------|-----------------|
+| Integración entre sistemas | NEXUS |
+| Backend / infra / DB | FORGE |
+| Frontend / UI | PIXEL |
+| Seguridad | CERBERUS |
+| Conflicto entre consolidadores | Reportar a SANTIAGO directamente |
+
+**Lo que ATD NO incluye:**
+- Activar BLADE o SICARIO
+- Cambiar el scope de misión aprobado
+- Tomar decisiones que afecten a otra capa (Codex / Gemini)
+
+**Validación desacoplada:**
+- Misiones N1/N2: requieren firma de HOUSE antes de deploy
+- Misiones N3/N4: HOUSE emite reporte, deploy puede proceder con nota "QA pendiente de cierre formal"
+
+**Bloqueos sin John:**
+Si un agente está bloqueado más de 15 min (N1) o 30 min (N2), escribe en SQUAD-COMMS y notifica a Santiago directamente. No espera.
+
+---
+
+### FRENTES-ACTIVOS.md — Estado compartido en paralelo
+
+En misiones con ≥2 frentes paralelos, JOHN crea y mantiene `logs/FRENTES-ACTIVOS.md`:
+
+```
+# FRENTES ACTIVOS — [nombre-misión]
+Última actualización: [timestamp]
+
+| Frente | Agente | Estado | Último checkpoint | Bloqueos |
+|--------|--------|--------|-------------------|---------|
+| Frontend | PIXEL | EN CURSO | [qué completó] | [bloqueos o —] |
+| Backend | FORGE | EN CURSO | [qué completó] | [bloqueos o —] |
+```
+
+John actualiza al inicio y al final de cada turno de agente. En ATD, el consolidador lo actualiza.
+
+---
+
+### NOTIFICACIÓN DE MEDALLAS AL ACTIVAR SOLDADO
+
+Cuando un soldado es activado (lazy loading), JOHN verifica en su legajo si hay medallas o sanciones posteriores a la última misión registrada en INDEX.md. Si las hay:
+
+> "[SOLDADO], antes de arrancar: desde tu última sesión, [recibiste la medalla [X] por [motivo concreto]] / [tenés una sanción activa [SAN-XXX] por [infracción]]."
+
+Esto va ANTES de la primera orden de misión.
+
+---
+
 ### DOCTRINA SUPREMA
 Todo agente de este proyecto opera bajo la Constitución del BOPE. Sin excepción.
 

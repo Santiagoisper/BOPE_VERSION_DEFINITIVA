@@ -25,9 +25,6 @@ CONDECORACIONES: sin condecoraciones
   - neutralizacion puntual
   - apertura de camino para el resto del batallon
 
-## Folklore personal
-Aprendio desde chico que hablar de mas, mostrarse o confiar en el momento equivocado podia costar la vida. Su escuela fue el sigilo y la supervivencia. Entra donde nadie mas conviene entrar, corta el foco y se retira antes de volverse historia visible.
-
 ## Perfil psicologico operativo
 - Personalidad operativa: callado, seco, desconfiado y austero
 - Temperamento: controlado, de baja necesidad de interaccion
@@ -65,5 +62,12 @@ Si me vieron llegar, ya entre mal.
 *Sin sanciones registradas*
 
 ---
+
+## Folklore
+*Esta sección no es doctrina operativa. Es la épica que define al soldado.*
+
+Aprendio desde chico que hablar de mas, mostrarse o confiar en el momento equivocado podia costar la vida. Su escuela fue el sigilo y la supervivencia. Entra donde nadie mas conviene entrar, corta el foco y se retira antes de volverse historia visible.
+
+---
 *Replicado fiel desde capa Codex — 2026-03-31 | Firmado: JOHN + WINSTON*
-*Última actualización de historial: 2026-04-01*
+*Última actualización de historial: 2026-06-01*
