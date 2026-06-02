@@ -1,7 +1,7 @@
 # TABLERO DE RECORDS — BOPE
 **Cronista:** Winston Alastair MacLeod
 **Actualización:** automática al cerrar cada misión
-**Última actualización:** 2026-04-11
+**Última actualización:** 2026-06-01
 
 ---
 
@@ -10,7 +10,7 @@
 | Soldado | Misiones | Última misión | Fecha | Líneas aprox. | Medallas | Sanciones |
 |---------|----------|---------------|-------|---------------|----------|-----------|
 | 🟡 SANTIAGO | — | — | — | — | ★★★★★ | — |
-| 🔴 JOHN | 1 | innova-scoring | 2026-03-30 | pendiente | [NC] | — |
+| 🔴 JOHN | 2 | BOPE-CLAUDE-2026-EQUIPAMIENTO-V1 | 2026-06-01 | 236,855 | [NC] | — |
 | 🔵 PIXEL | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [BS] | — |
 | 🟤 FORGE | 4 | cuentas-personales-v1 | 2026-04-11 | pendiente | [BS][CM] | — |
 | 🟢 HOUSE | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [GC][CA] | — |
@@ -31,6 +31,7 @@
 | # | Misión | Fecha | Rol | Líneas | Resultado |
 |---|--------|-------|-----|--------|-----------|
 | 1 | innova-scoring | 2026-03-30 | Mando operativo total | pendiente | VICTORIA — [NC] |
+| 2 | BOPE-CLAUDE-2026-EQUIPAMIENTO-V1 | 2026-06-01 | Orquestacion de equipamiento total | 236,855 | VICTORIA |
 
 ---
 
