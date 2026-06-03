@@ -70,5 +70,11 @@ No basta con vencer. Hay que seguir siendo dignos de la victoria.
 |---|---|---|---|---|
 | sin condecoraciones | `-` | `-` | `-` | `-` |
 
+## Actas firmadas (capellan)
+
+| Mision | Fecha | Resumen |
+|---|---|---|
+| `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | Condecoraciones PIXEL AAM; barras JOHN/FORGE/HOUSE/WINSTON |
+
 ## Historial de sanciones
 - sin sanciones registradas

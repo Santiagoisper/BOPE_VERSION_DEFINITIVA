@@ -27,7 +27,7 @@
   - memoria tactica
   - handoffs y cierre documental
   - transformacion de experiencia en doctrina
-- Operaciones acumuladas en capa Codex: `11`
+- Operaciones acumuladas en capa Codex: `12`
 
 ## Estado de honor y record
 - Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
@@ -70,6 +70,7 @@ Si no quedo trazado, manana alguien jurara que nunca paso.
 | Medalla | Codigo | Mision | Fecha | Propuesto por |
 |---|---|---|---|---|
 | Commendation Medal | `CM` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
+| Barra de servicio — Commendation Medal | `CM+` | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | `MARCO AURELIO` |
 
 ## Historial de sanciones
 - sin sanciones registradas

@@ -10,10 +10,10 @@ Fuente canonica de estado para operaciones BOPE bajo Codex.
 
 ## Ultima mision cerrada
 
-- Mision: `BOPE-CODEX-2026-025`
+- Mision: `MEMORIA-CAP-V-2026-0516`
 - Estado: `cerrada`
-- Fecha: `2026-04-17`
-- Resumen: `Activacion absorbida por JOHN RAMBO con bootstrap doctrinal dirigido, equivalencias canonicas verificadas y batallon en STANDBY con economia operativa estricta.`
+- Fecha: `2026-05-16`
+- Resumen: `Memoria_cap_V v0.9 Modo Sueño + v1.0 Guardian del Umbral. Medallas en legajo (PIXEL AAM; barras JOHN/FORGE/HOUSE/WINSTON). Repo Memoria en origin.`
 
 ## Aprendizaje clave
 

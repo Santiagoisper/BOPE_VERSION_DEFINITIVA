@@ -27,7 +27,7 @@
   - deteccion de regresion silenciosa
   - verificacion post-cirugia
   - reproduccion de bugs dificiles
-- Operaciones acumuladas en capa Codex: `2`
+- Operaciones acumuladas en capa Codex: `3`
 
 ## Estado de honor y record
 - Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
@@ -70,6 +70,7 @@ No le importa si se ve estable. Le importa si sobrevive cuando lo tocamos de ver
 |---|---|---|---|---|
 | Good Conduct Medal | `GC` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
 | Combat Action Ribbon | `CA` | `BOPE-CODEX-2026-012` | `2026-04-03` | `SANTIAGO` |
+| Barra de servicio — Good Conduct Medal | `GC+` | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | `MARCO AURELIO` |
 
 ## Historial de sanciones
 - sin sanciones registradas

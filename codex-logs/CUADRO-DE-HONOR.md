@@ -20,19 +20,29 @@ Estado visible del medallero BOPE para Codex.
 | Integrante | Operaciones |
 |---|---:|
 | `SANTIAGO` | 0 |
-| `JOHN RAMBO` | 15 |
-| `PIXEL` | 1 |
-| `FORGE` | 2 |
-| `HOUSE` | 2 |
+| `JOHN RAMBO` | 17 |
+| `PIXEL` | 2 |
+| `FORGE` | 3 |
+| `HOUSE` | 3 |
 | `CERBERUS` | 2 |
-| `WINSTON` | 11 |
+| `WINSTON` | 12 |
 | `NEXUS` | 2 |
 | `MARCO AURELIO` | 2 |
 | `SICARIO | Locura` | 2 |
 
 ## Adjudicacion oficial vigente
 
-Operacion registrada: cierre total de `innova-scoring` con correccion, endurecimiento, verificacion, git, GitHub y deploy.
+Operacion registrada: `MEMORIA-CAP-V-2026-0516` — MVP v0.9 Modo Sueño + v1.0 Guardián (`Memoria_cap_V`, 82 tests, push origin).
+
+| Integrante | Medalla / honor | Motivo |
+|---|---|---|
+| `PIXEL` | Army Achievement Medal `[AAM]` | UI Modo Sueño + Guardián avanzado |
+| `JOHN RAMBO` | Barra Navy Cross | mando y cierre doble MVP sin romper doctrina |
+| `FORGE` | Barra Bronze Star | `incubator.ts` + `advancedThreshold.ts` |
+| `HOUSE` | Barra Good Conduct | validación 82 tests + build |
+| `WINSTON` | Barra Commendation | persistencia `dreamRuns` + docs |
+
+Operacion anterior: cierre total de `innova-scoring` con correccion, endurecimiento, verificacion, git, GitHub y deploy.
 
 | Integrante | Medalla oficial adjudicada | Motivo |
 |---|---|---|
@@ -53,15 +63,19 @@ CUADRO DE HONOR BOPE
 ========================================
 1. [## ##] NAVY CROSS
    Ganador: JOHN RAMBO
-   Operaciones: 15
+   Operaciones: 17
 
 2. [# == #] BRONZE STAR
-   FORGE — operaciones 2 (innova-scoring)
-   PIXEL — operaciones 1 (cuentas-personales-v1)
+   FORGE — operaciones 3 (innova-scoring + Memoria)
+   PIXEL — operaciones 2 (cuentas-personales-v1 + Memoria)
+
+2b. [= =] ARMY ACHIEVEMENT MEDAL
+   Ganador: PIXEL
+   Operaciones: 2 (Memoria_cap_V v0.9/v1.0 UI)
 
 3. [==#==] COMMENDATION MEDAL
    Ganador: WINSTON
-   Operaciones: 11
+   Operaciones: 12
 
 4. [///] COMBAT ACTION RIBBON
    Ganador: CERBERUS
@@ -73,7 +87,7 @@ CUADRO DE HONOR BOPE
 
 6. [|===|] GOOD CONDUCT MEDAL
    Ganador: HOUSE
-   Operaciones: 2
+   Operaciones: 3
 
 7. [<3] PURPLE HEART
    Ganador: SICARIO | Locura

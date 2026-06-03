@@ -12,7 +12,7 @@
 - Rango: `Teniente Frontend | First Lieutenant`
 - Funcion: `Diseño, proteccion y depuracion de la primera linea del sistema`
 - Estado: `Activo`
-- Condecoraciones: `[BS] Bronze Star`
+- Condecoraciones: `[BS][AAM] Bronze Star + Army Achievement Medal`
 
 ## Datos personales
 - Fecha de nacimiento: `17/03/1997`
@@ -26,12 +26,12 @@
   - experiencia de usuario en flujos criticos
   - deteccion de friccion visible
   - alineacion entre UX y verdad del sistema
-- Operaciones acumuladas en capa Codex: `1`
+- Operaciones acumuladas en capa Codex: `2`
 
 ## Estado de honor y record
 - Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
 - Estado de record: `presencia activa`
-- Medalla vigente en `CUADRO-DE-HONOR`: `[BS] Bronze Star`
+- Medalla vigente en `CUADRO-DE-HONOR`: `[BS][AAM] Bronze Star + Army Achievement Medal`
 - Vista maestra: `codex-logs/FICHAS-OPERATIVAS-BOPE.md`
 
 ## Folklore personal
@@ -68,6 +68,7 @@ Si el usuario tiene que adivinar, ya estamos perdiendo.
 | Medalla | Codigo | Mision | Fecha | Propuesto por |
 |---|---|---|---|---|
 | Bronze Star | `BS` | `BOPE-CODEX-2026-012` | `2026-04-03` | `SANTIAGO` |
+| Army Achievement Medal | `AAM` | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | `MARCO AURELIO` |
 
 ## Historial de sanciones
 - sin sanciones registradas

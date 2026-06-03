@@ -4,3 +4,11 @@ ID ORIGINAL: BOPE-CLAUDE-2026-MEJORAS-ESTRUCTURALES
 MEDIDA: doctrina de arranque canonica, pantalla uniforme, lazy loading, records e historiales personales replicados en Codex
 IMPACTO: la capa Codex queda alineada con la replica estructural exigida por Santiago
 FIRMA: JOHN + WINSTON
+
+ARTICULO 12 | 2026-05-16 | MEMORIA-CAP-V-2026-0516
+ORIGEN: Memoria_cap_V / Cursor
+MISION: MEMORIA-CAP-V-2026-0516
+MEDIDA: cierre v0.9 Modo Sueño + v1.0 Guardián; medallas en ORDEN-DE-BATALLA, CUADRO-DE-HONOR, RECORDS y legajos personnel
+ADJUDICACION: PIXEL Army Achievement Medal [AAM]; JOHN barra NC+; FORGE barra BS+; HOUSE barra GC+; WINSTON barra CM+
+IMPACTO: honores visibles en batallon; Memoria_cap_V en GitHub con evidencia de tests
+FIRMA: MARCO AURELIO + WINSTON

@@ -28,7 +28,7 @@
   - infiltracion
   - combate en selva
   - continuidad operativa bajo desgaste extremo
-- Operaciones acumuladas en capa Codex: `15`
+- Operaciones acumuladas en capa Codex: `17`
 
 ## Estado de honor y record
 - Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
@@ -71,6 +71,7 @@ No es solo un combatiente. Es el superviviente que convierte caos en cadena de m
 | Medalla | Codigo | Mision | Fecha | Propuesto por |
 |---|---|---|---|---|
 | Navy Cross | `NC` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
+| Barra de servicio — Navy Cross | `NC+` | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | `MARCO AURELIO` |
 
 ## Historial de sanciones
 - sin sanciones registradas

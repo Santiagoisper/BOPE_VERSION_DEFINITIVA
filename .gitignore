@@ -41,3 +41,4 @@ mcp-debug.log
 
 # Cursor hooks: buffer efímero; el índice incremental sí se versiona
 .cursor/hooks/state/continual-learning.json
+.gstack/

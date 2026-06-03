@@ -3,23 +3,24 @@
 ```text
 ════════════════════════════════════════════════════════════════
   BOPE — BATALLÓN EN POSICIÓN
-    Capa: CODEX  |  Fecha:   2026-04-17  |  Sync: UP TO DATE
+    Capa: CODEX  |  Fecha:   2026-05-16  |  Sync: UP TO DATE
 ════════════════════════════════════════════════════════════════
 
   ÚLTIMA MISIÓN CERRADA
-  Misión:  BOPE-CODEX-2026-025
+  Misión:  MEMORIA-CAP-V-2026-0516
   Estado:  cerrada
-  Fecha:   2026-04-17
-  Resumen: La activacion queda absorbida por `JOHN RAMBO` sin conflicto ni refuerzos. La ruta solicitada `C:\Users\Santiago\source\repos\Santiagoisper\BOPE` no existe en este workspace y se normaliza contra la base canonica `BOPE VERSION DEFINITIVA`. Se aplican equivalencias operativas verificables para la doctrina requerida: `docs/BOPE-DOCTRINA.md -> docs/BOPE-RULES.md`, `docs/BOPE-BATALLON.md -> docs/ORDEN-DE-BATALLA.md`, `docs/BOPE-ECONOMIA-OPERATIVA.md -> README.md (seccion economia operativa)`, `docs/BOPE-IDENTIDADES.md -> docs/agents/agent-registry.md`, `docs/BOPE-PROTOCOLO-COMUNICACIONES.md -> docs/COMMS.log + codex-logs/PROTOCOLO-INTERCAPAS.md`, `docs/BOPE-PERSISTENCIA-GITHUB.md -> codex-logs/PROTOCOLO-INTERCAPAS.md + flujo git`, `prompts/BOPE-LEADER.md -> prompts/COMMANDER.md`.
+  Fecha:   2026-05-16
+  Resumen: Memoria_cap_V v0.9 Modo Sueño + v1.0 Guardián. 82 tests, push origin.
+           Medallas asentadas por MARCO AURELIO (PIXEL AAM; barras NC+/BS+/GC+/CM+).
 
 ════════════════════════════════════════════════════════════════
 
   EFECTIVOS
   Comandante Supremo    SANTIAGO ISBERT PERLENDER   ★★★★★
   Sargento Mayor        JOHN · RAMBO                [NC]
-  Teniente Frontend     PIXEL · FRONT               [BS]
-  Teniente Backend      FORGE · BACK                [BS]
-  Especialista QA       HOUSE · DOCTOR              [GC]
+  Teniente Frontend     PIXEL · FRONT               [BS][AAM]
+  Teniente Backend      FORGE · BACK                [BS][CM]
+  Especialista QA       HOUSE · DOCTOR              [GC][CA]
   Capellán              MARCO AURELIO · HERALD      [sin]
   Cronista              WINSTON · SCRIBE            [CM]
   Guardián              CERBERUS · GUARDIAN         [CA]
@@ -29,7 +30,7 @@
 
 ════════════════════════════════════════════════════════════════
   MISIÓN ACTIVA: sin mision activa
-  Próximo paso:  mantener STANDBY y cargar solo a JOHN hasta nueva orden
+  Próximo paso:  STANDBY — frente v1.1 deploy Memoria (NEXUS)
 ════════════════════════════════════════════════════════════════
   Batallón listo. En espera de órdenes, Comandante.
 ════════════════════════════════════════════════════════════════

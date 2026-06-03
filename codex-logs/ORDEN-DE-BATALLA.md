@@ -15,9 +15,9 @@ Fuente canonica del roster visible, rango, medallero y disponibilidad del batall
 |---|---|---|---|---|---|
 | Comandante Supremo | `SANTIAGO ISBERT PERLENDER` | `★★★★★` | `sin condecoraciones` | `ninguna` | Activo |
 | Sargento Mayor | `JOHN · RAMBO` | `SM` | `[NC]` | `ninguna` | Activo |
-| Teniente Frontend | `PIXEL · FRONT` | `1LT` | `[sin]` | `ninguna` | Activo |
-| Teniente Backend | `FORGE · BACK` | `1LT` | `[BS]` | `ninguna` | Activo |
-| Especialista QA | `HOUSE · DOCTOR` | `SSGT` | `[GC]` | `ninguna` | Activo |
+| Teniente Frontend | `PIXEL · FRONT` | `1LT` | `[BS][AAM]` | `ninguna` | Activo |
+| Teniente Backend | `FORGE · BACK` | `1LT` | `[BS][CM]` | `ninguna` | Activo |
+| Especialista QA | `HOUSE · DOCTOR` | `SSGT` | `[GC][CA]` | `ninguna` | Activo |
 | Capellan | `MARCO AURELIO · HERALD` | `CH` | `[sin]` | `ninguna` | Activo |
 | Cronista | `WINSTON · SCRIBE` | `WO` | `[CM]` | `ninguna` | Activo |
 | Guardian | `CERBERUS · GUARDIAN` | `MSGT` | `[CA]` | `ninguna` | Activo |

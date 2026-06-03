@@ -14,12 +14,12 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | Soldado | Misiones | Ultima mision | Fecha | Lineas aprox. | Medallas | Sanciones |
 |---|---:|---|---|---:|---|---|
 | `SANTIAGO` | 0 | `-` | `-` | 0 | `sin condecoraciones` | `ninguna` |
-| `JOHN RAMBO` | 16 | `BOPE-CURSOR-2026-026` | `2026-05-10` | 344 | `Navy Cross` | `ninguna` |
-| `PIXEL` | 1 | `BOPE-CODEX-2026-001` | `2026-02-17` | 14 | `Bronze Star [BS]` | `ninguna` |
-| `FORGE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 65 | `Bronze Star` | `ninguna` |
-| `HOUSE` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 18 | `Good Conduct Medal` | `ninguna` |
+| `JOHN RAMBO` | 17 | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | 380 | `Navy Cross [NC+]` | `ninguna` |
+| `PIXEL` | 2 | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | 420 | `Bronze Star [BS] + AAM` | `ninguna` |
+| `FORGE` | 3 | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | 580 | `Bronze Star [BS+]` | `ninguna` |
+| `HOUSE` | 3 | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | 48 | `Good Conduct [GC+]` | `ninguna` |
 | `MARCO AURELIO` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 18 | `sin condecoraciones` | `ninguna` |
-| `WINSTON` | 11 | `BOPE-CODEX-2026-024` | `2026-04-15` | 162 | `Commendation Medal` | `ninguna` |
+| `WINSTON` | 12 | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | 210 | `Commendation [CM+]` | `ninguna` |
 | `CERBERUS` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 14 | `Combat Action Ribbon` | `ninguna` |
 | `NEXUS` | 2 | `BOPE-CODEX-2026-009` | `2026-02-17` | 16 | `Meritorious Service` | `ninguna` |
 | `BLADE` | 0 | `-` | `-` | 0 | `sin condecoraciones` | `ninguna` |
@@ -47,6 +47,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | `BOPE-CODEX-2026-024` | mando doctrinal | 12 | activacion dirigida absorbida con ruta real corregida y doctrina local verificada |
 | `BOPE-CODEX-2026-025` | mando doctrinal | 12 | activacion absorbida con equivalencias doctrinales y economia operativa estricta |
 | `BOPE-CURSOR-2026-026` | mando doctrinal Cursor | 95 | playbook operativo N↔P, ATD/desempates, enlaces JOHN; cierre institucional reparado |
+| `MEMORIA-CAP-V-2026-0516` | mando operativo Memoria_cap_V | 36 | v0.9 Sueño + v1.0 Guardián cerrados; barra NC+ |
 
 ### PIXEL
 
@@ -54,6 +55,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 |---|---|---:|---|
 | `BOPE-CODEX-2026-001` | validacion de frente visual | 14 | superficie confirmada |
 | `cuentas-personales-v1` | frente UI | — | Bronze Star `[BS]` asentada en `ORDEN-DE-BATALLA` — multiples mejoras UI en 2 waves sin errores |
+| `MEMORIA-CAP-V-2026-0516` | UI Modo Sueño + Guardián | 384 | Army Achievement Medal `[AAM]` — DreamIncubator + GuardianPanel |
 
 ### FORGE
 
@@ -61,6 +63,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 |---|---|---:|---|
 | `BOPE-CODEX-2026-001` | validacion backend | 12 | backend en regla |
 | `BOPE-CODEX-2026-009` | resolucion tecnica principal | 53 | Bronze Star asentada |
+| `MEMORIA-CAP-V-2026-0516` | backend grafo + guardián | 515 | barra BS+ — incubator + advancedThreshold |
 
 ### HOUSE
 
@@ -68,6 +71,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 |---|---|---:|---|
 | `BOPE-CODEX-2026-001` | validacion QA | 8 | riesgos doctrinales observados |
 | `BOPE-CODEX-2026-009` | validacion final | 10 | Good Conduct Medal asentada |
+| `MEMORIA-CAP-V-2026-0516` | QA baseline | 30 | barra GC+ — 82 tests + build |
 
 ### MARCO AURELIO
 
@@ -91,6 +95,7 @@ Fuente canonica de records y huella historica del batallon en la capa `Codex`.
 | `BOPE-CODEX-2026-021` | trazabilidad doctrinal | 10 | consolidacion de repositorios y deploy asentada en memoria local |
 | `BOPE-CODEX-2026-023` | trazabilidad de saneamiento | 12 | cierre asistido y derivados canonicos realineados |
 | `BOPE-CODEX-2026-024` | trazabilidad doctrinal | 8 | activacion, evidencia y cierre remoto preparados para GitHub |
+| `MEMORIA-CAP-V-2026-0516` | cronica y persistencia | 98 | barra CM+ — dreamRuns, GUARDIAN.md, ROADMAP |
 
 ### CERBERUS
 

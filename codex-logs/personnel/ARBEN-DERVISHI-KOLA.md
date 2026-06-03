@@ -27,7 +27,7 @@
   - bases de datos y persistencia
   - auditoria estructural
   - reconstruccion bajo fuego
-- Operaciones acumuladas en capa Codex: `2`
+- Operaciones acumuladas en capa Codex: `3`
 
 ## Estado de honor y record
 - Posicion actual en `RECORDS.md`: `fuente viva en codex-logs/RECORDS.md`
@@ -69,6 +69,7 @@ No combate destruyendo primero. Combate haciendo que lo nuestro siga en pie.
 |---|---|---|---|---|
 | Bronze Star | `BS` | `BOPE-CODEX-2026-009` | `2026-02-17` | `SANTIAGO` |
 | Commendation Medal | `CM` | `BOPE-CODEX-2026-012` | `2026-04-03` | `SANTIAGO` |
+| Barra de servicio — Bronze Star | `BS+` | `MEMORIA-CAP-V-2026-0516` | `2026-05-16` | `MARCO AURELIO` |
 
 ## Historial de sanciones
 - sin sanciones registradas
