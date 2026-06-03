@@ -50,10 +50,11 @@ export async function GET(
 
       let lastId: string | null = null;
       let alive = true;
+      let consecutiveErrors = 0;
 
       req.signal.addEventListener('abort', () => { alive = false; });
 
-      // Poll cada 2 segundos
+      // Poll cada 2 segundos (con backoff exponencial ante errores consecutivos)
       while (alive) {
         try {
           const messages = lastId
@@ -72,6 +73,8 @@ export async function GET(
                 ORDER BY m.created_at DESC
                 LIMIT 10
               `;
+
+          consecutiveErrors = 0;
 
           for (const msg of [...messages].reverse()) {
             const eventType =
@@ -94,8 +97,19 @@ export async function GET(
 
             lastId = msg.id as string;
           }
-        } catch {
-          // Silenciar errores de polling
+        } catch (err) {
+          consecutiveErrors += 1;
+          const errMsg = err instanceof Error ? err.message : String(err);
+          console.error(`[SSE] Error de polling (intento ${consecutiveErrors}):`, errMsg);
+          send('system_log', {
+            type: 'system_log',
+            message: `[SSE] Error de polling: ${errMsg}`,
+            timestamp: new Date().toISOString(),
+          });
+          // Backoff exponencial: 2s, 4s, 8s, máximo 30s
+          const backoffMs = Math.min(2000 * Math.pow(2, consecutiveErrors - 1), 30_000);
+          await new Promise(r => setTimeout(r, backoffMs));
+          continue;
         }
 
         // Heartbeat cada 25s

@@ -106,6 +106,19 @@ export async function callClaude(opts: ClaudeCallOptions): Promise<ClaudeCallRes
     .map(b => b.text)
     .join('\n');
 
+  // Si no hay text blocks y el stop_reason indica tool_use, el caller no puede
+  // tratar esto como output vacío — lanzar error descriptivo.
+  if (content === '' && response.stop_reason === 'tool_use') {
+    const toolNames = response.content
+      .filter(b => b.type === 'tool_use')
+      .map(b => (b as { type: 'tool_use'; name: string }).name)
+      .join(', ');
+    throw new Error(
+      `[callClaude] La respuesta contiene solo tool_use blocks (${toolNames || 'sin nombre'}) sin texto asociado. ` +
+      `El caller debe manejar tool_use explícitamente para esta tarea.`
+    );
+  }
+
   return {
     content,
     cost: {

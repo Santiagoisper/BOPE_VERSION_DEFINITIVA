@@ -259,6 +259,16 @@ async function runPlan(context: MissionRuntimeContext, plan: RuntimePlan): Promi
 
   await markMissionAgents(context.missionUuid, plan.tasks.map((task) => task.agent));
 
+  // Detectar agentes duplicados antes de construir el Map — dos tareas con el mismo
+  // agente harían que la segunda sobreescriba a la primera silenciosamente.
+  const agentCounts = new Map<string, number>();
+  for (const entry of createdTasks) {
+    agentCounts.set(entry.plan.agent, (agentCounts.get(entry.plan.agent) ?? 0) + 1);
+  }
+  const duplicates = [...agentCounts.entries()].filter(([, count]) => count > 1).map(([agent]) => agent);
+  if (duplicates.length > 0) {
+    throw new Error(`[runner] Plan inválido: agentes duplicados en el mismo wave: ${duplicates.join(", ")}`);
+  }
   const byAgent = new Map(createdTasks.map((entry) => [entry.plan.agent, entry]));
   const pending = new Set(plan.tasks.map((task) => task.agent));
   const completed = new Set<string>();

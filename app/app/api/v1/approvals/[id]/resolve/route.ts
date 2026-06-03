@@ -62,8 +62,8 @@ export async function POST(
     `;
 
     if (Number(pending.cnt) === 0) {
-      // Devolver la misión a ACTIVE si fue rechazada o continuar si fue aprobada
-      const newStatus = decision === 'APPROVED' ? 'ACTIVE' : 'ACTIVE';
+      // Continuar la misión si fue aprobada, o cancelarla si fue rechazada
+      const newStatus = decision === 'APPROVED' ? 'ACTIVE' : 'CANCELLED';
       await sql`
         UPDATE bope_missions
         SET status = ${newStatus}, updated_at = NOW()

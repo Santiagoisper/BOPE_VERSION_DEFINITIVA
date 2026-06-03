@@ -114,9 +114,12 @@ export async function execute(
   // ── Step 5: Provider governance check (Req 1.2, 1.3, 1.4, 1.5) ──────────
   // assertProviderAllowed lanza ProviderBlockedError si el provider está bloqueado.
   // Retorna el modo efectivo: "shadow" | "armed".
-  let effectiveMode: "shadow" | "armed" = "armed";
+  // Si no se provee policy, el modo cae a "shadow" por defecto (principio de menor privilegio).
+  let effectiveMode: "shadow" | "armed";
   if (input.policy) {
     effectiveMode = assertProviderAllowed(input.policy);
+  } else {
+    effectiveMode = "shadow";
   }
 
   // ── Modo shadow: simular sin llamar al LLM (Req 1.4) ─────────────────────

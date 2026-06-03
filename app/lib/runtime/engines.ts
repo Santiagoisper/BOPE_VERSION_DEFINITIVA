@@ -73,16 +73,24 @@ async function runClaudeCli(input: EngineExecutionInput): Promise<EngineExecutio
     proc.stdin.end();
 
     proc.stdout.on("data", async (data: Buffer) => {
-      const chunk = data.toString();
-      stdout += chunk;
-      await input.onChunk?.(chunk);
+      try {
+        const chunk = data.toString();
+        stdout += chunk;
+        await input.onChunk?.(chunk);
+      } catch (err) {
+        console.error("[runClaudeCli] Error en stdout onChunk handler:", err);
+      }
     });
 
     proc.stderr.on("data", async (data: Buffer) => {
-      const chunk = data.toString();
-      stderr += chunk;
-      if (chunk.trim()) {
-        await input.onChunk?.(`[stderr] ${chunk}`);
+      try {
+        const chunk = data.toString();
+        stderr += chunk;
+        if (chunk.trim()) {
+          await input.onChunk?.(`[stderr] ${chunk}`);
+        }
+      } catch (err) {
+        console.error("[runClaudeCli] Error en stderr onChunk handler:", err);
       }
     });
 
@@ -136,16 +144,24 @@ async function runCodexCli(input: EngineExecutionInput): Promise<EngineExecution
     }, timeoutMs);
 
     proc.stdout.on("data", async (data: Buffer) => {
-      const chunk = data.toString();
-      stdout += chunk;
-      await input.onChunk?.(chunk);
+      try {
+        const chunk = data.toString();
+        stdout += chunk;
+        await input.onChunk?.(chunk);
+      } catch (err) {
+        console.error("[runCodexCli] Error en stdout onChunk handler:", err);
+      }
     });
 
     proc.stderr.on("data", async (data: Buffer) => {
-      const chunk = data.toString();
-      stderr += chunk;
-      if (chunk.trim()) {
-        await input.onChunk?.(`[stderr] ${chunk}`);
+      try {
+        const chunk = data.toString();
+        stderr += chunk;
+        if (chunk.trim()) {
+          await input.onChunk?.(`[stderr] ${chunk}`);
+        }
+      } catch (err) {
+        console.error("[runCodexCli] Error en stderr onChunk handler:", err);
       }
     });
 

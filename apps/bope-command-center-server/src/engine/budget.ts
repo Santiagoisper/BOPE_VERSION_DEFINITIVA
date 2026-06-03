@@ -3,6 +3,20 @@ import path from "node:path";
 
 const BUDGET_FILE = path.resolve(process.cwd(), "data/budget.json");
 
+// ── In-memory mutex para serializar check→call→record ─────────────────────────
+// Previene TOCTOU: dos ejecuciones concurrentes no pueden pasar el check simultáneamente.
+let _budgetLockChain: Promise<void> = Promise.resolve();
+
+export function withBudgetLock<T>(fn: () => Promise<T>): Promise<T> {
+  const next = _budgetLockChain.then(() => fn());
+  // Absorber el error en la cadena para que un fallo no bloquee futuros waiters
+  _budgetLockChain = next.then(
+    () => undefined,
+    () => undefined,
+  );
+  return next;
+}
+
 const ANNUAL_LIMIT = Number(process.env.BOPE_ANNUAL_BUDGET ?? 1500);
 const MONTHLY_LIMIT = Number(process.env.BOPE_MONTHLY_LIMIT ?? 125);
 const PER_EXECUTION_LIMIT = Number(process.env.BOPE_MAX_EXECUTION_COST ?? 2.0);

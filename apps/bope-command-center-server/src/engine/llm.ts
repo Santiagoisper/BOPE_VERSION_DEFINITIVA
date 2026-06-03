@@ -1,6 +1,6 @@
 import { execFile, spawn } from "node:child_process";
 import { promisify } from "node:util";
-import { checkBudget, recordSpend } from "./budget.js";
+import { checkBudget, recordSpend, withBudgetLock } from "./budget.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -190,7 +190,8 @@ async function callClaudeApi(
   const pricing = CLAUDE_MODEL_PRICING[model] ?? CLAUDE_MODEL_PRICING[DEFAULT_CLAUDE_MODEL]!;
   const estimatedInput = Math.ceil((systemPrompt.length + userMessage.length) / 4);
   const estimatedCost = estimateCost(estimatedInput, maxTokens, pricing);
-  await checkBudget(estimatedCost);
+  // Serializar check con el lock para prevenir TOCTOU en ejecuciones concurrentes
+  await withBudgetLock(() => checkBudget(estimatedCost));
 
   const abortController = new AbortController();
   const apiTimeout = setTimeout(() => abortController.abort(), 120_000);
@@ -277,6 +278,11 @@ async function runCodexCli(
   prompt: string,
   onChunk: (chunk: string) => void
 ): Promise<LLMCallResult> {
+  // Budget check serializado con el lock — misma política que runCodexApi.
+  const estimatedInput = Math.ceil(prompt.length / 4);
+  const estimatedCost = estimateCost(estimatedInput, 2048, CODEX_PRICING);
+  await withBudgetLock(() => checkBudget(estimatedCost));
+
   return new Promise((resolve, reject) => {
     // Strip OPENAI_API_KEY so Codex CLI uses subscription, not the paid key
     const STRIP_KEYS = new Set(["OPENAI_API_KEY"]);
@@ -337,7 +343,8 @@ async function runCodexApi(
 
   const estimatedInput = Math.ceil(prompt.length / 4);
   const estimatedCost = estimateCost(estimatedInput, 2048, CODEX_PRICING);
-  await checkBudget(estimatedCost);
+  // Serializar check con el lock para prevenir TOCTOU en ejecuciones concurrentes
+  await withBudgetLock(() => checkBudget(estimatedCost));
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",

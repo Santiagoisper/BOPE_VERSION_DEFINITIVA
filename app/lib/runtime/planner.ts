@@ -164,7 +164,8 @@ Decide el plan operativo siguiente.`;
       risk_level: parsed.risk_level,
       tasks: normalizeDependencies(tasks),
     };
-  } catch {
+  } catch (err) {
+    console.error("[planner] Error al parsear o validar el plan del LLM:", err);
     return fallbackPlan(context);
   }
 }

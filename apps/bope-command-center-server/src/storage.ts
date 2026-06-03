@@ -1004,6 +1004,17 @@ export {
   updateBudgetPolicyMutation,
 };
 
+/**
+ * Reemplaza el estado completo del store en la DB.
+ *
+ * IMPORTANTE: Esta función DEBE llamarse siempre dentro de una transacción abierta
+ * con `withTransaction`, y con `lockStore` ya adquirido. Nunca llamar directamente
+ * fuera de ese contexto — el DELETE masivo sin transacción dejaría la DB vacía ante
+ * cualquier fallo intermedio.
+ *
+ * Para mutaciones incrementales, preferir `mutateIncremental` que hace upserts
+ * quirúrgicos en lugar de DELETE+reinsert.
+ */
 async function writeStoreToClient(client: PoolClient, store: PersistedStore): Promise<void> {
   const normalized: PersistedStore = {
     state: synchronizeState(store.state),
