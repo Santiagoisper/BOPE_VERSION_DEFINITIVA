@@ -7,6 +7,7 @@ import Dashboard from "@/pages/Dashboard";
 import Agents from "@/pages/Agents";
 import Missions from "@/pages/Missions";
 import Arsenal from "@/pages/Arsenal";
+import Bope from "@/pages/Bope";
 import Records from "@/pages/Records";
 import Execute from "@/pages/Execute";
 
@@ -28,6 +29,7 @@ function Router() {
     <AppLayout>
       <Switch>
         <Route path="/" component={Dashboard} />
+        <Route path="/bope" component={Bope} />
         <Route path="/agents" component={Agents} />
         <Route path="/missions" component={Missions} />
         <Route path="/arsenal" component={Arsenal} />

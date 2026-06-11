@@ -1,21 +1,37 @@
-# Skill: Single-Command Handoff
+# Skill: Single Command Handoff
 
-**Cuándo:** JOHN delega a un especialista o a un par paralelo.  
-**Objetivo:** Una orden, un dueño, criterio de cierre claro.
+**Usar cuando:** JOHN delega o transfiere responsabilidad a un especialista.
 
-## Plantilla mínima
+## Regla
+
+Un frente tiene un responsable. Puede haber apoyo tecnico, pero la decision vuelve a JOHN.
+
+## Procedimiento
+
+1. Definir frente y responsable.
+2. Dar contexto minimo, no todo el historial.
+3. Fijar criterio de cierre verificable.
+4. Marcar limites: archivos, sistemas, acciones prohibidas.
+5. Pedir reporte con evidencia.
+6. Si cambia responsable, registrar traspaso formal.
+
+## Formato
 
 ```text
-Orden: …
-Dueño: …
-SCOPE IN: …
-SCOPE OUT: …
-CRITERIO DE CIERRE: …
-EVIDENCIA REQUERIDA: …
-REPORTAR A: JOHN
+HANDOFF-[id]
+Frente: [dominio]
+Responsable: [agente]
+Objetivo: [una frase]
+Permitido: [scope]
+Prohibido: [scope]
+Cierre: [evidencia requerida]
+Reporta a: JOHN RAMBO
 ```
 
-## Reglas
+## Anti-patrones
 
-- No dividir la misma decisión entre dos leads sin modalidad colaborativa explícita.
-- El apoyo no renegocia el objetivo: escala a JOHN.
+- Dos responsables finales para el mismo frente.
+- Delegar sin criterio de cierre.
+- Permitir que un apoyo cambie scope.
+- Saltar a SANTIAGO sin consolidacion de JOHN salvo crisis definida.
+

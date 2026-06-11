@@ -15,6 +15,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { path: "/", label: "Centro de Mando", icon: "■", shortLabel: "Mando" },
+  { path: "/bope", label: "BOPE", icon: "▣", shortLabel: "BOPE" },
   { path: "/execute", label: "Ejecución", icon: "▶", shortLabel: "Ejecutar" },
   { path: "/missions", label: "Misiones", icon: "◆", shortLabel: "Misiones" },
   { path: "/agents", label: "Agentes", icon: "◉", shortLabel: "Agentes" },

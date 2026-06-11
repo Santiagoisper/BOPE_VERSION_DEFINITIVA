@@ -1,18 +1,45 @@
 # Skill: Risk Assessment
 
-**Cuándo:** Antes de merge alto riesgo, cambio de auth/datos, o paralelismo amplio.
+**Usar cuando:** una decision puede afectar produccion, datos, seguridad, costos, usuarios, integraciones o reputacion del batallon.
 
-## Matriz rápida
+## Regla
 
-| Área        | Bajo | Medio | Alto |
-|------------|------|-------|------|
-| Datos      | copy | migración reversible | migración destructiva |
-| Auth       | copy | nuevo scope | cambio de modelo |
-| UX       | copy | flujo secundario | checkout/pago/core |
-| Ops      | copy | config env | infra prod |
+Nombrar el riesgo antes de actuar. Un riesgo no nombrado suele convertirse en incidente.
 
-## Salida
+## Procedimiento
 
-- Riesgo global: bajo/medio/alto.
-- Mitigaciones concretas.
-- Si alto → JOHN + CERBERUS/FORGE según frente.
+1. Identificar activo afectado:
+   - datos,
+   - auth/secrets,
+   - UX publica,
+   - dinero/costo,
+   - disponibilidad,
+   - reputacion/memoria.
+2. Clasificar probabilidad e impacto: bajo, medio, alto, critico.
+3. Definir mitigacion o rollback.
+4. Decidir si requiere especialista:
+   - CERBERUS para seguridad.
+   - FORGE para datos/backend.
+   - NEXUS para integracion.
+   - HOUSE para regresion.
+   - MARCO para doctrina/sancion/premio.
+5. Registrar riesgo residual al cierre.
+
+## Output minimo
+
+```text
+Riesgo: [bajo|medio|alto|critico]
+Activo: [que puede romperse]
+Impacto: [concreto]
+Mitigacion: [accion]
+Especialista requerido: [si/no, quien]
+Riesgo residual: [concreto o ninguno]
+```
+
+## Anti-patrones
+
+- "Es simple" sin mirar datos reales.
+- Tratar prod igual que local.
+- Cambiar auth sin CERBERUS.
+- Migrar DB sin plan de recuperacion.
+

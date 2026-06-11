@@ -1,16 +1,51 @@
 # Skill: Evidence-First Closure
 
-**Cuándo:** Antes de declarar misión, subtarea o PR “lista”.  
-**Quién:** Cualquier efectivo; HOUSE y WINSTON especialmente.
+**Usar cuando:** alguien quiera declarar una tarea, mision, PR, incidente o frente como cerrado.
 
-## Pasos
+## Regla
 
-1. Enumerar afirmaciones de cierre (“funciona”, “seguro”, “sin regresión”).
-2. Por cada afirmación, adjuntar **un** artefacto: test que pasa, URL de preview, diff, log, métrica, captura.
-3. Si falta evidencia → estado **no cerrado** o **riesgo explícito** aceptado por JOHN.
-4. Dejar enlaces en el issue/PR para trazabilidad.
+No existe cierre sin evidencia verificable. La narrativa acompana; no reemplaza logs, tests, diffs, URL, metricas o registros.
+
+## Procedimiento
+
+1. Listar las afirmaciones de cierre:
+   - funciona,
+   - no rompe,
+   - esta seguro,
+   - quedo registrado,
+   - quedo desplegado.
+2. Asociar una evidencia a cada afirmacion.
+3. Si falta evidencia, elegir una:
+   - correr validacion,
+   - declarar riesgo residual,
+   - dejar estado parcial,
+   - pedir aceptacion explicita de JOHN/SANTIAGO.
+4. Registrar resultado en el canal correspondiente.
+
+## Evidencias validas
+
+- Test/unit/e2e con resultado.
+- Typecheck/build/lint.
+- Diff revisado.
+- Smoke manual con pasos.
+- URL o screenshot de preview.
+- Log de healthcheck/API.
+- Commit/PR/deploy.
+- Registro WINSTON si el cierre es institucional.
+
+## Output minimo
+
+```text
+Cierre: [cerrado|parcial|bloqueado]
+Afirmacion: [lo que se declara]
+Evidencia: [artefacto verificable]
+Riesgo residual: [concreto o ninguno]
+```
 
 ## Anti-patrones
 
-- “Debería estar bien” sin corrida.
-- Cierre solo con descripción narrativa.
+- "Deberia andar".
+- "No vi errores" sin comando.
+- Cerrar porque el diff parece chico.
+- Ocultar que una validacion no se pudo correr.
+

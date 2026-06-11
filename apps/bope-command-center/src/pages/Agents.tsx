@@ -4,6 +4,7 @@ import { ProgressRing } from "@/components/shared/ProgressRing";
 import { RankRibbon, RankRow } from "@/components/shared/RankBadge";
 import { SanctionBadge } from "@/components/shared/SanctionBadge";
 import { useCommandCenter } from "@/context/CommandCenterContext";
+import { formatProceduralSkill, getSkillProfile } from "@/data/skillProfiles";
 import {
   MEDAL_META,
   agentStatusColor,
@@ -33,6 +34,7 @@ function AgentCard({ agent }: { agent: Agent }) {
   const [expanded, setExpanded] = useState(false);
   const { directOrders } = useCommandCenter();
   const agentOrders = directOrders.filter((order) => order.agentId === agent.id);
+  const skillProfile = getSkillProfile(agent.id);
   const trustColor =
     agent.trustScore >= 95 ? "hsl(142 50% 45%)" : agent.trustScore >= 85 ? "hsl(40 70% 48%)" : "hsl(0 62% 50%)";
 
@@ -91,6 +93,27 @@ function AgentCard({ agent }: { agent: Agent }) {
                   ))}
                 </div>
               </div>
+              {skillProfile && (
+                <div>
+                  <div className="text-[9px] font-mono text-muted-foreground tracking-wider mb-1.5">SKILL OPERATIVO</div>
+                  <div className="rounded border border-amber/30 bg-amber/5 p-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-mono font-semibold text-amber">{skillProfile.label}</span>
+                      <span className={cn("text-[8px] font-mono", skillProfile.activation === "restricted" ? "text-red-400" : "text-muted-foreground")}>
+                        {skillProfile.activation.toUpperCase()}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-[10px] text-foreground/70 leading-snug">{skillProfile.mandate}</p>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {skillProfile.defaultSkills.map((skill) => (
+                        <span key={skill} className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-muted border border-border text-foreground/60">
+                          {formatProceduralSkill(skill)}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-3">
