@@ -1,6 +1,15 @@
 import type { CommandCenterState, SessionRecord } from "@/domain/models";
 import type { MissionPriority, ProviderBudgetInput } from "@/types";
 
+const API_BASE_URL = (import.meta.env.VITE_BOPE_COMMAND_CENTER_API_URL ?? "").replace(/\/$/, "");
+
+function apiUrl(input: string): string {
+  if (API_BASE_URL && input.startsWith("/api/")) {
+    return `${API_BASE_URL}${input}`;
+  }
+  return input;
+}
+
 interface CommandCenterStateResponse {
   session: SessionRecord;
   state: CommandCenterState;
@@ -11,7 +20,7 @@ interface AuthSessionResponse {
 }
 
 async function requestJson<T>(input: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(input, {
+  const response = await fetch(apiUrl(input), {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
@@ -197,7 +206,7 @@ export function getBudgetLive() {
 }
 
 export function openEventStream(onEvent: (event: { type: string; data: unknown }) => void): () => void {
-  const es = new EventSource("/api/events", { withCredentials: true });
+  const es = new EventSource(apiUrl("/api/events"), { withCredentials: true });
 
   es.addEventListener("execution", (e) => {
     try {
