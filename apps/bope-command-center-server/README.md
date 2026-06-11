@@ -21,11 +21,15 @@ Backend remoto de Fase 3.1 para `bope-command-center`.
 ## Variables de entorno
 
 - `BOPE_COMMAND_CENTER_DATABASE_URL`
-  Connection string real de Postgres. Debe apuntar a la base fisica existente en Neon.
+  Connection string real de Postgres. Debe apuntar a la base fisica existente en Neon. En Railway tambien se acepta `DATABASE_URL`.
 - `BOPE_COMMAND_CENTER_DATABASE_SSL`
   `true` para Neon.
 - `BOPE_COMMAND_CENTER_SERVER_PORT`
   Puerto HTTP del backend.
+- `BOPE_ALLOWED_ORIGINS`
+  Origins permitidos para CORS, separados por coma. Para produccion incluir `https://bope-command-center.vercel.app`.
+- `BOPE_COOKIE_SAME_SITE`
+  Default `Lax` en desarrollo y `None` en produccion. Para Vercel -> Railway usar `None` con `NODE_ENV=production`.
 
 Referencia local: `.env.example`
 
@@ -82,10 +86,27 @@ pnpm --dir apps/bope-command-center-server start
 3. Copiar `.env.example` a `.env`.
 4. Cargar `BOPE_COMMAND_CENTER_DATABASE_URL` con la URL real validada.
 5. Definir `BOPE_COMMAND_CENTER_DATABASE_SSL=true`.
-6. Ejecutar `pnpm --dir apps/bope-command-center-server db:migrate`.
-7. Levantar backend con `pnpm --dir apps/bope-command-center-server start`.
-8. Verificar `GET /api/healthz`.
-9. Verificar `GET /api/bootstrap-status`.
+6. Definir `BOPE_ALLOWED_ORIGINS=https://bope-command-center.vercel.app`.
+7. Definir `NODE_ENV=production`.
+8. Ejecutar `pnpm --dir apps/bope-command-center-server db:migrate`.
+9. Levantar backend con `pnpm --dir apps/bope-command-center-server start`.
+10. Verificar `GET /api/healthz`.
+11. Verificar `GET /api/bootstrap-status`.
+
+## Deploy Railway recomendado
+
+Variables minimas:
+
+```txt
+DATABASE_URL=postgresql://...
+BOPE_COMMAND_CENTER_DATABASE_SSL=true
+JWT_SECRET=<openssl rand -hex 32>
+NODE_ENV=production
+BOPE_ALLOWED_ORIGINS=https://bope-command-center.vercel.app
+BOPE_DISABLE_API=true
+```
+
+El servidor ejecuta migraciones y seed al arrancar. Si la base esta vacia, crea el estado inicial; si ya existe, preserva datos.
 
 ## Checklist Backend
 

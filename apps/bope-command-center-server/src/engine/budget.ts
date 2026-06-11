@@ -1,7 +1,8 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { DATA_DIR } from "../paths.js";
 
-const BUDGET_FILE = path.resolve(process.cwd(), "data/budget.json");
+const BUDGET_FILE = path.join(DATA_DIR, "budget.json");
 
 // ── In-memory mutex para serializar check→call→record ─────────────────────────
 // Previene TOCTOU: dos ejecuciones concurrentes no pueden pasar el check simultáneamente.

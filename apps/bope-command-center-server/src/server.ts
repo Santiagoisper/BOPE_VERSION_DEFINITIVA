@@ -114,12 +114,23 @@ function parseCookies(request: IncomingMessage): Record<string, string> {
   );
 }
 
-const SECURE_FLAG = process.env.NODE_ENV === "production" ? "; Secure" : "";
+function resolveCookieSameSite(): "Strict" | "Lax" | "None" {
+  const raw = process.env.BOPE_COOKIE_SAME_SITE;
+  if (raw === "Strict" || raw === "Lax" || raw === "None") {
+    return raw;
+  }
+  return process.env.NODE_ENV === "production" ? "None" : "Lax";
+}
+
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const COOKIE_SAME_SITE = resolveCookieSameSite();
+const SECURE_FLAG = IS_PRODUCTION || COOKIE_SAME_SITE === "None" ? "; Secure" : "";
+const COOKIE_FLAGS = `HttpOnly; SameSite=${COOKIE_SAME_SITE}; Path=/`;
 
 function writeSessionCookie(response: ServerResponse, sessionToken: string): void {
   response.setHeader(
     "Set-Cookie",
-    `${SESSION_COOKIE}=${encodeURIComponent(sessionToken)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${60 * 60 * 12}${SECURE_FLAG}`,
+    `${SESSION_COOKIE}=${encodeURIComponent(sessionToken)}; ${COOKIE_FLAGS}; Max-Age=${60 * 60 * 12}${SECURE_FLAG}`,
   );
 }
 
@@ -127,22 +138,22 @@ function writeTokenCookies(response: ServerResponse, accessToken: string, refres
   const existing = response.getHeader("Set-Cookie");
   const cookies = [
     ...(Array.isArray(existing) ? existing : existing ? [existing] : []),
-    `${ACCESS_TOKEN_COOKIE}=${accessToken}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${getAccessTokenTtlSeconds()}${SECURE_FLAG}`,
-    `${REFRESH_TOKEN_COOKIE}=${encodeURIComponent(refreshToken)}; HttpOnly; SameSite=Strict; Path=/api/auth; Max-Age=${getRefreshTokenTtlSeconds()}${SECURE_FLAG}`,
+    `${ACCESS_TOKEN_COOKIE}=${accessToken}; ${COOKIE_FLAGS}; Max-Age=${getAccessTokenTtlSeconds()}${SECURE_FLAG}`,
+    `${REFRESH_TOKEN_COOKIE}=${encodeURIComponent(refreshToken)}; HttpOnly; SameSite=${COOKIE_SAME_SITE}; Path=/api/auth; Max-Age=${getRefreshTokenTtlSeconds()}${SECURE_FLAG}`,
   ];
   response.setHeader("Set-Cookie", cookies as string[]);
 }
 
 function clearAllAuthCookies(response: ServerResponse): void {
   response.setHeader("Set-Cookie", [
-    `${SESSION_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${SECURE_FLAG}`,
-    `${ACCESS_TOKEN_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${SECURE_FLAG}`,
-    `${REFRESH_TOKEN_COOKIE}=; HttpOnly; SameSite=Strict; Path=/api/auth; Max-Age=0${SECURE_FLAG}`,
+    `${SESSION_COOKIE}=; ${COOKIE_FLAGS}; Max-Age=0${SECURE_FLAG}`,
+    `${ACCESS_TOKEN_COOKIE}=; ${COOKIE_FLAGS}; Max-Age=0${SECURE_FLAG}`,
+    `${REFRESH_TOKEN_COOKIE}=; HttpOnly; SameSite=${COOKIE_SAME_SITE}; Path=/api/auth; Max-Age=0${SECURE_FLAG}`,
   ]);
 }
 
 function clearSessionCookie(response: ServerResponse): void {
-  response.setHeader("Set-Cookie", `${SESSION_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`);
+  response.setHeader("Set-Cookie", `${SESSION_COOKIE}=; ${COOKIE_FLAGS}; Max-Age=0${SECURE_FLAG}`);
 }
 
 function extractBearerToken(request: IncomingMessage): string | undefined {
@@ -180,18 +191,30 @@ function requireSession(store: PersistedStore, request: IncomingMessage, respons
   return session;
 }
 
+function configuredOrigins(): string[] {
+  return [
+    process.env.BOPE_ALLOWED_ORIGIN,
+    process.env.BOPE_ALLOWED_ORIGINS,
+  ]
+    .filter(Boolean)
+    .flatMap((value) => String(value).split(","))
+    .map((value) => value.trim().replace(/\/$/, ""))
+    .filter(Boolean);
+}
+
 const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://127.0.0.1:3000",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "https://bope-visual-code.vercel.app",
-  ...(process.env.BOPE_ALLOWED_ORIGIN ? [process.env.BOPE_ALLOWED_ORIGIN] : []),
+  "https://bope-command-center.vercel.app",
+  ...configuredOrigins(),
 ];
 
 async function handler(request: IncomingMessage, response: ServerResponse): Promise<void> {
   const method = request.method ?? "GET";
-  const origin = request.headers.origin ?? "";
+  const origin = (request.headers.origin ?? "").replace(/\/$/, "");
   const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
 
   if (ALLOWED_ORIGINS.includes(origin)) {

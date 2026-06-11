@@ -76,7 +76,7 @@ pnpm --dir apps/bope-command-center-server start
 ## Checklist Frontend
 
 1. Confirmar que el backend remoto este arriba y responda `healthz`.
-2. Definir `BOPE_COMMAND_CENTER_API_URL` si se usa un backend fuera del proxy local.
+2. Definir `VITE_BOPE_COMMAND_CENTER_API_URL` en Vercel si se usa un backend fuera del proxy local.
 3. Ejecutar `pnpm --dir apps/bope-command-center typecheck`.
 4. Ejecutar `pnpm --dir apps/bope-command-center build`.
 5. Abrir la UI y verificar bootstrap/login.

@@ -3,10 +3,7 @@
  * Se debe llamar antes de cualquier inicialización de base de datos o servicios.
  */
 
-const REQUIRED_VARS = [
-  "BOPE_COMMAND_CENTER_DATABASE_URL",
-  "JWT_SECRET",
-] as const;
+const MIN_JWT_SECRET_LENGTH = 32;
 
 /**
  * Verifica que las variables de entorno críticas estén presentes en `process.env`.
@@ -14,21 +11,38 @@ const REQUIRED_VARS = [
  * y termina el proceso con código de salida 1.
  */
 export function validateEnv(): void {
-  const missing = REQUIRED_VARS.filter((varName) => !process.env[varName]);
+  const missing: string[] = [];
 
-  if (missing.length === 0) {
+  if (!process.env.BOPE_COMMAND_CENTER_DATABASE_URL && !process.env.DATABASE_URL) {
+    missing.push("BOPE_COMMAND_CENTER_DATABASE_URL or DATABASE_URL");
+  }
+
+  if (!process.env.JWT_SECRET) {
+    missing.push("JWT_SECRET");
+  }
+
+  const jwtSecret = process.env.JWT_SECRET ?? "";
+  const weakJwtSecret =
+    Boolean(jwtSecret) &&
+    (jwtSecret.length < MIN_JWT_SECRET_LENGTH || jwtSecret === "change-me-use-a-long-random-secret-at-least-32-chars");
+
+  if (missing.length > 0) {
+    console.error("ERROR: Faltan variables de entorno criticas para iniciar el servidor.");
+    console.error("");
+    console.error("Variables faltantes:");
+    for (const varName of missing) {
+      console.error(`  - ${varName}`);
+    }
+    console.error("");
+    console.error("Configuralas en el archivo .env o en el entorno antes de iniciar el servidor.");
+    console.error("Consulta apps/bope-command-center-server/.env.example para ver todas las variables disponibles.");
+    process.exit(1);
     return;
   }
 
-  console.error("❌ ERROR: Faltan variables de entorno críticas para iniciar el servidor.");
-  console.error("");
-  console.error("Variables faltantes:");
-  for (const varName of missing) {
-    console.error(`  - ${varName}`);
+  if (weakJwtSecret) {
+    console.error("ERROR: JWT_SECRET no es suficientemente fuerte.");
+    console.error(`Debe tener al menos ${MIN_JWT_SECRET_LENGTH} caracteres y no usar el valor de ejemplo.`);
+    process.exit(1);
   }
-  console.error("");
-  console.error("Configurá estas variables en el archivo .env o en el entorno antes de iniciar el servidor.");
-  console.error("Consultá apps/bope-command-center-server/.env.example para ver todas las variables disponibles.");
-
-  process.exit(1);
 }

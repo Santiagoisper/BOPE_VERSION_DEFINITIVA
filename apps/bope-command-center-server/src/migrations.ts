@@ -2,8 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { PoolClient } from "pg";
 import { withTransaction } from "./db.js";
-
-const MIGRATIONS_DIR = path.resolve(process.cwd(), "db/migrations");
+import { MIGRATIONS_DIR } from "./paths.js";
 
 async function listMigrationFiles(): Promise<string[]> {
   const entries = await fs.readdir(MIGRATIONS_DIR, { withFileTypes: true });
