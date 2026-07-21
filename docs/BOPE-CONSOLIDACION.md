@@ -33,18 +33,23 @@ Decision: no usar como troncal. Mantener como respaldo historico.
 
 ### 2. `Santiagoisper/bope-war-room`
 
-Estado: absorbido conceptualmente.
+Estado: absorbido documentalmente en el tronco canonico.
 
 Contenido relevante: definia BOPE War Room como implementacion de producto del sistema operativo BOPE, separado de repos historicos y doctrinales. Su direccion apuntaba a un BOPE Mode sobre Multica, con specs, mission model, roster canonico, prompts, vocabulario UI y plan de implementacion.
 
 Contenido importado al tronco canonico:
 
 - `docs/war-room/BOPE_MODE_SPEC.md`
+- `docs/war-room/MISSION_TEMPLATE.md`
 - `docs/war-room/ROSTER.md`
+- `docs/war-room/ROUTING_PROTOCOL.md`
 - `docs/war-room/UI_VOCABULARY.md`
 - `docs/war-room/README.md`
+- `docs/war-room/prompts/JOHN_RAMBO.md`
+- `docs/war-room/prompts/JOHN_RAMBO_RUNTIME.md`
+- `docs/war-room/prompts/WINSTON_SCRIBE.md`
 
-Decision: puede archivarse como legacy una vez verificado que no quedan archivos no migrados que Santiago quiera preservar.
+Decision: puede eliminarse localmente como satelite, manteniendo el remoto como respaldo historico.
 
 ### 3. `Santiagoisper/bope-agents`
 
@@ -84,7 +89,7 @@ Decision: mantener archivado. Revisar solo si se necesita recuperar assets visua
 ## Acciones pendientes
 
 1. Decidir si portar instaladores reales de `bope-agents` a `scripts/setup/`.
-2. Archivar `bope-war-room`.
+2. `bope-war-room` absorbido; eliminar copia local si existe.
 3. Archivar `bope-agents`.
 4. Archivar `BOPE_DOTFILES`.
 5. Mantener `BOPE` y `BOPE-VISUAL-CODE` como historicos.

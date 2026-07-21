@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
   { path: "/missions", label: "Misiones", icon: "◆", shortLabel: "Misiones" },
   { path: "/agents", label: "Agentes", icon: "◉", shortLabel: "Agentes" },
   { path: "/arsenal", label: "Arsenal", icon: "⬢", shortLabel: "Arsenal" },
+  { path: "/memory", label: "Cerebro", icon: "◌", shortLabel: "Cerebro" },
   { path: "/records", label: "Registros", icon: "◇", shortLabel: "Records" },
 ];
 

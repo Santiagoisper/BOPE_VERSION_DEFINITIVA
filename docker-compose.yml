@@ -1,0 +1,85 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: bope_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bope_command_center
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bope_network
+
+  # Backend API Server
+  backend:
+    build:
+      context: .
+      dockerfile: apps/bope-command-center-server/Dockerfile
+    container_name: bope_backend
+    ports:
+      - "3100:3100"
+    env_file:
+      - .env
+    environment:
+      BOPE_COMMAND_CENTER_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bope_command_center
+      BOPE_COMMAND_CENTER_SERVER_PORT: 3100
+      BOPE_WORKSPACE_PATH: /workspace/bope
+      BOPE_OBSIDIAN_VAULT_PATH: /data/obsidian-vault
+      BOPE_CEREBRO_PATH: /data/cerebro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/workspace/bope:ro
+      - C:/Users/Santiago/ObsidianVault:/data/obsidian-vault
+      - C:/Users/Santiago/source/repos/Santiagoisper/Cerebro:/data/cerebro:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/api/healthz"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    networks:
+      - bope_network
+    restart: unless-stopped
+
+  # Frontend UI
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/bope-command-center/Dockerfile
+    container_name: bope_frontend
+    ports:
+      - "3007:3000"
+    environment:
+      PORT: 3000
+      BOPE_COMMAND_CENTER_API_URL: http://backend:3100
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000 || exit 1"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    networks:
+      - bope_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  bope_network:
+    driver: bridge

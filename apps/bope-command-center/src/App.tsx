@@ -10,6 +10,7 @@ import Arsenal from "@/pages/Arsenal";
 import Bope from "@/pages/Bope";
 import Records from "@/pages/Records";
 import Execute from "@/pages/Execute";
+import Memory from "@/pages/Memory";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ function Router() {
         <Route path="/agents" component={Agents} />
         <Route path="/missions" component={Missions} />
         <Route path="/arsenal" component={Arsenal} />
+        <Route path="/memory" component={Memory} />
         <Route path="/records" component={Records} />
         <Route path="/execute" component={Execute} />
         <Route component={NotFound} />

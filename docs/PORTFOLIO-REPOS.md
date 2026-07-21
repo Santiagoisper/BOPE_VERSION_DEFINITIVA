@@ -46,7 +46,7 @@ Repositorios que pueden conservar valor intelectual, documental, tecnico o histo
 ### IA / escritura / memoria / experimentos
 
 - `CLAUDIO`
-- `Proyecto-Memoria-Santi`
+- `Proyecto-Memoria-Santi` (documentos utiles absorbidos en `docs/archive/proyecto-memoria-santi/`; copia local eliminable)
 - `Memoria_cap_V`
 - `radar-diario-ia`
 - `monday-learning-skill`

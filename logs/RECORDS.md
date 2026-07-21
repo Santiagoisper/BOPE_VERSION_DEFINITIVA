@@ -10,12 +10,12 @@
 | Soldado | Misiones | Última misión | Fecha | Líneas aprox. | Medallas | Sanciones |
 |---------|----------|---------------|-------|---------------|----------|-----------|
 | 🟡 SANTIAGO | — | — | — | — | ★★★★★ | — |
-| 🔴 JOHN | 2 | BOPE-CLAUDE-2026-EQUIPAMIENTO-V1 | 2026-06-01 | 236,855 | [NC] | — |
-| 🔵 PIXEL | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [BS] | — |
-| 🟤 FORGE | 4 | cuentas-personales-v1 | 2026-04-11 | pendiente | [BS][CM] | — |
-| 🟢 HOUSE | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [GC][CA] | — |
+| 🔴 JOHN | 2 | BOPE-CLAUDE-2026-EQUIPAMIENTO-V1 | 2026-06-01 | 236,855 | [NC][NC+] | — |
+| 🔵 PIXEL | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [AAM][BS] | — |
+| 🟤 FORGE | 4 | cuentas-personales-v1 | 2026-04-11 | pendiente | [BS][BS+][CM] | — |
+| 🟢 HOUSE | 2 | cuentas-personales-v1 | 2026-04-11 | pendiente | [GC][GC+][CA] | — |
 | 🟠 MARCO AURELIO | — | — | — | — | — | — |
-| 🟣 WINSTON | 1 | innova-scoring | 2026-03-30 | pendiente | [CM] | — |
+| 🟣 WINSTON | 1 | innova-scoring | 2026-03-30 | pendiente | [CM][CM+] | — |
 | 🩶 CERBERUS | 2 | AUTH-ROLES | 2026-04-01 | pendiente | [CA] | — |
 | 🩵 NEXUS | 1 | innova-scoring | 2026-03-30 | pendiente | [MS] | — |
 | ⚫ BLADE | — | — | — | — | — | — |

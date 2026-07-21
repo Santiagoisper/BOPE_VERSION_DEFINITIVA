@@ -249,3 +249,96 @@ export function getExecutionsRequest(limit = 50, offset = 0) {
 export function getExecutionByIdRequest(id: string) {
   return requestJson<ExecutionRecordDto>(`/api/executions/${encodeURIComponent(id)}`);
 }
+
+export interface MemoryMountStatus {
+  id: "workspace" | "obsidianVault" | "cerebro";
+  label: string;
+  path: string | null;
+  configured: boolean;
+  exists: boolean;
+  isDirectory: boolean;
+  markdownFiles: number;
+  checkedAt: string;
+}
+
+export interface MemoryStatusResponse {
+  mounts: MemoryMountStatus[];
+  ready: boolean;
+  indexPath: string;
+  indexedFiles: number;
+  generatedAt: string | null;
+}
+
+export interface MemoryIndexStats {
+  scannedFiles: number;
+  indexedFiles: number;
+  changedFiles: number;
+  removedFiles: number;
+  skippedFiles: number;
+}
+
+export interface MemorySyncResponse {
+  generatedAt: string;
+  stats: MemoryIndexStats;
+}
+
+export interface MemorySearchResult {
+  id: string;
+  source: "workspace" | "obsidianVault" | "cerebro";
+  sourceLabel: string;
+  absolutePath: string;
+  relativePath: string;
+  extension: string;
+  title: string;
+  size: number;
+  mtimeMs: number;
+  contentHash: string;
+  summary: string;
+  links: string[];
+  indexedAt: string;
+}
+
+export interface MemoryConflict {
+  id: string;
+  severity: "info" | "warning" | "critical";
+  title: string;
+  description: string;
+  files: string[];
+}
+
+export interface ObsidianSyncResponse {
+  vaultPath: string;
+  syncedAt: string;
+  files: Array<{ path: string; status: "created" | "updated" | "unchanged" }>;
+  memoryIndex: {
+    generatedAt: string;
+    indexedFiles: number;
+  };
+}
+
+export function getMemoryStatusRequest() {
+  return requestJson<MemoryStatusResponse>("/api/memory/status");
+}
+
+export function syncMemoryRequest() {
+  return requestJson<MemorySyncResponse>("/api/memory/sync", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}
+
+export function searchMemoryRequest(query: string, limit = 25) {
+  const q = new URLSearchParams({ q: query, limit: String(limit) });
+  return requestJson<{ query: string; results: MemorySearchResult[] }>(`/api/memory/search?${q}`);
+}
+
+export function getMemoryConflictsRequest() {
+  return requestJson<{ conflicts: MemoryConflict[] }>("/api/memory/conflicts");
+}
+
+export function syncObsidianRequest() {
+  return requestJson<ObsidianSyncResponse>("/api/memory/obsidian-sync", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}

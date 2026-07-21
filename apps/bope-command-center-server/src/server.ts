@@ -50,6 +50,8 @@ import { getEngineStatus } from "./engine/llm.js";
 import { validateEnv } from "./envValidator.js";
 import { getPool } from "./db.js";
 import { getExecutions, getExecutionById } from "./executions.js";
+import { getMemoryConflicts, getMemoryStatus, searchMemoryIndex, syncMemoryIndex } from "./memory.js";
+import { syncObsidianVault } from "./obsidianSync.js";
 
 const PORT = Number(process.env.PORT ?? process.env.BOPE_COMMAND_CENTER_SERVER_PORT ?? "3100");
 const SESSION_COOKIE         = "bope_command_center_session";
@@ -261,7 +263,59 @@ async function handler(request: IncomingMessage, response: ServerResponse): Prom
     return;
   }
 
+  if (method === "GET" && url.pathname === "/api/memory/status") {
+    const store = await loadStore();
+    const session = requireSession(store, request, response);
+    if (!session) return;
+    json(response, 200, getMemoryStatus());
+    return;
+  }
+
   const store = await loadStore();
+
+  if (method === "POST" && url.pathname === "/api/memory/sync") {
+    const session = requireSession(store, request, response);
+    if (!session) return;
+    const index = syncMemoryIndex();
+    json(response, 200, {
+      generatedAt: index.generatedAt,
+      stats: index.stats,
+    });
+    return;
+  }
+
+  if (method === "GET" && url.pathname === "/api/memory/search") {
+    const session = requireSession(store, request, response);
+    if (!session) return;
+    const query = url.searchParams.get("q") ?? "";
+    const limit = Number(url.searchParams.get("limit") ?? "25");
+    json(response, 200, {
+      query,
+      results: searchMemoryIndex(query, undefined, limit),
+    });
+    return;
+  }
+
+  if (method === "GET" && url.pathname === "/api/memory/conflicts") {
+    const session = requireSession(store, request, response);
+    if (!session) return;
+    json(response, 200, {
+      conflicts: getMemoryConflicts(),
+    });
+    return;
+  }
+
+  if (method === "POST" && url.pathname === "/api/memory/obsidian-sync") {
+    const session = requireSession(store, request, response);
+    if (!session) return;
+    try {
+      json(response, 200, syncObsidianVault(store.state));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "No se pudo sincronizar Obsidian.";
+      json(response, 400, { error: message });
+    }
+    return;
+  }
 
   if (method === "GET" && url.pathname === "/api/bootstrap-status") {
     json(response, 200, {
